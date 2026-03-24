@@ -14,7 +14,7 @@ export function Hero() {
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-24">
       <ParticleBackground />
 
-      <div className="relative z-10 flex flex-col items-center text-center">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
