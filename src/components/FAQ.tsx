@@ -10,7 +10,7 @@ const faqs = [
   },
   {
     q: 'How does the commission structure work?',
-    a: 'Earnings consist of one-time bounties per referred client plus recurring revenue share. Bounty amounts and rev share percentages depend on your tier and the client segment (SMB, White Label, or BigFish).',
+    a: 'Earnings consist of one-time bounties per referred client plus recurring revenue share. Bounty amounts and rev share percentages depend on your tier and the client type (Small Business, White Label, or Enterprise).',
   },
   {
     q: 'When and how do I get paid?',
