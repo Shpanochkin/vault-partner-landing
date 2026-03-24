@@ -26,8 +26,8 @@ const AVG_MONTHLY_REVENUE: Record<Segment, number> = {
 
 const MAX_CLIENTS: Record<Segment, number> = {
   smb: 50,
-  wl: 20,
-  bigfish: 10,
+  wl: 30,
+  bigfish: 20,
 };
 
 const SEGMENT_HINTS: Record<Segment, string> = {
