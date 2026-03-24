@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://shpanochkin.github.io/vault-partner-landing/",
+  "homepage": "https://partners.vault.ist/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
