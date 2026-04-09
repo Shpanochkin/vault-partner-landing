@@ -7,9 +7,9 @@ export function Footer() {
         <Logo height={22} className="opacity-40" />
         <p className="text-xs text-white/20">&copy; {new Date().getFullYear()} Vault. All rights reserved.</p>
         <div className="flex gap-4">
-          <a href="#" className="text-xs text-white/20 transition-colors hover:text-white/40">Twitter</a>
-          <a href="#" className="text-xs text-white/20 transition-colors hover:text-white/40">LinkedIn</a>
-          <a href="#" className="text-xs text-white/20 transition-colors hover:text-white/40">GitHub</a>
+          <a href="https://twitter.com/Vault_ist" target="_blank" rel="noopener noreferrer" className="text-xs text-white/20 transition-colors hover:text-white/40">Twitter</a>
+          <a href="https://www.linkedin.com/company/vault-ist/" target="_blank" rel="noopener noreferrer" className="text-xs text-white/20 transition-colors hover:text-white/40">LinkedIn</a>
+          <a href="https://t.me/vault_ist" target="_blank" rel="noopener noreferrer" className="text-xs text-white/20 transition-colors hover:text-white/40">Telegram</a>
         </div>
       </div>
     </footer>
