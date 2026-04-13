@@ -8,8 +8,8 @@ import { getUTM, formatUTMForDescription } from '../lib/utm';
 // Get these from: Zoho CRM → Setup → Developer Space → Webforms → Leads → [your form] → Get Code
 // Copy the xnQsjsdp and xmIwtLD hidden input values from the generated form HTML.
 const ZOHO_WEB_FORM_URL = 'https://crm.zoho.com/crm/WebToLeadForm';
-const ZOHO_XNQSJSDP = '9b19acefdcff7ecee769efa9ccefb92354806a0f0a80abe7790aac451778d6dc';
-const ZOHO_XMIWTLD = '15e6e3a82ea557d4e27a649916202176d6b1b79e326f128848d689219ba23992d75c64341e81f0988d560d5c5dcfe3ff';
+const ZOHO_XNQSJSDP = 'c07c573ba82bfe259ff17e97e7c58d3b3eb02ab4b41ec1feeae66959214542d2';
+const ZOHO_XMIWTLD = '3a93182db6ef181f8ffa5bc8b5e694603761a9da18e021a135156356f0a3bfda6893abff82b945f23d124c3ec1f1af1e';
 const ZOHO_RETURN_URL = 'https://partners.vault.ist/?applied=1';
 
 /**
@@ -72,7 +72,13 @@ function submitToZoho(
     Company: emailDomain,
     Website: `https://${emailDomain}`,
     'Lead Source': 'Partner Landing Page',
-    LEADCF7: 'Website',
+    LEADCF8: 'New Business/Customer',
+    // UTM fields — Zoho custom field names from Web-to-Lead form
+    LEADCF28: utm.utm_source || '',
+    LEADCF27: utm.utm_medium || '',
+    LEADCF30: utm.utm_campaign || '',
+    LEADCF29: utm.utm_term || '',
+    LEADCF31: utm.utm_content || '',
     Description: description,
     // Honeypot field — must be empty (anti-spam, required by Zoho form)
     aG9uZXlwb3Q: '',
