@@ -2,15 +2,52 @@ import { useState, useRef } from 'react';
 import type { FormEvent } from 'react';
 import { ScrollReveal } from './ScrollReveal';
 import { CheckCircle2, Loader2 } from 'lucide-react';
+import { getUTM, formatUTMForDescription } from '../lib/utm';
 
+// Zoho Web-to-Lead form credentials.
+// Get these from: Zoho CRM → Setup → Developer Space → Webforms → Leads → [your form] → Get Code
+// Copy the xnQsjsdp and xmIwtLD hidden input values from the generated form HTML.
 const ZOHO_WEB_FORM_URL = 'https://crm.zoho.com/crm/WebToLeadForm';
-const ZOHO_XNQSJSDP = '';
-const ZOHO_XMIWTLD = '';
+const ZOHO_XNQSJSDP = '9b19acefdcff7ecee769efa9ccefb92354806a0f0a80abe7790aac451778d6dc';
+const ZOHO_XMIWTLD = '15e6e3a82ea557d4e27a649916202176d6b1b79e326f128848d689219ba23992d75c64341e81f0988d560d5c5dcfe3ff';
 const ZOHO_RETURN_URL = 'https://partners.vault.ist/?applied=1';
 
-function submitToZoho(email: string, iframeRef: React.RefObject<HTMLIFrameElement | null>) {
+/**
+ * Split a free-form full-name string into Zoho's First Name / Last Name fields.
+ * Zoho Leads module requires Last Name — if the user types a single word, we
+ * put it in Last Name (not First) so the required field is satisfied.
+ */
+function splitName(fullName: string): { firstName: string; lastName: string } {
+  const parts = fullName.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return { firstName: '', lastName: '' };
+  if (parts.length === 1) return { firstName: '', lastName: parts[0] };
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(' '),
+  };
+}
+
+function submitToZoho(
+  fullName: string,
+  email: string,
+  iframeRef: React.RefObject<HTMLIFrameElement | null>,
+) {
+  const utm = getUTM();
+  const description = formatUTMForDescription(utm, window.location.href);
+  const { firstName, lastName } = splitName(fullName);
+
+  // Extract company domain from email for Company / Website fields
+  const emailDomain = email.split('@')[1] || '';
+
   if (!ZOHO_XNQSJSDP || !ZOHO_XMIWTLD) {
-    console.log('[Vault Partner] Lead submission (Zoho web form not configured):', email);
+    console.log('[Vault Partner] Lead submission (Zoho web form not configured):', {
+      firstName,
+      lastName,
+      email,
+      company: emailDomain,
+      utm,
+      description,
+    });
     return;
   }
 
@@ -29,9 +66,16 @@ function submitToZoho(email: string, iframeRef: React.RefObject<HTMLIFrameElemen
     xmIwtLD: ZOHO_XMIWTLD,
     actionType: 'TGVhZHM=',
     returnURL: ZOHO_RETURN_URL,
+    'First Name': firstName,
+    'Last Name': lastName,
     Email: email,
-    'Last Name': email.split('@')[0],
+    Company: emailDomain,
+    Website: `https://${emailDomain}`,
     'Lead Source': 'Partner Landing Page',
+    LEADCF7: 'Website',
+    Description: description,
+    // Honeypot field — must be empty (anti-spam, required by Zoho form)
+    aG9uZXlwb3Q: '',
   };
 
   for (const [name, value] of Object.entries(fields)) {
@@ -47,6 +91,7 @@ function submitToZoho(email: string, iframeRef: React.RefObject<HTMLIFrameElemen
 }
 
 export function CTAFooter() {
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -54,15 +99,19 @@ export function CTAFooter() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const trimmed = email.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim();
+    if (!trimmedName || trimmedName.length < 2) {
+      return;
+    }
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       return;
     }
 
     setStatus('loading');
 
     try {
-      submitToZoho(trimmed, iframeRef);
+      submitToZoho(trimmedName, trimmedEmail, iframeRef);
       await new Promise((r) => setTimeout(r, 800));
       setStatus('success');
     } catch {
@@ -106,30 +155,44 @@ export function CTAFooter() {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row">
+            <form onSubmit={handleSubmit} className="mx-auto flex max-w-md flex-col gap-3">
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Your full name"
                 required
+                minLength={2}
+                autoComplete="name"
                 disabled={status === 'loading'}
-                className="flex-1 rounded-full border border-white/15 bg-white/5 px-6 py-3.5 text-sm text-white placeholder-white/30 outline-none backdrop-blur-sm transition-all focus:border-deep-blue/50 focus:ring-1 focus:ring-deep-blue/30 disabled:opacity-50"
+                className="w-full rounded-full border border-white/15 bg-white/5 px-6 py-3.5 text-sm text-white placeholder-white/30 outline-none backdrop-blur-sm transition-all focus:border-deep-blue/50 focus:ring-1 focus:ring-deep-blue/30 disabled:opacity-50"
               />
-              <button
-                type="submit"
-                disabled={status === 'loading'}
-                className="flex items-center justify-center gap-2 rounded-full bg-deep-blue px-8 py-3.5 text-sm font-semibold text-white transition-all hover:brightness-110 hover:shadow-[0_0_30px_rgba(0,25,255,0.3)] disabled:opacity-50"
-              >
-                {status === 'loading' ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  'Apply Now'
-                )}
-              </button>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  autoComplete="email"
+                  disabled={status === 'loading'}
+                  className="flex-1 rounded-full border border-white/15 bg-white/5 px-6 py-3.5 text-sm text-white placeholder-white/30 outline-none backdrop-blur-sm transition-all focus:border-deep-blue/50 focus:ring-1 focus:ring-deep-blue/30 disabled:opacity-50"
+                />
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="flex items-center justify-center gap-2 rounded-full bg-deep-blue px-8 py-3.5 text-sm font-semibold text-white transition-all hover:brightness-110 hover:shadow-[0_0_30px_rgba(0,25,255,0.3)] disabled:opacity-50"
+                >
+                  {status === 'loading' ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    'Apply Now'
+                  )}
+                </button>
+              </div>
             </form>
           )}
 
