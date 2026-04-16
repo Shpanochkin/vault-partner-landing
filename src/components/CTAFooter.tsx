@@ -8,8 +8,8 @@ import { getUTM, formatUTMForDescription } from '../lib/utm';
 // Get these from: Zoho CRM → Setup → Developer Space → Webforms → Leads → [your form] → Get Code
 // Copy the xnQsjsdp and xmIwtLD hidden input values from the generated form HTML.
 const ZOHO_WEB_FORM_URL = 'https://crm.zoho.com/crm/WebToLeadForm';
-const ZOHO_XNQSJSDP = 'c07c573ba82bfe259ff17e97e7c58d3b3eb02ab4b41ec1feeae66959214542d2';
-const ZOHO_XMIWTLD = '3a93182db6ef181f8ffa5bc8b5e694603761a9da18e021a135156356f0a3bfda6893abff82b945f23d124c3ec1f1af1e';
+const ZOHO_XNQSJSDP = '35a8dcbec2f98258ee6d96198187e908c290004b5d4576ef4f98006d13dfeeaf';
+const ZOHO_XMIWTLD = '0d9913d1e362253a16e5f1c7b76100d85974c243c8ca6269bc048b9204dc827cb1a130f6e38c514e948da778c2a5345e';
 const ZOHO_RETURN_URL = 'https://partners.vault.ist/?applied=1';
 
 /**
