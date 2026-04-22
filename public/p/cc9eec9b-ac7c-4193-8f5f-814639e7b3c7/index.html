@@ -590,7 +590,7 @@ td .plus-better { color:var(--blue); }
             <p style="font-size:18px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:14px;line-height:1.2">API integration<br>into your product</p>
             <div style="font-size:12.5px;color:rgba(255,255,255,.4);line-height:1.8">
               <div><span style="color:rgba(255,255,255,.6)">Products enabled:</span> Cards · Crypto · Banking</div>
-              <div><span style="color:rgba(255,255,255,.6)">Delivery:</span> REST API + sandbox</div>
+              <div><span style="color:rgba(255,255,255,.6)">Delivery:</span> REST API</div>
               <div><span style="color:rgba(255,255,255,.6)">Target launch:</span> April 2026</div>
             </div>
           </div>
@@ -603,26 +603,26 @@ td .plus-better { color:var(--blue); }
               <span style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4)">Target Regions</span>
             </div>
           </div>
-          <!-- Stacked horizontal bar -->
-          <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,.06);margin-bottom:14px">
-            <div style="width:42%;background:linear-gradient(90deg,#0019FF,#3d4bff)" title="EEA 42%"></div>
-            <div style="width:42%;background:linear-gradient(90deg,#6152F4,#8b7cff)" title="APAC 42%"></div>
-            <div style="width:16%;background:linear-gradient(90deg,#a48cff,#d4c7ff)" title="MENA 16%"></div>
+          <!-- Segmented bar: distinct colors + gaps for clarity -->
+          <div style="display:flex;gap:4px;height:10px;margin-bottom:16px">
+            <div style="flex:0 0 calc(42% - 3px);background:#3B82F6;border-radius:4px" title="EEA 42%"></div>
+            <div style="flex:0 0 calc(42% - 3px);background:#14B8A6;border-radius:4px" title="APAC 42%"></div>
+            <div style="flex:1;background:#F59E0B;border-radius:4px" title="MENA 16%"></div>
           </div>
           <!-- Legend -->
           <div style="display:flex;flex-wrap:wrap;gap:20px 28px">
             <div style="display:flex;align-items:center;gap:8px">
-              <span style="width:10px;height:10px;border-radius:3px;background:#0019FF;flex-shrink:0"></span>
+              <span style="width:10px;height:10px;border-radius:3px;background:#3B82F6;flex-shrink:0"></span>
               <span style="font-size:12.5px;color:rgba(255,255,255,.6)">EEA</span>
               <span style="font-size:13px;font-weight:700;color:#fff">42%</span>
             </div>
             <div style="display:flex;align-items:center;gap:8px">
-              <span style="width:10px;height:10px;border-radius:3px;background:#6152F4;flex-shrink:0"></span>
+              <span style="width:10px;height:10px;border-radius:3px;background:#14B8A6;flex-shrink:0"></span>
               <span style="font-size:12.5px;color:rgba(255,255,255,.6)">APAC</span>
               <span style="font-size:13px;font-weight:700;color:#fff">42%</span>
             </div>
             <div style="display:flex;align-items:center;gap:8px">
-              <span style="width:10px;height:10px;border-radius:3px;background:#a48cff;flex-shrink:0"></span>
+              <span style="width:10px;height:10px;border-radius:3px;background:#F59E0B;flex-shrink:0"></span>
               <span style="font-size:12.5px;color:rgba(255,255,255,.6)">MENA</span>
               <span style="font-size:13px;font-weight:700;color:#fff">16%</span>
             </div>
