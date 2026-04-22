@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault × NeoPay — API Partnership Offer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;line-height:1.75;color:#4A4C52;background:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+:root{
+  --blue:#0019FF;--blue-dim:rgba(0,25,255,.08);--neon:#6152F4;
+  --g50:#FAFAFA;--g100:#F5F6F8;--g200:#E8E9ED;--g300:#D1D3D9;
+  --g400:#B0B2B8;--g500:#8B8D94;--g600:#6A6C72;--g700:#4A4C52;--g900:#1E2028;
+  --green:#059669;--red:#DC2626
+}
+
+/* ── NDA MODAL ────────────────────────────────────────────────── */
+#nda-overlay {
+  position:fixed;inset:0;background:rgba(9,11,20,.92);
+  backdrop-filter:blur(12px);z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+}
+#nda-overlay.hidden { display:none; }
+#nda-card {
+  background:#0d1022;border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:48px;max-width:480px;width:100%;
+  text-align:center;
+}
+#nda-card .nda-logo { margin-bottom:28px; }
+#nda-card h2 {
+  font-size:22px;font-weight:800;letter-spacing:-.03em;
+  color:#fff;margin-bottom:14px;
+}
+#nda-card p {
+  font-size:13.5px;color:rgba(255,255,255,.55);line-height:1.7;
+  margin-bottom:28px;
+}
+.nda-check-row {
+  display:flex;align-items:flex-start;gap:12px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:16px;margin-bottom:24px;text-align:left;
+  cursor:pointer;
+}
+.nda-check-row input[type="checkbox"] {
+  width:18px;height:18px;flex-shrink:0;margin-top:1px;
+  accent-color:var(--blue);cursor:pointer;
+}
+.nda-check-row label {
+  font-size:13px;color:rgba(255,255,255,.7);line-height:1.55;cursor:pointer;
+}
+#nda-btn {
+  width:100%;padding:14px 24px;border-radius:12px;border:none;
+  font-size:15px;font-weight:700;cursor:pointer;
+  background:rgba(0,25,255,.3);color:rgba(255,255,255,.35);
+  transition:background .2s,color .2s;
+}
+#nda-btn.enabled {
+  background:var(--blue);color:#fff;
+}
+#nda-btn.enabled:hover { background:#0014cc; }
+
+/* ── Hero keyframes ──────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px) scale(.97); }
+  to   { opacity:1; transform:translateY(0)    scale(1);   }
+}
+@keyframes fadeIn {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+
+/* ── HERO ──────────────────────────────────────────────────────── */
+.hero {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:108px 32px 112px;
+  background:linear-gradient(148deg,#07091a 0%,#0019FF 60%,#6152F4 100%);
+  overflow:hidden;
+}
+.hero-canvas {
+  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;
+}
+.hero-glow {
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 55% at 50% 110%, rgba(97,82,244,.5), transparent);
+  pointer-events:none;z-index:1;
+}
+.hero-fade {
+  position:absolute;bottom:0;left:0;right:0;height:100px;
+  background:linear-gradient(to bottom,transparent,#07091a);
+  pointer-events:none;z-index:2;
+}
+.hero-inner { position:relative;z-index:3;max-width:680px;width:100%; }
+
+.hero-logo  { animation: fadeUp .7s cubic-bezier(.16,1,.3,1) .1s  both; margin-bottom:28px; }
+.hero-badge { animation: fadeUp .7s cubic-bezier(.16,1,.3,1) .2s  both; margin-bottom:20px; }
+.hero h1    { animation: fadeUp .8s cubic-bezier(.16,1,.3,1) .3s  both; margin-bottom:16px; }
+.hero-sub   { animation: fadeUp .7s cubic-bezier(.16,1,.3,1) .5s  both; margin-bottom:32px; }
+.hero-meta  { animation: fadeIn .8s ease                     .65s both; }
+
+.hero-badge-el {
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.9);font-size:10px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:5px 18px;border-radius:100px;
+  backdrop-filter:blur(12px);
+}
+.hero h1 {
+  font-size:clamp(40px,6.5vw,68px);font-weight:900;
+  letter-spacing:-.04em;color:#fff;line-height:1.05;
+}
+.hero-sub {
+  font-size:17px;color:rgba(255,255,255,.58);line-height:1.65;max-width:500px;margin:0 auto 32px;
+}
+.hero-meta { font-size:11.5px;color:rgba(255,255,255,.28);letter-spacing:.04em; }
+
+/* ── WAVE ──────────────────────────────────────────────────────── */
+.wave { display:block;width:100%;margin-bottom:-4px;background:#07091a; }
+
+/* ── LAYOUT ────────────────────────────────────────────────────── */
+.section { max-width:1100px;margin:0 auto;padding:72px 32px; }
+.section-divider { height:1px;background:var(--g200);max-width:1100px;margin:0 auto; }
+.s-label { font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:10px; }
+.section-title { font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-.025em;color:var(--g900);line-height:1.2;margin-bottom:10px; }
+.section-sub { font-size:14px;color:var(--g500);line-height:1.65;margin-bottom:40px; }
+
+/* ── SCROLL REVEAL ─────────────────────────────────────────────── */
+.reveal {
+  opacity:0;
+  transform:translateY(24px) scale(.97);
+  transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+}
+.reveal.visible { opacity:1;transform:translateY(0) scale(1); }
+.rd1{transition-delay:.07s}.rd2{transition-delay:.14s}.rd3{transition-delay:.21s}
+.rd4{transition-delay:.28s}.rd5{transition-delay:.35s}
+
+/* ── TIER CARDS ────────────────────────────────────────────────── */
+.tiers-wrap {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  max-width:900px;
+  margin:0 auto;
+}
+@media(max-width:640px){.tiers-wrap{grid-template-columns:1fr}}
+
+.tc {
+  position:relative;
+  border-radius:22px;
+  border:1.5px solid var(--g200);
+  background:#fff;
+  overflow:hidden;
+  transition:transform .3s ease-out, box-shadow .3s ease-out, border-color .3s;
+}
+.tc:hover { transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,.1); }
+.tc.popular { border-color:rgba(0,25,255,.35);box-shadow:0 0 0 3px rgba(0,25,255,.06),0 8px 30px rgba(0,25,255,.10); }
+.tc.popular:hover { box-shadow:0 0 0 3px rgba(0,25,255,.1),0 24px 60px rgba(0,25,255,.15); }
+
+.tc-glow {
+  position:absolute;inset:0;border-radius:inherit;
+  pointer-events:none;opacity:0;
+  transition:opacity .25s;z-index:0;
+}
+.tc:hover .tc-glow { opacity:1; }
+.tc-body { position:relative;z-index:1; }
+
+.tc-top {
+  padding:28px 28px 24px;
+  border-bottom:1px solid var(--g200);
+}
+.tc-badge {
+  display:inline-block;font-size:9px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;padding:3px 12px;border-radius:100px;margin-bottom:14px;
+}
+.badge-free { background:#F3F4F6;color:#6B7280; }
+.badge-plus { background:var(--blue);color:#fff; }
+
+.tc-name { font-size:34px;font-weight:900;letter-spacing:-.04em;color:var(--g900);line-height:1; }
+.tc-price-row { display:flex;align-items:baseline;gap:6px;margin-top:6px; }
+.tc-price-num { font-size:22px;font-weight:800;letter-spacing:-.03em;color:var(--g700); }
+.tc-price-lbl { font-size:13px;color:var(--g400);font-weight:500; }
+.tc-price-note { font-size:11.5px;color:var(--g400);margin-top:5px; }
+
+.tc-rates { padding:0 28px;margin:20px 0 0;display:flex;flex-direction:column;gap:1px; }
+.tc-row {
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:9px 0;border-bottom:1px solid var(--g100);
+  font-size:13px;
+}
+.tc-row:last-child { border-bottom:none; }
+.tc-row-label { color:var(--g600);display:flex;align-items:center;gap:7px; }
+.tc-row-val { font-size:13.5px;font-weight:700;color:var(--g900);text-align:right; }
+.tc-row-val small { font-weight:400;font-size:11px;color:var(--g400);margin-left:4px; }
+.tc-check { color:var(--green);font-size:14px;font-weight:700; }
+.tc-dash  { color:var(--g300);font-size:18px;font-weight:400;line-height:1; }
+
+.tc-bottom { padding:20px 28px 28px; }
+.tc-highlight {
+  background:var(--g50);border-radius:12px;
+  padding:12px 16px;font-size:12.5px;color:var(--g600);line-height:1.6;
+}
+.tc.popular .tc-highlight { background:rgba(0,25,255,.04); }
+
+.iw { width:22px;height:22px;border-radius:6px;background:var(--g100);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0; }
+.iw svg { width:12px;height:12px;stroke:var(--g500);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round; }
+.tc.popular .iw { background:rgba(0,25,255,.08); }
+.tc.popular .iw svg { stroke:var(--blue); }
+
+/* ── PARTNER ECONOMICS ─────────────────────────────────────────── */
+.econ-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:20px;
+  margin-bottom:24px;
+}
+@media(max-width:800px){.econ-grid{grid-template-columns:1fr}}
+
+.econ-card {
+  background:#fff;
+  border-radius:16px;
+  border:1.5px solid var(--g200);
+  padding:28px 24px 24px;
+  border-left:4px solid var(--blue);
+  transition:transform .3s ease-out,box-shadow .3s ease-out;
+}
+.econ-card:hover { transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,25,255,.09); }
+
+.econ-stat {
+  font-size:28px;font-weight:900;letter-spacing:-.04em;color:var(--blue);
+  line-height:1;margin-bottom:8px;
+}
+.econ-title {
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g500);margin-bottom:10px;
+}
+.econ-desc {
+  font-size:13px;color:var(--g600);line-height:1.6;
+}
+
+.econ-info-row {
+  background:var(--g50);border-radius:12px;
+  border:1px solid var(--g200);
+  padding:16px 20px;
+  font-size:13px;color:var(--g600);line-height:1.65;
+}
+.econ-info-row strong { color:var(--g900); }
+
+/* ── B2B TARIFF TABLE ──────────────────────────────────────────── */
+.b2b-tariff {
+  background:#fff;
+  border-radius:20px;
+  border:1.5px solid var(--g200);
+  overflow:hidden;
+  box-shadow:0 4px 32px rgba(0,25,255,.06);
+  max-width:860px;
+  margin:0 auto;
+}
+.tariff-group { border-bottom:1px solid var(--g100); }
+.tariff-group:last-child { border-bottom:none; }
+.tariff-group-header {
+  display:flex;align-items:center;gap:10px;
+  padding:16px 28px;
+  background:var(--g50);
+  border-bottom:1px solid var(--g100);
+}
+.tariff-group-icon {
+  width:32px;height:32px;border-radius:8px;
+  background:rgba(0,25,255,.08);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.tariff-group-icon svg { width:15px;height:15px;stroke:var(--blue);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round; }
+.tariff-group-name {
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g500);
+}
+.tariff-row {
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 28px;
+  border-bottom:1px solid var(--g100);
+  font-size:13.5px;
+  gap:16px;
+}
+.tariff-row:last-child { border-bottom:none; }
+.tariff-row-label { color:var(--g700);font-weight:500; }
+.tariff-row-note { font-size:11.5px;color:var(--g400);margin-top:2px; }
+.tariff-row-sub { padding-top:0;padding-bottom:6px; }
+.tariff-row-sub .tariff-row-label { font-size:12px;color:var(--g400);font-weight:400;padding-left:16px; }
+.tariff-row-sub .tariff-row-val { font-size:12px;color:var(--g400);font-weight:400; }
+.tariff-row-val { font-weight:700;color:var(--g900);text-align:right;white-space:nowrap; }
+.tariff-row-val.highlight { color:var(--blue); }
+
+/* ── COST CALCULATOR ───────────────────────────────────────────── */
+.calc-card {
+  background:#fff;border-radius:20px;
+  border:1.5px solid var(--g200);
+  overflow:hidden;
+  box-shadow:0 4px 32px rgba(0,25,255,.06);
+}
+.calc-inner {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+@media(max-width:720px){.calc-inner{grid-template-columns:1fr}}
+
+.calc-left {
+  padding:36px 32px;
+  border-right:1px solid var(--g200);
+}
+@media(max-width:720px){.calc-left{border-right:none;border-bottom:1px solid var(--g200)}}
+
+.calc-left h3 {
+  font-size:15px;font-weight:700;color:var(--g900);margin-bottom:6px;
+}
+.calc-left p {
+  font-size:13px;color:var(--g500);line-height:1.6;margin-bottom:28px;
+}
+
+.slider-label {
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g500);margin-bottom:8px;display:block;
+}
+.slider-value {
+  font-size:32px;font-weight:900;letter-spacing:-.04em;color:var(--blue);
+  margin-bottom:16px;line-height:1;
+}
+input[type="range"] {
+  width:100%;-webkit-appearance:none;appearance:none;
+  height:4px;border-radius:2px;background:var(--g200);outline:none;
+  cursor:pointer;margin-bottom:10px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance:none;appearance:none;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--blue);cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,25,255,.3);
+  border:3px solid #fff;
+}
+input[type="range"]::-moz-range-thumb {
+  width:20px;height:20px;border-radius:50%;
+  background:var(--blue);cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,25,255,.3);
+  border:3px solid #fff;
+}
+.slider-range-labels {
+  display:flex;justify-content:space-between;
+  font-size:11px;color:var(--g400);margin-bottom:28px;
+}
+
+.inhouse-box {
+  background:var(--g50);border-radius:12px;
+  border:1px solid var(--g200);
+  padding:16px;margin-top:4px;
+}
+.inhouse-box .inhouse-title {
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--g400);margin-bottom:8px;
+}
+.inhouse-row {
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;color:var(--g600);
+  padding:3px 0;
+}
+.inhouse-row::before {
+  content:'✕';font-size:10px;color:var(--red);font-weight:700;flex-shrink:0;
+}
+
+.calc-right {
+  padding:36px 32px;
+}
+.calc-right h3 {
+  font-size:15px;font-weight:700;color:var(--g900);margin-bottom:24px;
+}
+.calc-metric {
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:14px 0;border-bottom:1px solid var(--g100);
+}
+.calc-metric:last-of-type { border-bottom:none;margin-bottom:0; }
+.calc-metric-label { font-size:13px;color:var(--g600); }
+.calc-metric-value { font-size:18px;font-weight:800;letter-spacing:-.03em;color:var(--g900); }
+.calc-metric.total .calc-metric-label { font-weight:700;color:var(--g900); }
+.calc-metric.total .calc-metric-value { font-size:26px;color:var(--blue); }
+
+.calc-per-user-box {
+  margin-top:20px;background:rgba(0,25,255,.04);
+  border:1px solid rgba(0,25,255,.12);border-radius:12px;
+  padding:16px;display:flex;justify-content:space-between;align-items:center;
+}
+.calc-per-user-box span { font-size:12px;color:rgba(0,25,255,.7);font-weight:600; }
+.calc-per-user-box strong { font-size:20px;font-weight:900;letter-spacing:-.03em;color:var(--blue); }
+
+/* ── FULL COMPARISON TABLE ─────────────────────────────────────── */
+.cmp-wrap { overflow-x:auto;border-radius:14px;border:1px solid var(--g200); }
+table { width:100%;border-collapse:collapse;font-size:13.5px; }
+thead th {
+  background:var(--g900);color:#fff;font-weight:600;font-size:12px;
+  letter-spacing:.03em;padding:14px 20px;white-space:nowrap;text-align:left;
+}
+thead th:first-child{border-top-left-radius:13px}
+thead th:last-child{border-top-right-radius:13px}
+thead th:not(:first-child){text-align:right}
+thead th.th-plus { background:var(--blue); }
+tbody tr.cat td {
+  background:var(--g50);font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--g500);padding:10px 20px;
+  border-bottom:1px solid var(--g200);
+}
+tbody td {
+  padding:11px 20px;border-bottom:1px solid var(--g200);
+  vertical-align:top;color:var(--g700);
+}
+tbody tr:last-child td { border-bottom:none; }
+tbody td:first-child { font-size:13px;color:var(--g600); }
+tbody td:not(:first-child) { text-align:right; }
+td .main { font-weight:700;color:var(--g900); }
+td .sub  { display:block;font-size:11px;color:var(--g400);margin-top:2px; }
+td .free-yes { color:var(--green);font-weight:700; }
+td .plus-yes { color:var(--blue);font-weight:700; }
+td .no { color:var(--g300); }
+td .plus-better { color:var(--blue); }
+
+/* ── HOW IT WORKS ──────────────────────────────────────────────── */
+.hiw-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:820px;margin:0 auto; }
+@media(max-width:640px){.hiw-grid{grid-template-columns:1fr}}
+.hiw-card { background:var(--g50);border-radius:14px;padding:24px; }
+.hiw-label { font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px; }
+.hiw-card p { font-size:13.5px;color:var(--g600);line-height:1.65; }
+
+/* ── FOOTER ────────────────────────────────────────────────────── */
+.page-footer {
+  text-align:center;padding:48px 32px 40px;
+  border-top:1px solid var(--g200);margin-top:0;
+}
+.page-footer svg { margin-bottom:14px;opacity:.8; }
+.page-footer p { font-size:12.5px;color:var(--g400);margin-top:5px; }
+</style>
+</head>
+<body>
+<script>
+(function(){
+  var expires = new Date('2026-05-06T23:59:59Z');
+  if (new Date() > expires) {
+    document.documentElement.innerHTML =
+      '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">' +
+      '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">' +
+      '<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;' +
+      'background:#f8f9fa;font-family:Inter,sans-serif;color:#1E2028;text-align:center;padding:24px}' +
+      '.box{max-width:420px}.icon{font-size:48px;margin-bottom:16px}h1{font-size:24px;font-weight:800;' +
+      'letter-spacing:-.02em;margin-bottom:12px}p{font-size:15px;color:#6A6C72;line-height:1.7}' +
+      'a{color:#0019FF;font-weight:600}</style></head>' +
+      '<body><div class="box"><div class="icon">&#128274;</div>' +
+      '<h1>This offer has expired</h1>' +
+      '<p>The partnership proposal is no longer available. If you\'d like to discuss a new offer, ' +
+      'please reach out to <a href="mailto:juliana.gubacheva@vault.ist">juliana.gubacheva@vault.ist</a></p></div></body>';
+  }
+})();
+</script>
+
+<!-- ═══════════════ NDA MODAL ════════════════════════════════════ -->
+<div id="nda-overlay">
+  <div id="nda-card">
+    <div class="nda-logo">
+      <svg width="444" height="103" viewBox="0 0 444 103" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:36px;width:auto;display:block;margin:0 auto">
+        <path d="M22.1745 10.5772L5.39993 27.2819C-1.78091 34.4328-1.80271 46.0201 5.35119 53.1977L35.7548 83.7024C60.1559 108.184 99.8897 108.259 124.383 83.8676L153.864 54.5093C161.064 47.3394 161.064 35.7147 153.864 28.5448L135.299 10.0573C127.842 2.6313 115.752 2.6313 108.295 10.0573L78.0101 40.2156L48.2477 10.5772C41.0478 3.40727 29.3744 3.40727 22.1745 10.5772Z" fill="#fff"/>
+        <path d="M152.936 50.6231C120.354 67.6287 89.8647 51.4447 78.011 40.2162L109.371 8.75349C116.378 1.72395 127.813 1.7859 134.742 8.89094L155.122 29.7878C161.289 36.1106 160.775 46.5314 152.936 50.6231Z" fill="rgba(255,255,255,.4)"/>
+        <path d="M236.028 82.356C235.51 83.7255 234.199 84.6315 232.734 84.6315H219.745C218.314 84.6315 217.026 83.7658 216.485 82.4412L195.642 31.3873C194.697 29.0712 196.401 26.5353 198.902 26.5353H210.394C211.867 26.5353 213.184 27.4525 213.696 28.8341L224.496 58.0125C225.071 59.5661 227.279 59.5377 227.814 57.9698L237.725 28.9195C238.212 27.4937 239.551 26.5353 241.058 26.5353H252.044C254.507 26.5353 256.209 28.9987 255.338 31.3021L236.028 82.356Z" fill="#fff"/>
+        <path d="M256.476 68.6171C256.476 66.0454 256.942 63.7075 257.755 61.7203C258.685 59.7331 259.964 57.9797 261.476 56.577C262.987 55.0574 264.847 53.8885 266.824 53.0702C268.917 52.135 271.126 51.4337 273.567 51.083L287.17 48.9789C288.681 48.7451 289.844 48.2776 290.425 47.5762C291.006 46.8748 291.355 46.0566 291.355 45.0045C291.355 43.2511 290.658 41.8484 289.146 40.5626C287.751 39.2767 285.658 38.6923 282.868 38.6923C279.729 38.6923 277.404 39.5105 275.66 41.2639C275.05 41.9205 274.539 42.6098 274.131 43.3319C273.071 45.2084 271.085 46.8346 268.974 46.4005L260.613 44.681C258.904 44.3296 257.687 42.7642 258.152 41.0827C258.476 39.9083 258.938 38.7158 259.499 37.5233C260.546 35.3024 262.173 33.1983 264.15 31.328C266.243 29.4577 268.8 27.9381 271.939 26.6522C275.078 25.3664 278.683 24.7819 282.984 24.7819C287.635 24.7819 291.588 25.3664 294.843 26.5353C298.098 27.8212 300.772 29.4577 302.749 31.4449C304.842 33.549 306.353 36.0037 307.167 38.6923C308.097 41.3808 308.562 44.3032 308.562 47.2255V75.6307C308.562 77.8517 308.678 79.8388 308.794 81.5922C308.994 83.0937 307.698 84.6315 306.183 84.6315H295.354C294.115 84.6315 293.119 83.8759 292.983 82.6443C292.867 81.5922 292.75 80.0726 292.75 78.0854C291.239 80.5402 289.03 82.5274 286.356 84.047C283.682 85.5666 280.31 86.268 276.474 86.268C273.334 86.268 270.428 85.8004 267.986 84.8653C265.545 83.8132 263.452 82.5274 261.708 80.8909C259.964 79.2544 258.685 77.3841 257.872 75.28C256.942 73.1759 256.476 70.9549 256.476 68.6171ZM280.775 73.4097C282.054 73.4097 283.333 73.2928 284.612 72.9421C285.891 72.5914 287.053 71.8901 287.984 71.0718C289.03 70.1367 289.844 68.9677 290.425 67.4481C291.006 65.9285 291.355 64.0582 291.355 61.8372V59.2656L280.426 61.019C278.566 61.3696 277.055 61.9541 275.776 63.0062C274.497 63.9413 273.916 65.4609 273.916 67.4481C273.916 68.9677 274.381 70.3704 275.427 71.5394C276.474 72.8252 278.334 73.4097 280.775 73.4097Z" fill="#fff"/>
+        <path d="M358.185 84.6315C356.541 84.6315 355.156 83.4634 355.008 81.826C354.892 80.5402 354.892 79.605 354.892 78.7868C353.381 81.2416 351.172 83.1119 348.265 84.1639C345.359 85.3328 342.336 85.9173 339.429 85.9173C335.941 85.9173 332.802 85.3328 330.128 84.047C327.338 82.8781 325.013 81.2416 323.153 79.1375C321.292 77.1503 319.897 74.6955 318.967 72.007C317.921 69.3184 317.456 66.3961 317.456 63.2399V30.0565C317.456 28.1118 319.032 26.5353 320.977 26.5353H331.606C333.551 26.5353 335.128 28.1118 335.128 30.0565V59.4993C335.128 62.3048 335.941 64.6427 337.453 66.6299C338.964 68.6171 341.289 69.5522 344.429 69.5522C347.335 69.5522 349.777 68.6171 351.521 66.7468C353.264 64.9934 354.078 62.5386 354.078 59.6162V30.0565C354.078 28.1118 355.655 26.5353 357.599 26.5353H368.229C370.174 26.5353 371.75 28.1118 371.75 30.0565V74.2279C371.75 76.9165 371.866 79.1375 371.983 81.0078C372.091 82.8561 370.54 84.6315 368.688 84.6315H358.185Z" fill="#fff"/>
+        <path d="M385.316 84.6315C383.371 84.6315 381.795 83.055 381.795 81.1104V3.52161C381.795 1.57695 383.371 0.000488281 385.316 0.000488281H395.945C397.89 0.000488281 399.467 1.57695 399.467 3.52161V81.1104C399.467 83.055 397.89 84.6315 395.945 84.6315H385.316Z" fill="#fff"/>
+        <path d="M432.002 26.5353H439.759C441.703 26.5353 443.28 28.1118 443.28 30.0565V38.5611C443.28 40.5057 441.703 42.0822 439.759 42.0822H432.002V63.8244C432.002 66.2792 432.584 67.7988 433.746 68.6171C434.909 69.4353 436.42 69.9029 438.397 69.9029C439.327 69.9029 440.257 69.786 441.071 69.6691C442.099 69.5215 443.047 70.2878 443.047 71.3261V81.5135C443.047 83.027 442.091 84.4028 440.648 84.8598C440.522 84.8996 440.392 84.9404 440.257 84.9822C438.746 85.4497 436.653 85.6835 433.863 85.6835C427.817 85.6835 423.05 84.047 419.679 80.6571C416.307 77.3841 414.563 72.8252 414.563 66.9805V42.0822H407.853C405.909 42.0822 404.332 40.5057 404.332 38.5611V29.4419C404.332 27.8367 405.633 26.5353 407.239 26.5353C410.261 26.5353 412.47 25.6002 413.982 23.8468C415.493 22.0934 416.191 19.7555 416.191 17.067V13.1069C416.191 11.1622 417.767 9.58577 419.712 9.58577H428.481C430.426 9.58577 432.002 11.1622 432.002 13.1069V26.5353Z" fill="#fff"/>
+      </svg>
+    </div>
+    <h2>Confidential — Prepared for NeoPay</h2>
+    <p>This document contains a commercial partnership offer prepared exclusively for RVFINGROUP SP Z O O. By continuing, you confirm you are an authorized representative and agree not to disclose these terms to third parties.</p>
+    <label class="nda-check-row">
+      <input type="checkbox" id="nda-agree">
+      <span>I am an authorized representative of NeoPay and agree to maintain confidentiality</span>
+    </label>
+    <button id="nda-btn" disabled>View Offer</button>
+  </div>
+</div>
+
+<!-- hidden SVG icon sprite -->
+<svg width="0" height="0" style="position:absolute" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <symbol id="ic-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></symbol>
+  <symbol id="ic-crypto" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M9.5 8h3.5c1.1 0 2 .9 2 2s-.9 2-2 2H9.5V8zm0 4h4c1.1 0 2 .9 2 2s-.9 2-2 2H9.5v-4z"/><line x1="11" y1="6" x2="11" y2="8"/><line x1="13" y1="6" x2="13" y2="8"/><line x1="11" y1="16" x2="11" y2="18"/><line x1="13" y1="16" x2="13" y2="18"/></symbol>
+  <symbol id="ic-sepa" viewBox="0 0 24 24"><path d="M7 16l-4-4 4-4"/><path d="M3 12h14"/><path d="M17 8l4 4-4 4"/><path d="M21 12H7"/></symbol>
+  <symbol id="ic-atm" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="ic-fx" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15"/></symbol>
+  <symbol id="ic-topup" viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></symbol>
+  <symbol id="ic-cashback" viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></symbol>
+  <symbol id="ic-sub" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="ic-api" viewBox="0 0 24 24"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/><path d="M14.5 4l-5 16"/></symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+</defs>
+</svg>
+
+<!-- ═══════════════ HERO ══════════════════════════════════════════ -->
+<section class="hero">
+  <canvas class="hero-canvas" id="pCanvas"></canvas>
+  <div class="hero-glow"></div>
+
+  <div class="hero-inner">
+    <!-- Logo -->
+    <div class="hero-logo">
+      <svg width="444" height="103" viewBox="0 0 444 103" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:40px;width:auto">
+        <path d="M22.1745 10.5772L5.39993 27.2819C-1.78091 34.4328-1.80271 46.0201 5.35119 53.1977L35.7548 83.7024C60.1559 108.184 99.8897 108.259 124.383 83.8676L153.864 54.5093C161.064 47.3394 161.064 35.7147 153.864 28.5448L135.299 10.0573C127.842 2.6313 115.752 2.6313 108.295 10.0573L78.0101 40.2156L48.2477 10.5772C41.0478 3.40727 29.3744 3.40727 22.1745 10.5772Z" fill="#fff"/>
+        <path d="M152.936 50.6231C120.354 67.6287 89.8647 51.4447 78.011 40.2162L109.371 8.75349C116.378 1.72395 127.813 1.7859 134.742 8.89094L155.122 29.7878C161.289 36.1106 160.775 46.5314 152.936 50.6231Z" fill="rgba(255,255,255,.4)"/>
+        <path d="M236.028 82.356C235.51 83.7255 234.199 84.6315 232.734 84.6315H219.745C218.314 84.6315 217.026 83.7658 216.485 82.4412L195.642 31.3873C194.697 29.0712 196.401 26.5353 198.902 26.5353H210.394C211.867 26.5353 213.184 27.4525 213.696 28.8341L224.496 58.0125C225.071 59.5661 227.279 59.5377 227.814 57.9698L237.725 28.9195C238.212 27.4937 239.551 26.5353 241.058 26.5353H252.044C254.507 26.5353 256.209 28.9987 255.338 31.3021L236.028 82.356Z" fill="#fff"/>
+        <path d="M256.476 68.6171C256.476 66.0454 256.942 63.7075 257.755 61.7203C258.685 59.7331 259.964 57.9797 261.476 56.577C262.987 55.0574 264.847 53.8885 266.824 53.0702C268.917 52.135 271.126 51.4337 273.567 51.083L287.17 48.9789C288.681 48.7451 289.844 48.2776 290.425 47.5762C291.006 46.8748 291.355 46.0566 291.355 45.0045C291.355 43.2511 290.658 41.8484 289.146 40.5626C287.751 39.2767 285.658 38.6923 282.868 38.6923C279.729 38.6923 277.404 39.5105 275.66 41.2639C275.05 41.9205 274.539 42.6098 274.131 43.3319C273.071 45.2084 271.085 46.8346 268.974 46.4005L260.613 44.681C258.904 44.3296 257.687 42.7642 258.152 41.0827C258.476 39.9083 258.938 38.7158 259.499 37.5233C260.546 35.3024 262.173 33.1983 264.15 31.328C266.243 29.4577 268.8 27.9381 271.939 26.6522C275.078 25.3664 278.683 24.7819 282.984 24.7819C287.635 24.7819 291.588 25.3664 294.843 26.5353C298.098 27.8212 300.772 29.4577 302.749 31.4449C304.842 33.549 306.353 36.0037 307.167 38.6923C308.097 41.3808 308.562 44.3032 308.562 47.2255V75.6307C308.562 77.8517 308.678 79.8388 308.794 81.5922C308.994 83.0937 307.698 84.6315 306.183 84.6315H295.354C294.115 84.6315 293.119 83.8759 292.983 82.6443C292.867 81.5922 292.75 80.0726 292.75 78.0854C291.239 80.5402 289.03 82.5274 286.356 84.047C283.682 85.5666 280.31 86.268 276.474 86.268C273.334 86.268 270.428 85.8004 267.986 84.8653C265.545 83.8132 263.452 82.5274 261.708 80.8909C259.964 79.2544 258.685 77.3841 257.872 75.28C256.942 73.1759 256.476 70.9549 256.476 68.6171ZM280.775 73.4097C282.054 73.4097 283.333 73.2928 284.612 72.9421C285.891 72.5914 287.053 71.8901 287.984 71.0718C289.03 70.1367 289.844 68.9677 290.425 67.4481C291.006 65.9285 291.355 64.0582 291.355 61.8372V59.2656L280.426 61.019C278.566 61.3696 277.055 61.9541 275.776 63.0062C274.497 63.9413 273.916 65.4609 273.916 67.4481C273.916 68.9677 274.381 70.3704 275.427 71.5394C276.474 72.8252 278.334 73.4097 280.775 73.4097Z" fill="#fff"/>
+        <path d="M358.185 84.6315C356.541 84.6315 355.156 83.4634 355.008 81.826C354.892 80.5402 354.892 79.605 354.892 78.7868C353.381 81.2416 351.172 83.1119 348.265 84.1639C345.359 85.3328 342.336 85.9173 339.429 85.9173C335.941 85.9173 332.802 85.3328 330.128 84.047C327.338 82.8781 325.013 81.2416 323.153 79.1375C321.292 77.1503 319.897 74.6955 318.967 72.007C317.921 69.3184 317.456 66.3961 317.456 63.2399V30.0565C317.456 28.1118 319.032 26.5353 320.977 26.5353H331.606C333.551 26.5353 335.128 28.1118 335.128 30.0565V59.4993C335.128 62.3048 335.941 64.6427 337.453 66.6299C338.964 68.6171 341.289 69.5522 344.429 69.5522C347.335 69.5522 349.777 68.6171 351.521 66.7468C353.264 64.9934 354.078 62.5386 354.078 59.6162V30.0565C354.078 28.1118 355.655 26.5353 357.599 26.5353H368.229C370.174 26.5353 371.75 28.1118 371.75 30.0565V74.2279C371.75 76.9165 371.866 79.1375 371.983 81.0078C372.091 82.8561 370.54 84.6315 368.688 84.6315H358.185Z" fill="#fff"/>
+        <path d="M385.316 84.6315C383.371 84.6315 381.795 83.055 381.795 81.1104V3.52161C381.795 1.57695 383.371 0.000488281 385.316 0.000488281H395.945C397.89 0.000488281 399.467 1.57695 399.467 3.52161V81.1104C399.467 83.055 397.89 84.6315 395.945 84.6315H385.316Z" fill="#fff"/>
+        <path d="M432.002 26.5353H439.759C441.703 26.5353 443.28 28.1118 443.28 30.0565V38.5611C443.28 40.5057 441.703 42.0822 439.759 42.0822H432.002V63.8244C432.002 66.2792 432.584 67.7988 433.746 68.6171C434.909 69.4353 436.42 69.9029 438.397 69.9029C439.327 69.9029 440.257 69.786 441.071 69.6691C442.099 69.5215 443.047 70.2878 443.047 71.3261V81.5135C443.047 83.027 442.091 84.4028 440.648 84.8598C440.522 84.8996 440.392 84.9404 440.257 84.9822C438.746 85.4497 436.653 85.6835 433.863 85.6835C427.817 85.6835 423.05 84.047 419.679 80.6571C416.307 77.3841 414.563 72.8252 414.563 66.9805V42.0822H407.853C405.909 42.0822 404.332 40.5057 404.332 38.5611V29.4419C404.332 27.8367 405.633 26.5353 407.239 26.5353C410.261 26.5353 412.47 25.6002 413.982 23.8468C415.493 22.0934 416.191 19.7555 416.191 17.067V13.1069C416.191 11.1622 417.767 9.58577 419.712 9.58577H428.481C430.426 9.58577 432.002 11.1622 432.002 13.1069V26.5353Z" fill="#fff"/>
+      </svg>
+    </div>
+
+    <!-- Badge -->
+    <div class="hero-badge">
+      <span class="hero-badge-el">API Partnership Offer</span>
+    </div>
+
+    <!-- Client wordmark -->
+    <div class="hero-client" style="font-size:clamp(28px,4.5vw,42px);font-weight:800;letter-spacing:-.03em;color:#fff;margin-bottom:10px;text-transform:lowercase;">neo<span style="color:#6152F4">pay</span></div>
+    <div class="hero-subclient" style="font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:24px;">partnership offer · april 2026</div>
+
+    <!-- H1 -->
+    <h1>Your platform,<br>our financial rails.</h1>
+
+    <!-- Subtitle -->
+    <p class="hero-sub">
+      Add a full financial product to your offering &mdash; cards, crypto, banking &mdash; without a license or infrastructure investment.
+    </p>
+
+    <!-- Meta -->
+    <p class="hero-meta">Prepared for NeoPay &middot; April 2026 &middot; Valid until 06 May 2026</p>
+  </div>
+
+  <div class="hero-fade"></div>
+</section>
+
+<!-- Wave divider -->
+<svg class="wave" viewBox="0 0 1440 64" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 64 L0 36 Q180 4 360 28 Q540 52 720 32 Q900 12 1080 32 Q1260 52 1440 28 L1440 64 Z" fill="#fff"/>
+</svg>
+
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ PARTNER CARD ═══════════════════════════════════ -->
+<div class="section reveal" style="padding-top:48px;padding-bottom:48px">
+  <div style="text-align:center;max-width:680px;margin:0 auto 40px">
+    <div class="s-label">Offer Details</div>
+    <h2 class="section-title">Proposal overview</h2>
+    <p class="section-sub">Key parameters of this partnership offer based on our recent discussion.</p>
+  </div>
+  <div style="max-width:760px;margin:0 auto">
+    <div class="reveal" style="background:linear-gradient(160deg,#07091a 0%,#0a1030 40%,#0019FF 100%);border-radius:20px;overflow:hidden;position:relative">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 70% at 100% 0%,rgba(97,82,244,.18),transparent);pointer-events:none"></div>
+      <div style="position:relative;z-index:1">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+          <div style="padding:32px 36px;border-right:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4)">Partner</span>
+            </div>
+            <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:12px;text-transform:lowercase">neo<span style="color:#8b7cff">pay</span></div>
+            <p style="font-size:14px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:14px;letter-spacing:-.01em">RVFINGROUP SP Z O O.</p>
+            <div style="font-size:12.5px;color:rgba(255,255,255,.4);line-height:1.8">
+              <div><span style="color:rgba(255,255,255,.6)">Jurisdiction:</span> Poland · VASP</div>
+              <div><span style="color:rgba(255,255,255,.6)">Industry:</span> Crypto / Virtual Assets</div>
+              <div><span style="color:rgba(255,255,255,.6)">Contact:</span> Dmytro Dibrova</div>
+            </div>
+          </div>
+          <div style="padding:32px 36px;border-bottom:1px solid rgba(255,255,255,.07)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
+              <span style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4)">Scope</span>
+            </div>
+            <p style="font-size:18px;font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:14px;line-height:1.2">API integration<br>into your product</p>
+            <div style="font-size:12.5px;color:rgba(255,255,255,.4);line-height:1.8">
+              <div><span style="color:rgba(255,255,255,.6)">Cards:</span> Custom branded · Virtual only</div>
+              <div><span style="color:rgba(255,255,255,.6)">Support:</span> 1st line — client · 2nd line — Vault</div>
+              <div><span style="color:rgba(255,255,255,.6)">Target launch:</span> April 2026</div>
+            </div>
+          </div>
+        </div>
+        <!-- Target Regions row -->
+        <div style="padding:28px 36px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4)">Target Regions</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+            <div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,.6);margin-bottom:6px">EEA</div>
+              <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-bottom:4px"><div style="width:42%;height:100%;background:linear-gradient(90deg,#6152F4,#0019FF)"></div></div>
+              <div style="font-size:13px;font-weight:700;color:#fff">42%</div>
+            </div>
+            <div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,.6);margin-bottom:6px">APAC</div>
+              <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-bottom:4px"><div style="width:42%;height:100%;background:linear-gradient(90deg,#6152F4,#0019FF)"></div></div>
+              <div style="font-size:13px;font-weight:700;color:#fff">42%</div>
+            </div>
+            <div>
+              <div style="font-size:12.5px;color:rgba(255,255,255,.6);margin-bottom:6px">MENA</div>
+              <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-bottom:4px"><div style="width:16%;height:100%;background:linear-gradient(90deg,#6152F4,#0019FF)"></div></div>
+              <div style="font-size:13px;font-weight:700;color:#fff">16%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ SECTION 3 — PARTNER ECONOMICS ════════════════ -->
+<div class="section reveal" style="padding-top:64px;padding-bottom:64px">
+  <div style="text-align:center;max-width:640px;margin:0 auto 48px">
+    <div class="s-label">Partnership Terms</div>
+    <h2 class="section-title">Partnership Terms</h2>
+    <p class="section-sub">Fixed platform costs — onboarding, monthly access, and revenue-sharing parameters. Predictable from day one.</p>
+  </div>
+
+  <div class="b2b-tariff reveal">
+
+    <!-- Onboarding -->
+    <div class="tariff-group">
+      <div class="tariff-group-header">
+        <div class="tariff-group-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="tariff-group-name">Onboarding</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Setup Fee</div>
+          <div class="tariff-row-note">One-time — covers integration, branding, and legal</div>
+        </div>
+        <div class="tariff-row-val highlight">$25,000</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">KYB Fee</div>
+          <div class="tariff-row-note">Know Your Business verification</div>
+        </div>
+        <div class="tariff-row-val">$500</div>
+      </div>
+    </div>
+
+    <!-- Monthly Platform Fee -->
+    <div class="tariff-group">
+      <div class="tariff-group-header">
+        <div class="tariff-group-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="tariff-group-name">Monthly Platform Fee</div>
+      </div>
+      <div class="tariff-row">
+        <div><div class="tariff-row-label">Months 1–3 &nbsp;<span style="font-size:11px;color:var(--g400);font-weight:400">Launch</span></div></div>
+        <div class="tariff-row-val">$3,000 / mo</div>
+      </div>
+      <div class="tariff-row">
+        <div><div class="tariff-row-label">Months 4–6 &nbsp;<span style="font-size:11px;color:var(--g400);font-weight:400">Growth</span></div></div>
+        <div class="tariff-row-val">$5,000 / mo</div>
+      </div>
+      <div class="tariff-row">
+        <div><div class="tariff-row-label">Months 7–12 &nbsp;<span style="font-size:11px;color:var(--g400);font-weight:400">Scaling</span></div></div>
+        <div class="tariff-row-val">$7,000 / mo</div>
+      </div>
+      <div class="tariff-row">
+        <div><div class="tariff-row-label">Month 13+ &nbsp;<span style="font-size:11px;color:var(--g400);font-weight:400">Mature</span></div></div>
+        <div class="tariff-row-val">$8,000 / mo</div>
+      </div>
+    </div>
+
+    <!-- Revenue Split -->
+    <div class="tariff-group">
+      <div class="tariff-group-header">
+        <div class="tariff-group-icon">
+          <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        </div>
+        <div class="tariff-group-name">Revenue Split</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Exchange Loading</div>
+          <div class="tariff-row-note">Vault margin on crypto exchange transactions</div>
+        </div>
+        <div class="tariff-row-val">1.5%</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Vault Interchange Share</div>
+          <div class="tariff-row-note">Vault's share of card interchange income</div>
+        </div>
+        <div class="tariff-row-val">40%</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ SECTION — FEES VAULT CHARGES THE CLIENT ═════ -->
+<div class="section reveal" style="padding-top:64px;padding-bottom:64px">
+  <div style="text-align:center;max-width:640px;margin:0 auto 48px">
+    <div class="s-label">Pay-as-you-grow</div>
+    <h2 class="section-title">Pay-as-you-grow</h2>
+    <p class="section-sub">Variable fees that scale with your user base — per-user subscriptions, card issuance, transactions, and onboarding. You only pay when your users are active.</p>
+  </div>
+
+  <div class="b2b-tariff reveal">
+
+    <!-- Monthly Subscriptions -->
+    <div class="tariff-group">
+      <div class="tariff-group-header">
+        <div class="tariff-group-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="tariff-group-name">Monthly Subscriptions</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Monthly Card Fee</div>
+          <div class="tariff-row-note">Per active card user</div>
+        </div>
+        <div class="tariff-row-val">$2.00<span class="tariff-row-note">/user/mo</span></div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Monthly Crypto Fee</div>
+          <div class="tariff-row-note">Per active crypto user</div>
+        </div>
+        <div class="tariff-row-val">$1.00<span class="tariff-row-note">/user/mo</span></div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Monthly Banking Fee</div>
+          <div class="tariff-row-note">Per active banking user</div>
+        </div>
+        <div class="tariff-row-val">$3.00<span class="tariff-row-note">/user/mo</span></div>
+      </div>
+    </div>
+
+    <!-- User Onboarding -->
+    <div class="tariff-group">
+      <div class="tariff-group-header">
+        <div class="tariff-group-icon">
+          <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        </div>
+        <div class="tariff-group-name">User Onboarding</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Account Opening</div>
+          <div class="tariff-row-note">Per new end-user onboarded</div>
+        </div>
+        <div class="tariff-row-val">$8.00</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">KYC / IDV</div>
+          <div class="tariff-row-note">Identity verification, per user</div>
+        </div>
+        <div class="tariff-row-val">$5.00</div>
+      </div>
+    </div>
+
+    <!-- Card Issuance -->
+    <div class="tariff-group">
+      <div class="tariff-group-header">
+        <div class="tariff-group-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>
+        </div>
+        <div class="tariff-group-name">Card Issuance</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Virtual card issuance</div>
+        </div>
+        <div class="tariff-row-val">$1.20 / card</div>
+      </div>
+      <div class="tariff-row tariff-row-sub">
+        <div class="tariff-row-label">&#8627; max virtual cards</div>
+        <div class="tariff-row-val">5 per user</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Physical Visa card — issuance</div>
+        </div>
+        <div class="tariff-row-val">$15.00</div>
+      </div>
+      <div class="tariff-row tariff-row-sub">
+        <div class="tariff-row-label">&#8627; max physical cards</div>
+        <div class="tariff-row-val">1 per user</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Metal card — issuance</div>
+        </div>
+        <div class="tariff-row-val">$100.00</div>
+      </div>
+      <div class="tariff-row tariff-row-sub">
+        <div class="tariff-row-label">&#8627; max metal cards</div>
+        <div class="tariff-row-val">1 per user</div>
+      </div>
+    </div>
+
+    <!-- Card Operations -->
+    <div class="tariff-group">
+      <div class="tariff-group-header">
+        <div class="tariff-group-icon">
+          <svg viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+        </div>
+        <div class="tariff-group-name">Card Operations</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Card Top-up</div>
+          <div class="tariff-row-note">Fee on card balance loading</div>
+        </div>
+        <div class="tariff-row-val">1.0%</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Card FX</div>
+          <div class="tariff-row-note">Cross-border / FX transactions</div>
+        </div>
+        <div class="tariff-row-val">1.6%</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">ATM Withdrawal</div>
+          <div class="tariff-row-note">Cash withdrawal fee</div>
+        </div>
+        <div class="tariff-row-val">2.0%</div>
+      </div>
+    </div>
+
+    <!-- Banking -->
+    <div class="tariff-group">
+      <div class="tariff-group-header">
+        <div class="tariff-group-icon">
+          <svg viewBox="0 0 24 24"><path d="M7 16l-4-4 4-4"/><path d="M3 12h14"/><path d="M17 8l4 4-4 4"/><path d="M21 12H7"/></svg>
+        </div>
+        <div class="tariff-group-name">Banking</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">SEPA In</div>
+          <div class="tariff-row-note">Inbound SEPA transfer</div>
+        </div>
+        <div class="tariff-row-val">$1.00</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">SEPA Out</div>
+          <div class="tariff-row-note">Outbound SEPA transfer</div>
+        </div>
+        <div class="tariff-row-val">$1.00</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">SWIFT (flat)</div>
+          <div class="tariff-row-note">International wire — fixed component</div>
+        </div>
+        <div class="tariff-row-val">$40.00</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">SWIFT (%)</div>
+          <div class="tariff-row-note">International wire — variable component</div>
+        </div>
+        <div class="tariff-row-val">0.3%</div>
+      </div>
+    </div>
+
+    <!-- Other Fees -->
+    <div class="tariff-group">
+      <div class="tariff-group-header">
+        <div class="tariff-group-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <div class="tariff-group-name">Other Fees</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Chargeback / Dispute</div>
+          <div class="tariff-row-note">Per incident</div>
+        </div>
+        <div class="tariff-row-val">$35.00</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">3D Secure</div>
+          <div class="tariff-row-note">Per 3DS authorization</div>
+        </div>
+        <div class="tariff-row-val">$0.03</div>
+      </div>
+      <div class="tariff-row">
+        <div>
+          <div class="tariff-row-label">Apple Pay / Google Pay Auth</div>
+          <div class="tariff-row-note">Tokenized payment authorization</div>
+        </div>
+        <div class="tariff-row-val">0.2%</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ SECTION 2 — WHAT USERS GET ═══════════════════ -->
+<div class="section" style="padding-top:64px;padding-bottom:64px">
+  <div style="text-align:center;max-width:640px;margin:0 auto 48px" class="reveal">
+    <div class="s-label">Recommended Packages</div>
+    <h2 class="section-title">Sample end-user tiers</h2>
+    <p class="section-sub">You define your own end-user packages. Below is a recommended two-tier structure based on market analysis — use it as a starting point. These tiers also power the cost calculator below.</p>
+  </div>
+
+  <div class="tiers-wrap">
+    <!-- FREE CARD -->
+    <div class="tc reveal rd1" id="tc-free">
+      <div class="tc-glow" id="glow-free"></div>
+      <div class="tc-body">
+        <div class="tc-top">
+          <span class="tc-badge badge-free">Free</span>
+          <div class="tc-name">Free</div>
+          <div class="tc-price-row">
+            <span class="tc-price-num">$0</span>
+            <span class="tc-price-lbl">/ mo &middot; no commitment</span>
+          </div>
+          <p class="tc-price-note">Start using immediately &mdash; no subscription required.</p>
+        </div>
+        <div class="tc-rates">
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-crypto"/></svg></span>
+              Crypto buy / sell
+            </span>
+            <span class="tc-row-val">3.0% <small>up to $1K/mo</small></span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label" style="padding-left:29px">Over limit</span>
+            <span class="tc-row-val" style="color:var(--g400)">4.0%</span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-fx"/></svg></span>
+              FX conversion
+            </span>
+            <span class="tc-row-val">2.0% <small>up to $500/mo</small></span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-atm"/></svg></span>
+              ATM withdrawal
+            </span>
+            <span class="tc-row-val">3.5% <small>up to $200/mo</small></span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-sepa"/></svg></span>
+              SEPA In / Out
+            </span>
+            <span class="tc-row-val">$1.00 / $2.00</span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-topup"/></svg></span>
+              Card top-up
+            </span>
+            <span class="tc-row-val">2.0% <small>up to $2K/mo</small></span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-card"/></svg></span>
+              Physical card
+            </span>
+            <span class="tc-row-val tc-dash">—</span>
+          </div>
+        </div>
+        <div class="tc-bottom">
+          <div class="tc-highlight">
+            Virtual card $0.50 each (max 5). SWIFT $40 + 0.1%.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLUS CARD -->
+    <div class="tc popular reveal rd2" id="tc-plus">
+      <div class="tc-glow" id="glow-plus"></div>
+      <div class="tc-body">
+        <div class="tc-top">
+          <span class="tc-badge badge-plus">Plus</span>
+          <div class="tc-name" style="color:var(--blue)">Plus</div>
+          <div class="tc-price-row">
+            <span class="tc-price-num" style="color:var(--blue)">$27.50</span>
+            <span class="tc-price-lbl">/ mo or $275/yr</span>
+          </div>
+          <p class="tc-price-note" style="color:rgba(0,25,255,.5)">Annual plan saves 2 months. Heavy crypto/SEPA users save more than $27.50/mo.</p>
+        </div>
+        <div class="tc-rates">
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-crypto"/></svg></span>
+              Crypto buy / sell
+            </span>
+            <span class="tc-row-val" style="color:var(--blue)">1.2% <small>up to $15K/mo</small></span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label" style="padding-left:29px">Over limit</span>
+            <span class="tc-row-val" style="color:var(--g400)">1.7%</span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-fx"/></svg></span>
+              FX conversion
+            </span>
+            <span class="tc-row-val" style="color:var(--blue)">1.5% <small>up to $5K/mo</small></span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-atm"/></svg></span>
+              ATM withdrawal
+            </span>
+            <span class="tc-row-val" style="color:var(--blue)">2.0% <small>up to $1K/mo</small></span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-sepa"/></svg></span>
+              SEPA In / Out
+            </span>
+            <span class="tc-row-val" style="color:var(--blue)">Free&times;15&rarr;$0.20 / $0.50</span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-topup"/></svg></span>
+              Card top-up
+            </span>
+            <span class="tc-row-val" style="color:var(--blue)">1.2% <small>up to $10K/mo</small></span>
+          </div>
+          <div class="tc-row">
+            <span class="tc-row-label">
+              <span class="iw"><svg><use href="#ic-card"/></svg></span>
+              Physical card
+            </span>
+            <span class="tc-row-val tc-check">&#10003; $10 issuance <small>max 1 per account</small></span>
+          </div>
+        </div>
+        <div class="tc-bottom">
+          <div class="tc-highlight">
+            Annual plan saves 2 months. Heavy crypto/SEPA users save more than $27.50/mo in fees.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="section-divider"></div>
+
+
+<!-- ═══════════════ SECTION 4 — P&L CALCULATOR ═══════════════════ -->
+<div class="section reveal" style="padding-top:64px;padding-bottom:64px">
+  <div style="text-align:center;max-width:720px;margin:0 auto 48px">
+    <div class="s-label">P&amp;L Modeller</div>
+    <h2 class="section-title">Model your unit economics</h2>
+    <p class="section-sub">Adjust inputs on the left to project end-user revenue vs. Vault charges. Year 1 includes the $25K setup amortized; Year 2+ drops setup and uses the mature $8K/mo platform fee.</p>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-inner">
+      <!-- INPUTS -->
+      <div class="calc-left">
+        <h3>Inputs</h3>
+        <p>Tune the model to your expected end-user base and behaviour.</p>
+
+        <div id="pnl-inputs" style="display:flex;flex-direction:column;gap:18px;margin-top:8px"></div>
+
+        <!-- Assumptions card -->
+        <div class="inhouse-box" style="margin-top:28px">
+          <div class="inhouse-title">Assumptions (API pricing)</div>
+          <div class="inhouse-row">Setup: $25,000 one-time (amortized Y1)</div>
+          <div class="inhouse-row">Platform: $3K → $5K → $7K → $8K/mo ladder (Y1 avg $5,500)</div>
+          <div class="inhouse-row">Per-user: $2/card + $1 × 30% crypto + $3 × 10% banking</div>
+          <div class="inhouse-row">End-user Plus: $27.50/mo</div>
+          <div class="inhouse-row">Crypto: Free 3% / Plus 1.2% · Vault 1.5% on 20% exch. share</div>
+          <div class="inhouse-row">FX: Free 2% / Plus 1.5% · Vault 1.6%</div>
+          <div class="inhouse-row">Top-up: Free 2% / Plus 1.2% · Vault 0.4%</div>
+          <div class="inhouse-row">SEPA: ~$1/tx on 3 tx/user/mo · Vault $1/tx</div>
+          <div class="inhouse-row">Interchange: ~1% on card TPV · Vault 40% / Client 60%</div>
+        </div>
+      </div>
+
+      <!-- OUTPUTS -->
+      <div class="calc-right">
+        <h3>Projection</h3>
+
+        <!-- Verdict banner -->
+        <div id="pnl-verdict" style="padding:16px 18px;border-radius:12px;margin-bottom:20px;border:1px solid transparent">
+          <div id="pnl-verdict-title" style="font-size:15px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px"></div>
+          <div id="pnl-verdict-sub" style="font-size:12.5px;opacity:.85"></div>
+        </div>
+
+        <!-- End-User Revenue -->
+        <div style="margin-bottom:22px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g500);margin-bottom:10px">End-User Revenue (monthly)</div>
+          <div class="calc-metric"><span class="calc-metric-label">Plus subscriptions</span><span class="calc-metric-value" id="pnl-r-subs">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Crypto buy/sell fees</span><span class="calc-metric-value" id="pnl-r-crypto">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">FX conversion fees</span><span class="calc-metric-value" id="pnl-r-fx">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Card top-up fees</span><span class="calc-metric-value" id="pnl-r-topup">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">SEPA fees</span><span class="calc-metric-value" id="pnl-r-sepa">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Interchange (client 60%)</span><span class="calc-metric-value" id="pnl-r-ic">$0</span></div>
+          <div class="calc-metric total"><span class="calc-metric-label">Total end-user revenue</span><span class="calc-metric-value" style="color:var(--green)" id="pnl-r-total">$0</span></div>
+        </div>
+
+        <!-- Vault Charges -->
+        <div style="margin-bottom:22px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g500);margin-bottom:10px">Vault Charges (monthly, Year 1 avg)</div>
+          <div class="calc-metric"><span class="calc-metric-label">Setup amortized (Y1 only)</span><span class="calc-metric-value" id="pnl-v-setup">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Platform fee (Y1 avg)</span><span class="calc-metric-value" id="pnl-v-platform">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Per-user monthly fees</span><span class="calc-metric-value" id="pnl-v-users">$0</span></div>
+          <div style="font-size:11.5px;font-style:italic;color:var(--g500);margin:10px 0 6px">Variable cuts</div>
+          <div class="calc-metric"><span class="calc-metric-label">Exchange loading (1.5%)</span><span class="calc-metric-value" id="pnl-v-exch">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Card FX (1.6%)</span><span class="calc-metric-value" id="pnl-v-fx">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Card top-up (0.4%)</span><span class="calc-metric-value" id="pnl-v-topup">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">SEPA ($1/tx)</span><span class="calc-metric-value" id="pnl-v-sepa">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Interchange (Vault 40%)</span><span class="calc-metric-value" id="pnl-v-ic">$0</span></div>
+          <div class="calc-metric total"><span class="calc-metric-label">Total Vault charges (Y1)</span><span class="calc-metric-value" style="color:var(--red)" id="pnl-v-total">$0</span></div>
+        </div>
+
+        <!-- Net Result -->
+        <div style="margin-bottom:22px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g500);margin-bottom:10px">Net Result</div>
+          <div class="calc-per-user-box" style="margin-bottom:10px">
+            <span>Year 1 net (monthly)</span>
+            <strong id="pnl-net-y1">$0 / mo</strong>
+          </div>
+          <div class="calc-metric"><span class="calc-metric-label">Year 1 annualized</span><span class="calc-metric-value" id="pnl-net-y1-ann">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Year 1 margin</span><span class="calc-metric-value" id="pnl-y1-margin">0%</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Year 2+ net (monthly)</span><span class="calc-metric-value" id="pnl-net-y2">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Year 2+ annualized</span><span class="calc-metric-value" id="pnl-net-y2-ann">$0</span></div>
+          <div class="calc-metric total"><span class="calc-metric-label">3-year cumulative net</span><span class="calc-metric-value" id="pnl-3y">$0</span></div>
+        </div>
+
+        <!-- Per-User -->
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g500);margin-bottom:10px">Per-User Economics</div>
+          <div class="calc-metric"><span class="calc-metric-label">End-user revenue / user / mo</span><span class="calc-metric-value" id="pnl-pu-rev">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Vault cut / user / mo (Y1)</span><span class="calc-metric-value" id="pnl-pu-vault">$0</span></div>
+          <div class="calc-metric"><span class="calc-metric-label">Client net / user / mo (Y1)</span><span class="calc-metric-value" id="pnl-pu-net">$0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ SECTION 5 — FULL COMPARISON TABLE ═══════════ -->
+<div class="section reveal" style="padding-top:64px;padding-bottom:64px">
+  <div style="text-align:center;max-width:640px;margin:0 auto 40px">
+    <div class="s-label">Sample Rate Card</div>
+    <h2 class="section-title">Recommended end-user rate card</h2>
+    <p class="section-sub">A sample rate card for the Free and Plus tiers above. You set your own rates &mdash; these are recommendations based on market benchmarks.</p>
+  </div>
+
+  <div class="cmp-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:46%">Feature</th>
+          <th style="width:27%;text-align:right;color:#B0B2B8">Free &middot; $0/mo</th>
+          <th class="th-plus" style="width:27%;text-align:right">Plus &middot; $27.50/mo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- CARDS -->
+        <tr class="cat"><td colspan="3">Cards</td></tr>
+        <tr>
+          <td>Virtual card issuance</td>
+          <td>$0.50 / card</td>
+          <td>$0.50 / card</td>
+        </tr>
+        <tr>
+          <td style="font-size:12px;padding-left:28px;color:var(--g400)">&#8627; max virtual cards</td>
+          <td style="font-size:12px;color:var(--g500)">5 per account</td>
+          <td style="font-size:12px;color:var(--g500)">5 per account</td>
+        </tr>
+        <tr>
+          <td>Physical Visa card &mdash; issuance</td>
+          <td><span class="no">—</span></td>
+          <td><span class="plus-better">$10 (one-time)</span></td>
+        </tr>
+        <tr>
+          <td style="font-size:12px;padding-left:28px;color:var(--g400)">&#8627; max physical cards</td>
+          <td style="font-size:12px;color:var(--g500)">1 per account</td>
+          <td style="font-size:12px;color:var(--g500)">1 per account</td>
+        </tr>
+
+        <!-- CRYPTO -->
+        <tr class="cat"><td colspan="3">Crypto</td></tr>
+        <tr>
+          <td>Crypto buy / sell</td>
+          <td>
+            <span class="main">3.0%</span>
+            <span class="sub">up to $1,000 / mo</span>
+          </td>
+          <td>
+            <span class="main plus-better">1.2%</span>
+            <span class="sub">up to $15,000 / mo</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="font-size:12px;padding-left:28px;color:var(--g400)">&#8627; over-limit rate</td>
+          <td style="font-size:12px;color:var(--g500)">4.0%</td>
+          <td style="font-size:12px;color:var(--g500)">1.7%</td>
+        </tr>
+
+        <!-- BANKING -->
+        <tr class="cat"><td colspan="3">Banking</td></tr>
+        <tr>
+          <td>SEPA In</td>
+          <td>$1.00 / tx</td>
+          <td>
+            <span class="plus-better">Free</span>
+            <span class="sub">first 15/mo, then $0.20/tx</span>
+          </td>
+        </tr>
+        <tr>
+          <td>SEPA Out</td>
+          <td>$2.00 / tx</td>
+          <td><span class="plus-better">$0.50 / tx</span></td>
+        </tr>
+        <tr>
+          <td>SWIFT international</td>
+          <td>$40 + 0.1%</td>
+          <td>$40 + 0.1%</td>
+        </tr>
+        <tr>
+          <td>FX conversion</td>
+          <td>
+            <span class="main">2.0%</span>
+            <span class="sub">up to $500 / mo</span>
+          </td>
+          <td>
+            <span class="main plus-better">1.5%</span>
+            <span class="sub">up to $5,000 / mo</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="font-size:12px;padding-left:28px;color:var(--g400)">&#8627; over-limit rate</td>
+          <td style="font-size:12px;color:var(--g500)">3.0%</td>
+          <td style="font-size:12px;color:var(--g500)">2.0%</td>
+        </tr>
+
+        <!-- CARD SPENDING -->
+        <tr class="cat"><td colspan="3">Card Spending</td></tr>
+        <tr>
+          <td>ATM withdrawal</td>
+          <td>
+            <span class="main">3.5%</span>
+            <span class="sub">up to $200 / mo</span>
+          </td>
+          <td>
+            <span class="main plus-better">2.0%</span>
+            <span class="sub">up to $1,000 / mo</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="font-size:12px;padding-left:28px;color:var(--g400)">&#8627; over-limit rate</td>
+          <td style="font-size:12px;color:var(--g500)">5.5%</td>
+          <td style="font-size:12px;color:var(--g500)">4.0%</td>
+        </tr>
+        <tr>
+          <td>Card top-up</td>
+          <td>
+            <span class="main">2.0%</span>
+            <span class="sub">up to $2,000 / mo</span>
+          </td>
+          <td>
+            <span class="main plus-better">1.2%</span>
+            <span class="sub">up to $10,000 / mo</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="font-size:12px;padding-left:28px;color:var(--g400)">&#8627; over-limit rate</td>
+          <td style="font-size:12px;color:var(--g500)">3.0%</td>
+          <td style="font-size:12px;color:var(--g500)">1.8%</td>
+        </tr>
+        <tr>
+          <td>Cashback</td>
+          <td><span class="no">—</span></td>
+          <td><span class="plus-better">0.3% (max $15 / mo)</span></td>
+        </tr>
+
+        <!-- OTHER FEES -->
+        <tr class="cat"><td colspan="3">Other Fees</td></tr>
+        <tr>
+          <td>Chargeback / Dispute</td>
+          <td>$35</td>
+          <td>$35</td>
+        </tr>
+        <tr>
+          <td>3D Secure</td>
+          <td>$0.03 / auth</td>
+          <td>$0.03 / auth</td>
+        </tr>
+        <tr>
+          <td>Apple Pay / Google Pay Auth</td>
+          <td>0.2%</td>
+          <td>0.2%</td>
+        </tr>
+
+        <!-- SUBSCRIPTION -->
+        <tr class="cat"><td colspan="3">Subscription</td></tr>
+        <tr>
+          <td>Monthly</td>
+          <td><strong>$0</strong></td>
+          <td><strong style="color:var(--blue)">$27.50 / mo</strong></td>
+        </tr>
+        <tr>
+          <td>Annual</td>
+          <td><strong>$0</strong></td>
+          <td>
+            <strong style="color:var(--blue)">$275 / yr</strong>
+            <span class="sub"><s>$330</s> &mdash; 2 months free</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════ SECTION 6 — HOW IT WORKS (B2B) ═══════════════ -->
+<div class="section" style="padding-top:64px;padding-bottom:64px">
+  <div style="text-align:center;max-width:640px;margin:0 auto 36px" class="reveal">
+    <div class="s-label">Partnership</div>
+    <h2 class="section-title">How the relationship works</h2>
+  </div>
+  <div class="hiw-grid">
+    <div class="hiw-card reveal rd1">
+      <div class="hiw-label" style="color:var(--blue)">You integrate once</div>
+      <p>Connect via our API. Your users get cards, crypto wallets, and banking in your app. Vault handles compliance, KYC, settlement.</p>
+    </div>
+    <div class="hiw-card reveal rd2">
+      <div class="hiw-label" style="color:var(--neon)">We run the infrastructure</div>
+      <p>All regulatory licenses, supplier relationships, and technical infrastructure sit with Vault. You focus on your product.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ACCEPT OFFER ═══════════════════════════════════ -->
+<div class="section reveal" style="padding-top:72px;padding-bottom:72px;background:linear-gradient(180deg,transparent,rgba(0,25,255,.03))">
+  <div style="text-align:center;max-width:560px;margin:0 auto">
+    <div class="s-label">Accept this offer</div>
+    <h2 class="section-title">Ready to launch?</h2>
+    <p class="section-sub" style="margin-bottom:32px">Clicking below records your acceptance of these commercial terms. We'll follow up with SOW and onboarding steps within 24 hours.</p>
+    <a id="accept-offer-btn" data-deal-id="7197458000008155117" href="#" onclick="return confirmAcceptOffer()" style="
+      display:inline-block;padding:18px 48px;border-radius:14px;
+      background:linear-gradient(135deg,#0019FF 0%,#6152F4 100%);
+      color:#fff;font-size:16px;font-weight:700;letter-spacing:-.01em;
+      text-decoration:none;box-shadow:0 10px 30px rgba(0,25,255,.3);
+      transition:transform .2s,box-shadow .2s;
+      cursor:pointer;
+    " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 14px 40px rgba(0,25,255,.4)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 10px 30px rgba(0,25,255,.3)'">
+      Accept Offer →
+    </a>
+    <div id="accept-result" style="display:none;margin-top:24px"></div>
+    <p id="accept-hint" style="font-size:12px;color:var(--g400);margin-top:16px">Click to record your acceptance</p>
+  </div>
+</div>
+
+<script>
+function confirmAcceptOffer() {
+  var accepted = confirm(
+    "Are you sure you want to accept this partnership offer?\n\n" +
+    "This will record your acceptance and today\u2019s date in our system."
+  );
+  if (!accepted) return false;
+
+  var btn = document.getElementById('accept-offer-btn');
+  var resultBox = document.getElementById('accept-result');
+  var hint = document.getElementById('accept-hint');
+  var urlDealId = new URLSearchParams(window.location.search).get('deal_id');
+  var dealId = urlDealId || btn.getAttribute('data-deal-id');
+
+  var webhookUrl =
+    'https://flow.zoho.com/912813070/flow/webhook/incoming' +
+    '?zapikey=1001.4fddaaf8e661a0dbfe54fd263b5687d5.499b8aed0a21e71d222b54e7c5cb8f5a' +
+    '&isdebug=false';
+
+  if (!dealId) {
+    showAcceptResult(false, 'Missing deal ID. Please contact your Vault account manager.');
+    return false;
+  }
+
+  fetch(webhookUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: 'deal_id=' + encodeURIComponent(dealId)
+  }).then(function() {
+    showAcceptResult(true, 'Your acceptance has been recorded. Thank you!');
+  }).catch(function(err) {
+    showAcceptResult(false, 'Unable to record acceptance. Please email juliana.gubacheva@vault.ist');
+    console.error(err);
+  });
+
+  btn.style.opacity = '0.5';
+  btn.style.pointerEvents = 'none';
+  hint.textContent = 'Processing...';
+  return false;
+}
+
+function showAcceptResult(ok, message) {
+  var btn = document.getElementById('accept-offer-btn');
+  var resultBox = document.getElementById('accept-result');
+  var hint = document.getElementById('accept-hint');
+  resultBox.style.display = 'block';
+  resultBox.innerHTML = (ok
+    ? '<div style="padding:16px 20px;background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.2);border-radius:12px;color:#059669;font-weight:600;font-size:14px">✓ ' + message + '</div>'
+    : '<div style="padding:16px 20px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:12px;color:#DC2626;font-weight:600;font-size:14px">✗ ' + message + '</div>');
+  if (ok) {
+    btn.style.display = 'none';
+    hint.style.display = 'none';
+  }
+}
+</script>
+
+<!-- ═══════════════ FOOTER ════════════════════════════════════════ -->
+<footer class="page-footer">
+  <svg width="444" height="103" viewBox="0 0 444 103" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:32px;width:auto;display:block;margin:0 auto 14px">
+    <path d="M22.1745 10.5772L5.39993 27.2819C-1.78091 34.4328-1.80271 46.0201 5.35119 53.1977L35.7548 83.7024C60.1559 108.184 99.8897 108.259 124.383 83.8676L153.864 54.5093C161.064 47.3394 161.064 35.7147 153.864 28.5448L135.299 10.0573C127.842 2.6313 115.752 2.6313 108.295 10.0573L78.0101 40.2156L48.2477 10.5772C41.0478 3.40727 29.3744 3.40727 22.1745 10.5772Z" fill="#0019FF"/>
+    <path d="M152.936 50.6231C120.354 67.6287 89.8647 51.4447 78.011 40.2162L109.371 8.75349C116.378 1.72395 127.813 1.7859 134.742 8.89094L155.122 29.7878C161.289 36.1106 160.775 46.5314 152.936 50.6231Z" fill="#0117D7"/>
+    <path d="M236.028 82.356C235.51 83.7255 234.199 84.6315 232.734 84.6315H219.745C218.314 84.6315 217.026 83.7658 216.485 82.4412L195.642 31.3873C194.697 29.0712 196.401 26.5353 198.902 26.5353H210.394C211.867 26.5353 213.184 27.4525 213.696 28.8341L224.496 58.0125C225.071 59.5661 227.279 59.5377 227.814 57.9698L237.725 28.9195C238.212 27.4937 239.551 26.5353 241.058 26.5353H252.044C254.507 26.5353 256.209 28.9987 255.338 31.3021L236.028 82.356Z" fill="#0019FF"/>
+    <path d="M256.476 68.6171C256.476 66.0454 256.942 63.7075 257.755 61.7203C258.685 59.7331 259.964 57.9797 261.476 56.577C262.987 55.0574 264.847 53.8885 266.824 53.0702C268.917 52.135 271.126 51.4337 273.567 51.083L287.17 48.9789C288.681 48.7451 289.844 48.2776 290.425 47.5762C291.006 46.8748 291.355 46.0566 291.355 45.0045C291.355 43.2511 290.658 41.8484 289.146 40.5626C287.751 39.2767 285.658 38.6923 282.868 38.6923C279.729 38.6923 277.404 39.5105 275.66 41.2639C275.05 41.9205 274.539 42.6098 274.131 43.3319C273.071 45.2084 271.085 46.8346 268.974 46.4005L260.613 44.681C258.904 44.3296 257.687 42.7642 258.152 41.0827C258.476 39.9083 258.938 38.7158 259.499 37.5233C260.546 35.3024 262.173 33.1983 264.15 31.328C266.243 29.4577 268.8 27.9381 271.939 26.6522C275.078 25.3664 278.683 24.7819 282.984 24.7819C287.635 24.7819 291.588 25.3664 294.843 26.5353C298.098 27.8212 300.772 29.4577 302.749 31.4449C304.842 33.549 306.353 36.0037 307.167 38.6923C308.097 41.3808 308.562 44.3032 308.562 47.2255V75.6307C308.562 77.8517 308.678 79.8388 308.794 81.5922C308.994 83.0937 307.698 84.6315 306.183 84.6315H295.354C294.115 84.6315 293.119 83.8759 292.983 82.6443C292.867 81.5922 292.75 80.0726 292.75 78.0854C291.239 80.5402 289.03 82.5274 286.356 84.047C283.682 85.5666 280.31 86.268 276.474 86.268C273.334 86.268 270.428 85.8004 267.986 84.8653C265.545 83.8132 263.452 82.5274 261.708 80.8909C259.964 79.2544 258.685 77.3841 257.872 75.28C256.942 73.1759 256.476 70.9549 256.476 68.6171ZM280.775 73.4097C282.054 73.4097 283.333 73.2928 284.612 72.9421C285.891 72.5914 287.053 71.8901 287.984 71.0718C289.03 70.1367 289.844 68.9677 290.425 67.4481C291.006 65.9285 291.355 64.0582 291.355 61.8372V59.2656L280.426 61.019C278.566 61.3696 277.055 61.9541 275.776 63.0062C274.497 63.9413 273.916 65.4609 273.916 67.4481C273.916 68.9677 274.381 70.3704 275.427 71.5394C276.474 72.8252 278.334 73.4097 280.775 73.4097Z" fill="#0019FF"/>
+    <path d="M358.185 84.6315C356.541 84.6315 355.156 83.4634 355.008 81.826C354.892 80.5402 354.892 79.605 354.892 78.7868C353.381 81.2416 351.172 83.1119 348.265 84.1639C345.359 85.3328 342.336 85.9173 339.429 85.9173C335.941 85.9173 332.802 85.3328 330.128 84.047C327.338 82.8781 325.013 81.2416 323.153 79.1375C321.292 77.1503 319.897 74.6955 318.967 72.007C317.921 69.3184 317.456 66.3961 317.456 63.2399V30.0565C317.456 28.1118 319.032 26.5353 320.977 26.5353H331.606C333.551 26.5353 335.128 28.1118 335.128 30.0565V59.4993C335.128 62.3048 335.941 64.6427 337.453 66.6299C338.964 68.6171 341.289 69.5522 344.429 69.5522C347.335 69.5522 349.777 68.6171 351.521 66.7468C353.264 64.9934 354.078 62.5386 354.078 59.6162V30.0565C354.078 28.1118 355.655 26.5353 357.599 26.5353H368.229C370.174 26.5353 371.75 28.1118 371.75 30.0565V74.2279C371.75 76.9165 371.866 79.1375 371.983 81.0078C372.091 82.8561 370.54 84.6315 368.688 84.6315H358.185Z" fill="#0019FF"/>
+    <path d="M385.316 84.6315C383.371 84.6315 381.795 83.055 381.795 81.1104V3.52161C381.795 1.57695 383.371 0.000488281 385.316 0.000488281H395.945C397.89 0.000488281 399.467 1.57695 399.467 3.52161V81.1104C399.467 83.055 397.89 84.6315 395.945 84.6315H385.316Z" fill="#0019FF"/>
+    <path d="M432.002 26.5353H439.759C441.703 26.5353 443.28 28.1118 443.28 30.0565V38.5611C443.28 40.5057 441.703 42.0822 439.759 42.0822H432.002V63.8244C432.002 66.2792 432.584 67.7988 433.746 68.6171C434.909 69.4353 436.42 69.9029 438.397 69.9029C439.327 69.9029 440.257 69.786 441.071 69.6691C442.099 69.5215 443.047 70.2878 443.047 71.3261V81.5135C443.047 83.027 442.091 84.4028 440.648 84.8598C440.522 84.8996 440.392 84.9404 440.257 84.9822C438.746 85.4497 436.653 85.6835 433.863 85.6835C427.817 85.6835 423.05 84.047 419.679 80.6571C416.307 77.3841 414.563 72.8252 414.563 66.9805V42.0822H407.853C405.909 42.0822 404.332 40.5057 404.332 38.5611V29.4419C404.332 27.8367 405.633 26.5353 407.239 26.5353C410.261 26.5353 412.47 25.6002 413.982 23.8468C415.493 22.0934 416.191 19.7555 416.191 17.067V13.1069C416.191 11.1622 417.767 9.58577 419.712 9.58577H428.481C430.426 9.58577 432.002 11.1622 432.002 13.1069V26.5353Z" fill="#0019FF"/>
+  </svg>
+  <p>Prepared for NeoPay &middot; April 2026 &middot; Confidential</p>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   NDA MODAL — check sessionStorage on load; show once per session
+══════════════════════════════════════════════════════════════════ */
+(function() {
+  const overlay = document.getElementById('nda-overlay');
+  const checkbox = document.getElementById('nda-agree');
+  const btn = document.getElementById('nda-btn');
+
+  if (sessionStorage.getItem('vault_nda_neopay') === 'accepted') {
+    overlay.classList.add('hidden');
+    return;
+  }
+
+  overlay.classList.remove('hidden');
+
+  checkbox.addEventListener('change', function() {
+    if (this.checked) {
+      btn.classList.add('enabled');
+      btn.disabled = false;
+    } else {
+      btn.classList.remove('enabled');
+      btn.disabled = true;
+    }
+  });
+
+  btn.addEventListener('click', function() {
+    if (!checkbox.checked) return;
+    sessionStorage.setItem('vault_nda_neopay', 'accepted');
+    overlay.classList.add('hidden');
+  });
+})();
+
+/* ══════════════════════════════════════════════════════════════════
+   PARTICLE CANVAS — 100 particles, blue palette, LINK=140
+══════════════════════════════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('pCanvas');
+  const ctx = canvas.getContext('2d');
+  const N = 100;
+  let W, H;
+
+  const particles = Array.from({length: N}, () => ({
+    x: 0, y: 0,
+    vx: (Math.random() - 0.5) * 0.55,
+    vy: (Math.random() - 0.5) * 0.55,
+  }));
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    particles.forEach(p => {
+      if (p.x === 0 && p.y === 0) {
+        p.x = Math.random() * W;
+        p.y = Math.random() * H;
+      }
+    });
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+    });
+
+    const LINK = 140;
+    for (let i = 0; i < N; i++) {
+      for (let j = i + 1; j < N; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < LINK) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(26,58,255,${0.18 * (1 - d / LINK)})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(74,106,255,0.65)';
+      ctx.fill();
+    });
+
+    requestAnimationFrame(frame);
+  }
+
+  resize();
+  requestAnimationFrame(frame);
+  window.addEventListener('resize', resize);
+})();
+
+/* ══════════════════════════════════════════════════════════════════
+   SCROLL REVEAL — IntersectionObserver rootMargin:'-80px 0px', threshold:0.08
+══════════════════════════════════════════════════════════════════ */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '-80px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* ══════════════════════════════════════════════════════════════════
+   MOUSE GLOW — two-layer radial-gradient on .tc cards
+══════════════════════════════════════════════════════════════════ */
+document.querySelectorAll('.tc').forEach(card => {
+  const glowEl = card.querySelector('.tc-glow');
+  const isPlus = card.classList.contains('popular');
+
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    glowEl.style.background = [
+      `radial-gradient(600px circle at ${x}px ${y}px, rgba(0,25,255,${isPlus ? '0.10' : '0.07'}), transparent 40%)`,
+      `radial-gradient(400px circle at ${x}px ${y}px, rgba(97,82,244,${isPlus ? '0.15' : '0.10'}), transparent 40%)`
+    ].join(', ');
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   CLIENT P&L CALCULATOR — vanilla port of ClientPnLCalculator.tsx
+══════════════════════════════════════════════════════════════════ */
+(function() {
+  const END_USER_RATES = {
+    plusSubscription: 27.50,
+    cryptoFreeRate: 0.030, cryptoPlusRate: 0.012,
+    fxFreeRate: 0.020, fxPlusRate: 0.015,
+    topupFreeRate: 0.020, topupPlusRate: 0.012,
+    sepaFreeAvg: 1.50, sepaPlusAvg: 0.25, sepaTxPerUser: 3
+  };
+  const VAULT_RATES = {
+    setupFee: 25000,
+    platformY1Avg: (3*3000 + 3*5000 + 6*7000) / 12, // = $5,500
+    platformY2plus: 8000,
+    monthlyCardFee: 2.00, monthlyCryptoFee: 1.00, monthlyBankingFee: 3.00,
+    cryptoUserRate: 0.30, bankingUserRate: 0.10,
+    cryptoExchangeShare: 0.20, exchangeLoadingRate: 0.015,
+    cardFxRate: 0.016, cardTopUpRate: 0.004,
+    sepaCostPerTx: 1.00, interchangeVaultShare: 0.40,
+    interchangeNetworkRate: 0.01
+  };
+
+  const inputsSpec = [
+    { key: 'activeUsers',        label: 'Active users',                          min: 500,  max: 25000, step: 100, val: 3000, suffix: '',   fmt: v => v.toLocaleString('en-US') },
+    { key: 'plusPct',             label: 'Plus tier adoption',                    min: 0,    max: 100,   step: 5,   val: 25,   suffix: '%',  fmt: v => v + '%' },
+    { key: 'monthlyVolPerUser',   label: 'Avg monthly volume per user (crypto+FX+top-up)', min: 0, max: 10000, step: 50, val: 1000, suffix: '$', fmt: v => '$' + v.toLocaleString('en-US') },
+    { key: 'cardTpvPerUser',      label: 'Avg card TPV per user',                 min: 0,    max: 10000, step: 50,  val: 1000, suffix: '$', fmt: v => '$' + v.toLocaleString('en-US') },
+    { key: 'cryptoShare',         label: 'Crypto buy/sell share',                 min: 0,    max: 100,   step: 5,   val: 50,   suffix: '%',  fmt: v => v + '%' },
+    { key: 'fxShare',             label: 'FX conversion share',                   min: 0,    max: 100,   step: 5,   val: 15,   suffix: '%',  fmt: v => v + '%' },
+    { key: 'topupShare',          label: 'Card top-up share',                     min: 0,    max: 100,   step: 5,   val: 20,   suffix: '%',  fmt: v => v + '%' }
+  ];
+
+  const state = {};
+  inputsSpec.forEach(s => state[s.key] = s.val);
+
+  const host = document.getElementById('pnl-inputs');
+  inputsSpec.forEach(s => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">' +
+        '<span class="slider-label" style="margin:0">' + s.label + '</span>' +
+        '<span class="slider-value" id="pnl-v-' + s.key + '" style="font-size:16px;margin:0">' + s.fmt(s.val) + '</span>' +
+      '</div>';
+    const input = document.createElement('input');
+    input.type = 'range';
+    input.min = s.min; input.max = s.max; input.step = s.step; input.value = s.val;
+    input.id = 'pnl-i-' + s.key;
+    input.addEventListener('input', () => {
+      state[s.key] = parseFloat(input.value);
+      document.getElementById('pnl-v-' + s.key).textContent = s.fmt(state[s.key]);
+      recompute();
+    });
+    wrap.appendChild(input);
+    const otherRow = document.createElement('div');
+    otherRow.className = 'slider-range-labels';
+    otherRow.innerHTML = '<span>' + (s.suffix === '$' ? '$' + s.min : s.min + (s.suffix||'')) + '</span>' +
+                         '<span>' + (s.suffix === '$' ? '$' + s.max.toLocaleString('en-US') : s.max.toLocaleString('en-US') + (s.suffix||'')) + '</span>';
+    wrap.appendChild(otherRow);
+    host.appendChild(wrap);
+  });
+
+  // Remainder line for "Other"
+  const otherLine = document.createElement('div');
+  otherLine.style.cssText = 'font-size:12px;color:var(--g500);margin-top:-6px';
+  otherLine.id = 'pnl-other-share';
+  host.appendChild(otherLine);
+
+  function fmtMoney(n) {
+    const sign = n < 0 ? '-' : '';
+    const v = Math.abs(Math.round(n));
+    return sign + '$' + v.toLocaleString('en-US');
+  }
+  function fmtMoneyK(n) {
+    const sign = n < 0 ? '-' : '';
+    const v = Math.abs(n);
+    if (v >= 1000000) return sign + '$' + (v/1000000).toFixed(2) + 'M';
+    if (v >= 10000) return sign + '$' + (v/1000).toFixed(0) + 'K';
+    if (v >= 1000) return sign + '$' + (v/1000).toFixed(1) + 'K';
+    return sign + '$' + Math.round(v).toLocaleString('en-US');
+  }
+
+  function recompute() {
+    const activeUsers = state.activeUsers;
+    const plusFrac = state.plusPct / 100;
+    const cryptoShare = state.cryptoShare / 100;
+    const fxShare = state.fxShare / 100;
+    const topupShare = state.topupShare / 100;
+    const otherShare = Math.max(0, 1 - cryptoShare - fxShare - topupShare);
+
+    document.getElementById('pnl-other-share').textContent =
+      'Other (SEPA, ATM, etc.): ' + Math.round(otherShare * 100) + '%';
+
+    const plusUsers = activeUsers * plusFrac;
+    const freeUsers = activeUsers - plusUsers;
+    const totalVol = activeUsers * state.monthlyVolPerUser;
+    const cryptoVol = totalVol * cryptoShare;
+    const fxVol = totalVol * fxShare;
+    const topupVol = totalVol * topupShare;
+
+    const cryptoPerUser = activeUsers ? cryptoVol / activeUsers : 0;
+    const fxPerUser = activeUsers ? fxVol / activeUsers : 0;
+    const topupPerUser = activeUsers ? topupVol / activeUsers : 0;
+
+    const subs = plusUsers * END_USER_RATES.plusSubscription;
+    const crypto = freeUsers * cryptoPerUser * END_USER_RATES.cryptoFreeRate
+                 + plusUsers * cryptoPerUser * END_USER_RATES.cryptoPlusRate;
+    const fx = freeUsers * fxPerUser * END_USER_RATES.fxFreeRate
+             + plusUsers * fxPerUser * END_USER_RATES.fxPlusRate;
+    const topup = freeUsers * topupPerUser * END_USER_RATES.topupFreeRate
+                + plusUsers * topupPerUser * END_USER_RATES.topupPlusRate;
+    const sepa = freeUsers * END_USER_RATES.sepaTxPerUser * END_USER_RATES.sepaFreeAvg
+               + plusUsers * END_USER_RATES.sepaTxPerUser * END_USER_RATES.sepaPlusAvg;
+
+    const monthlyCardTPV = activeUsers * state.cardTpvPerUser;
+    const interchangeTotal = monthlyCardTPV * VAULT_RATES.interchangeNetworkRate;
+    const interchangeClient = interchangeTotal * (1 - VAULT_RATES.interchangeVaultShare);
+    const interchangeVault = interchangeTotal * VAULT_RATES.interchangeVaultShare;
+
+    const endUserRevenue = subs + crypto + fx + topup + sepa + interchangeClient;
+
+    const userFees = activeUsers * VAULT_RATES.monthlyCardFee
+                   + activeUsers * VAULT_RATES.cryptoUserRate * VAULT_RATES.monthlyCryptoFee
+                   + activeUsers * VAULT_RATES.bankingUserRate * VAULT_RATES.monthlyBankingFee;
+    const exchLoadCut = cryptoVol * VAULT_RATES.cryptoExchangeShare * VAULT_RATES.exchangeLoadingRate;
+    const fxCut = fxVol * VAULT_RATES.cardFxRate;
+    const topupCut = topupVol * VAULT_RATES.cardTopUpRate;
+    const sepaCut = activeUsers * END_USER_RATES.sepaTxPerUser * VAULT_RATES.sepaCostPerTx;
+    const variableCuts = exchLoadCut + fxCut + topupCut + sepaCut + interchangeVault;
+
+    const y1SetupAmortized = VAULT_RATES.setupFee / 12;
+    const y1Platform = VAULT_RATES.platformY1Avg;
+    const y2Platform = VAULT_RATES.platformY2plus;
+
+    const y1VaultTotal = y1Platform + userFees + variableCuts + y1SetupAmortized;
+    const y2VaultTotal = y2Platform + userFees + variableCuts;
+
+    const y1Net = endUserRevenue - y1VaultTotal;
+    const y2Net = endUserRevenue - y2VaultTotal;
+    const y1Margin = endUserRevenue > 0 ? y1Net / endUserRevenue : 0;
+    const threeYearNet = y1Net * 12 + y2Net * 24;
+
+    // Revenue lines
+    document.getElementById('pnl-r-subs').textContent = fmtMoney(subs);
+    document.getElementById('pnl-r-crypto').textContent = fmtMoney(crypto);
+    document.getElementById('pnl-r-fx').textContent = fmtMoney(fx);
+    document.getElementById('pnl-r-topup').textContent = fmtMoney(topup);
+    document.getElementById('pnl-r-sepa').textContent = fmtMoney(sepa);
+    document.getElementById('pnl-r-ic').textContent = fmtMoney(interchangeClient);
+    document.getElementById('pnl-r-total').textContent = fmtMoney(endUserRevenue);
+
+    // Vault charges
+    document.getElementById('pnl-v-setup').textContent = fmtMoney(y1SetupAmortized);
+    document.getElementById('pnl-v-platform').textContent = fmtMoney(y1Platform);
+    document.getElementById('pnl-v-users').textContent = fmtMoney(userFees);
+    document.getElementById('pnl-v-exch').textContent = fmtMoney(exchLoadCut);
+    document.getElementById('pnl-v-fx').textContent = fmtMoney(fxCut);
+    document.getElementById('pnl-v-topup').textContent = fmtMoney(topupCut);
+    document.getElementById('pnl-v-sepa').textContent = fmtMoney(sepaCut);
+    document.getElementById('pnl-v-ic').textContent = fmtMoney(interchangeVault);
+    document.getElementById('pnl-v-total').textContent = fmtMoney(y1VaultTotal);
+
+    // Net
+    document.getElementById('pnl-net-y1').textContent = fmtMoney(y1Net) + ' / mo';
+    document.getElementById('pnl-net-y1-ann').textContent = fmtMoneyK(y1Net * 12);
+    document.getElementById('pnl-y1-margin').textContent = (y1Margin * 100).toFixed(1) + '%';
+    document.getElementById('pnl-net-y2').textContent = fmtMoney(y2Net);
+    document.getElementById('pnl-net-y2-ann').textContent = fmtMoneyK(y2Net * 12);
+    document.getElementById('pnl-3y').textContent = fmtMoneyK(threeYearNet);
+
+    // Per-user
+    const puRev = activeUsers ? endUserRevenue / activeUsers : 0;
+    const puVault = activeUsers ? y1VaultTotal / activeUsers : 0;
+    const puNet = puRev - puVault;
+    document.getElementById('pnl-pu-rev').textContent = '$' + puRev.toFixed(2);
+    document.getElementById('pnl-pu-vault').textContent = '$' + puVault.toFixed(2);
+    document.getElementById('pnl-pu-net').textContent = '$' + puNet.toFixed(2);
+
+    // Verdict
+    const verdict = document.getElementById('pnl-verdict');
+    const vTitle = document.getElementById('pnl-verdict-title');
+    const vSub = document.getElementById('pnl-verdict-sub');
+    let bg, border, color, label;
+    if (y1Margin > 0.30) {
+      bg = 'rgba(5,150,105,.08)'; border = 'rgba(5,150,105,.25)'; color = '#059669';
+      label = 'Profitable — ' + (y1Margin*100).toFixed(0) + '% Y1 margin';
+    } else if (y1Net > 0) {
+      bg = 'rgba(245,158,11,.08)'; border = 'rgba(245,158,11,.3)'; color = '#b45309';
+      label = 'Marginal — ' + (y1Margin*100).toFixed(0) + '% Y1 margin';
+    } else {
+      bg = 'rgba(220,38,38,.08)'; border = 'rgba(220,38,38,.25)'; color = '#DC2626';
+      label = 'Loss — ' + (y1Margin*100).toFixed(0) + '% Y1 margin';
+    }
+    verdict.style.background = bg;
+    verdict.style.borderColor = border;
+    vTitle.style.color = color;
+    vSub.style.color = color;
+    vTitle.textContent = label;
+    vSub.textContent = 'Y1 net ' + fmtMoney(y1Net) + '/mo = ' + fmtMoneyK(y1Net*12) + '/yr · 3-yr cumulative ' + fmtMoneyK(threeYearNet);
+  }
+
+  recompute();
+})();
+</script>
+</body>
+</html>
