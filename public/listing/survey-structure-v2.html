@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Zoho Survey Structure &mdash; Vault Partner Token Listing Due Diligence v1</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-2: #1c2128;
+    --border: #30363d;
+    --border-soft: #21262d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --accent-2: #a371f7;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --cyan: #39d0d8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "SF Pro Display", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    margin: 0;
+    padding: 40px 60px;
+    font-size: 14.5px;
+  }
+  .container { max-width: 1180px; margin: 0 auto; }
+  h1 {
+    font-size: 28px;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.3px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+  }
+  h2 {
+    font-size: 22px;
+    margin-top: 52px;
+    margin-bottom: 14px;
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+    padding-left: 12px;
+  }
+  h3 {
+    font-size: 17px;
+    margin-top: 28px;
+    margin-bottom: 8px;
+    color: var(--cyan);
+  }
+  h4 {
+    font-size: 15px;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  p { margin: 8px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", "Monaco", Consolas, monospace;
+    font-size: 12.5px;
+    color: #c9d1d9;
+  }
+  pre {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    font-size: 12.5px;
+  }
+  pre code { background: none; border: none; padding: 0; }
+  .page {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 22px;
+    margin: 20px 0;
+  }
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-soft);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+  .page-num {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+  .q {
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 10px 0;
+  }
+  .q.required { border-left-color: var(--red); }
+  .q.optional { border-left-color: var(--text-muted); }
+  .q.stopfactor { border-left-color: var(--yellow); background: rgba(210, 153, 34, 0.06); }
+  .q.upload { border-left-color: var(--green); background: rgba(63, 185, 80, 0.04); }
+  .q-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 6px;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+  .q-id {
+    color: var(--accent);
+    font-family: "SF Mono", "Monaco", Consolas, monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .q-type {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .q-label { font-weight: 600; font-size: 14.5px; margin-bottom: 4px; }
+  .q-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin: 4px 0;
+  }
+  .q-options {
+    margin: 6px 0 2px 0;
+    padding-left: 18px;
+  }
+  .q-options li {
+    margin: 2px 0;
+    font-size: 13.5px;
+  }
+  .q-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+    font-size: 11.5px;
+  }
+  .pill {
+    background: var(--surface);
+    color: var(--text-muted);
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .pill-req { background: rgba(248, 81, 73, 0.1); color: var(--red); border-color: rgba(248, 81, 73, 0.3); }
+  .pill-opt { color: var(--text-muted); }
+  .pill-stop { background: rgba(210, 153, 34, 0.1); color: var(--yellow); border-color: rgba(210, 153, 34, 0.3); }
+  .pill-upload { background: rgba(63, 185, 80, 0.1); color: var(--green); border-color: rgba(63, 185, 80, 0.3); }
+  .pill-map {
+    background: rgba(88, 166, 255, 0.08);
+    color: var(--accent);
+    border-color: rgba(88, 166, 255, 0.3);
+    font-family: "SF Mono", "Monaco", Consolas, monospace;
+  }
+  .branching {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: rgba(163, 113, 247, 0.06);
+    border-left: 2px solid var(--accent-2);
+    border-radius: 4px;
+    font-size: 12.5px;
+    color: #d2a8ff;
+  }
+  .branching strong { color: #e2d6ff; }
+  .callout {
+    background: rgba(88, 166, 255, 0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin: 18px 0;
+    font-size: 13.5px;
+  }
+  .callout-warn {
+    background: rgba(248, 81, 73, 0.08);
+    border-left-color: var(--red);
+  }
+  .callout-ok {
+    background: rgba(63, 185, 80, 0.08);
+    border-left-color: var(--green);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--surface-2);
+    color: var(--text);
+    text-align: left;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-soft);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 20px 0 40px 0;
+  }
+  .toc h3 {
+    margin-top: 0;
+    color: var(--text);
+    border-bottom: 1px solid var(--border-soft);
+    padding-bottom: 8px;
+  }
+  .toc ol { padding-left: 22px; }
+  .toc li { margin: 4px 0; }
+  .doc-meta {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+  .doc-meta span { margin-right: 16px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Vault Partner Token Listing &mdash; Zoho Survey Structure v2</h1>
+<div class="doc-meta">
+  <span><strong>Версия:</strong> 2.0</span>
+  <span><strong>Дата:</strong> 23 апреля 2026</span>
+  <span><strong>Автор:</strong> Святослав &middot; Vault</span>
+  <span><strong>Связано с:</strong> <code>Listing_Process_Design_v3.html</code></span>
+</div>
+
+<div class="callout" style="border-left:4px solid #0ea5e9;background:rgba(14,165,233,0.08);">
+  <strong style="color:#0ea5e9;">Changelog v2.0 (на основе ответа Nick Lykhovets в Slack, 23.04.2026)</strong>
+  <p style="margin:6px 0 0 0;">Добавлен блок <strong>Service scope</strong> на Page 10: multi-select по 4 SKU (Basic / Swap / Utility-Card / OnOff-Ramp) и branching для OnOff-Ramp (buy-back readiness, финансовая модель, volume estimate, triumvirate acknowledgment). Обновлена webhook-спецификация: <code>listing_handle_survey_webhook()</code> вычисляет <code>Listing_Tier_*_Eligible</code> и <code>Listing_Tier_OnRamp_PreScreen</code> из ответов. Остальные 11 страниц, ветвления и стоп-факторы не изменялись.</p>
+</div>
+
+<div class="callout">
+  <strong>Что это за документ.</strong> Полная спецификация для создания Zoho Survey, который используется на Stage 2 Blueprint-процесса листинга. Каждый вопрос имеет ID, тип поля, обязательность, опции ответа, правила ветвления и маппинг на custom field в Deal. По этой спецификации команда автоматизации собирает Survey в админке Zoho Survey, привязывает webhook и пишет <code>listing_handle_survey_webhook()</code>.
+</div>
+
+<div class="toc">
+  <h3>Содержание</h3>
+  <ol>
+    <li><a href="#overview">Обзор: цели, аудитория, интеграции</a></li>
+    <li><a href="#conventions">Конвенции: ID полей, типы, флаги</a></li>
+    <li><a href="#page-0">Page 0 &mdash; Welcome &amp; authentication</a></li>
+    <li><a href="#page-1">Page 1 &mdash; Project identity</a></li>
+    <li><a href="#page-2">Page 2 &mdash; Company &amp; legal entity</a></li>
+    <li><a href="#page-3">Page 3 &mdash; Token details &amp; network</a></li>
+    <li><a href="#page-4">Page 4 &mdash; Market &amp; liquidity</a></li>
+    <li><a href="#page-5">Page 5 &mdash; Token economics</a></li>
+    <li><a href="#page-6">Page 6 &mdash; Utility &amp; product</a></li>
+    <li><a href="#page-7">Page 7 &mdash; Team &amp; anti-anonymity</a></li>
+    <li><a href="#page-8">Page 8 &mdash; Legal, compliance &amp; sanctions self-declaration</a></li>
+    <li><a href="#page-9">Page 9 &mdash; Mandatory document uploads</a></li>
+    <li><a href="#page-10">Page 10 &mdash; Commercial preferences</a></li>
+    <li><a href="#page-11">Page 11 &mdash; Final declaration &amp; consent</a></li>
+    <li><a href="#stopfactor-logic">Сводная таблица стоп-факторов</a></li>
+    <li><a href="#branching-summary">Сводка правил ветвления (skip-logic)</a></li>
+    <li><a href="#webhook-spec">Webhook спецификация и payload-пример</a></li>
+    <li><a href="#zoho-settings">Zoho Survey settings: theme, language, notifications</a></li>
+    <li><a href="#implementation">Пошаговый план имплементации в Zoho Survey</a></li>
+  </ol>
+</div>
+
+<h2 id="overview">1. Обзор</h2>
+<p><strong>Цель.</strong> Собрать с B2B-партнёра всю информацию и документы, необходимые для принятия решения о листинге его токена в Vault, в формате, который позволяет автоматически:</p>
+<ol>
+  <li>Распознавать стоп-факторы (security / анонимность / санкции / утилити) и падать в terminal-стадии Blueprint-а без ручного разбора.</li>
+  <li>Определять режим листинга (Full / Partial / Virtual-Only / Custom-Negotiation) по матрице market&times;network, не заставляя клиента вручную выбирать.</li>
+  <li>Загружать все обязательные документы (whitepaper, legal opinion, registry extract, audit report) сразу в WorkDrive через upload-поля, без последующих email-overhead.</li>
+  <li>Мапить ответы 1-в-1 на custom fields в Deal &mdash; Compliance-офицер видит структурированные данные, а не PDF на 40 страниц.</li>
+</ol>
+
+<p><strong>Аудитория.</strong> C-level или compliance / BD-руководитель со стороны B2B-партнёра. Среднее время заполнения: <strong>35&ndash;50 минут</strong> при наличии документов на руках. Форма поддерживает <strong>save-and-resume</strong> &mdash; Zoho Survey генерирует уникальную resume-ссылку.</p>
+
+<p><strong>Языки.</strong> EN (основной) + RU (перевод) &mdash; multi-language feature Zoho Survey. Клиент выбирает язык на Page 0. Маппинг в Deal единый, независимо от языка заполнения.</p>
+
+<p><strong>Интеграции.</strong></p>
+<ul>
+  <li><strong>Zoho WorkDrive</strong> &mdash; upload-поля сохраняют файлы в папку <code>/Deals/{Deal_ID}/Survey_Attachments/</code>.</li>
+  <li><strong>Zoho CRM</strong> &mdash; webhook on submit &rarr; Deluge <code>listing_handle_survey_webhook()</code>.</li>
+  <li><strong>Slack</strong> &mdash; уведомление менеджеру о сабмите + алёрт compliance-офицеру при обнаружении стоп-фактора (канал <code>#listings</code> / <code>#compliance-listings</code>).</li>
+</ul>
+
+<h2 id="conventions">2. Конвенции</h2>
+
+<h3>Формат ID вопроса</h3>
+<p>Каждый вопрос имеет ID вида <code>Q_&lt;section&gt;_&lt;slug&gt;</code>, напр. <code>Q_identity_project_name</code>. ID мапится на custom field в Deal через словарь внутри <code>listing_handle_survey_webhook()</code>.</p>
+
+<h3>Типы полей (Zoho Survey native)</h3>
+<table>
+<tr><th>Тип</th><th>Zoho Survey control</th><th>Когда используем</th></tr>
+<tr><td>Short Text</td><td>Single Line Input</td><td>ticker, короткие идентификаторы, URL, суммы</td></tr>
+<tr><td>Long Text</td><td>Multi-line Input</td><td>описания 100+ слов, лонгриды</td></tr>
+<tr><td>Email</td><td>Email (валидация на формат)</td><td>email контактов</td></tr>
+<tr><td>URL</td><td>Website (валидация на URL)</td><td>website, twitter, explorer links</td></tr>
+<tr><td>Number</td><td>Numerical</td><td>supply, FDV, цена</td></tr>
+<tr><td>Single Choice</td><td>Radio / Dropdown</td><td>ограниченный выбор (network, category, jurisdiction)</td></tr>
+<tr><td>Multi Choice</td><td>Checkbox</td><td>несколько категорий, несколько бирж</td></tr>
+<tr><td>Date</td><td>Date Picker</td><td>TGE date, first release</td></tr>
+<tr><td>File Upload</td><td>File Upload (max 20 MB / file)</td><td>whitepaper, legal opinion, audit, registry extract</td></tr>
+<tr><td>Matrix</td><td>Matrix Grid</td><td>tokenomics distribution (rows=категории, cols=%, amount, unlock)</td></tr>
+<tr><td>Country</td><td>Dropdown с preloaded country list</td><td>страна регистрации, страна bank account</td></tr>
+<tr><td>Rating</td><td>&mdash;</td><td>не используется</td></tr>
+</table>
+
+<h3>Флаги в спецификации</h3>
+<table>
+<tr><th>Флаг</th><th>Значение</th></tr>
+<tr><td><span class="pill pill-req">REQUIRED</span></td><td>Обязательное поле, блокирует переход на следующую страницу</td></tr>
+<tr><td><span class="pill pill-opt">OPTIONAL</span></td><td>Необязательное, можно пропустить</td></tr>
+<tr><td><span class="pill pill-stop">STOP-FACTOR</span></td><td>Ответ может триггерить terminal-стадию Blueprint</td></tr>
+<tr><td><span class="pill pill-upload">UPLOAD</span></td><td>File upload поле &rarr; WorkDrive</td></tr>
+<tr><td><span class="pill pill-map">CRM field</span></td><td>Маппинг на custom field в Deal (точное имя)</td></tr>
+</table>
+
+<h2 id="page-0">3. Page 0 &mdash; Welcome &amp; authentication</h2>
+<div class="page">
+  <div class="page-header">
+    <div><strong>Вступительный экран</strong> &middot; нет вопросов, только verification</div>
+    <div class="page-num">PAGE 0 / 11</div>
+  </div>
+  <p>Zoho Survey ссылка на форму содержит pre-filled параметры: <code>?deal_id={Deal_ID}&amp;token={survey_token}</code>. Токен проверяется встроенным JavaScript (или server-side через webhook validation hook) &mdash; если deal_id/token не валиден, форма не отдаётся.</p>
+  <p>На экране &mdash; приветствие от имени Vault, ожидаемое время заполнения (35&ndash;50 мин), список документов, которые нужно подготовить заранее, контактный email для вопросов (<code>partnerships@vault.ist</code>), и выбор языка (EN / RU).</p>
+  <p><strong>Pre-fill из Deal:</strong> <code>Contact_Name</code>, <code>Contact_Email</code>, <code>Partner_Company</code> &mdash; подставляются как read-only context на welcome-экране.</p>
+</div>
+
+<h2 id="page-1">4. Page 1 &mdash; Project identity</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Идентификация проекта</strong> &middot; basic info, public data</div>
+    <div class="page-num">PAGE 1 / 11</div>
+  </div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_identity_project_name</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Project name</div>
+  <div class="q-hint">Официальное название проекта / протокола / экосистемы.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Project_Name</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_identity_ticker</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Token ticker / symbol</div>
+  <div class="q-hint">Например, BTC, ETH, USDC. Без $ в начале. Максимум 10 символов.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill">Validation: max 10 chars, uppercase only</span>
+    <span class="pill pill-map">Token_Ticker</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_identity_website</div>
+    <div class="q-type">URL</div>
+  </div>
+  <div class="q-label">Official website</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Website</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_identity_category</div>
+    <div class="q-type">Single Choice (Dropdown)</div>
+  </div>
+  <div class="q-label">Project category</div>
+  <div class="q-hint">Выберите одну &mdash; основную. Мульти-категории &mdash; в следующем вопросе.</div>
+  <ul class="q-options">
+    <li>DeFi / Lending / DEX</li>
+    <li>L1 Blockchain</li>
+    <li>L2 / Scaling / Rollup</li>
+    <li>Stablecoin</li>
+    <li>Gaming / GameFi</li>
+    <li>NFT / Collectibles</li>
+    <li>RWA (Real World Assets)</li>
+    <li>Infrastructure / Middleware</li>
+    <li>AI / Data</li>
+    <li>DePIN</li>
+    <li>Meme</li>
+    <li>Payments / Remittance</li>
+    <li>Identity / Privacy</li>
+    <li>Other (please specify)</li>
+  </ul>
+  <div class="branching">
+    <strong>Branching:</strong> Если <code>Meme</code> &rarr; показать soft-warning на submit-экране (не блокирующий, но flag в Deal: <code>Listing_Risk_Flag_Meme = true</code>).
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Category</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_identity_category_other</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Specify &laquo;Other&raquo; category</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать только если <code>Q_identity_category == "Other"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-map">Token_Category_Other</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_identity_description</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Project description &amp; highlights (100+ words)</div>
+  <div class="q-hint">Кратко: что делает проект, какую проблему решает, ключевые метрики/достижения, почему вы хотите листинг в Vault.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill">Validation: min 100 words</span>
+    <span class="pill pill-map">Token_Description</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_identity_twitter</div>
+    <div class="q-type">URL</div>
+  </div>
+  <div class="q-label">Official Twitter / X</div>
+  <div class="q-hint">Полный URL. Например: https://twitter.com/projectname</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Twitter</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_identity_telegram</div>
+    <div class="q-type">URL</div>
+  </div>
+  <div class="q-label">Telegram group / channel</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Telegram</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_identity_discord</div>
+    <div class="q-type">URL</div>
+  </div>
+  <div class="q-label">Discord / other social</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Discord</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_identity_github</div>
+    <div class="q-type">URL</div>
+  </div>
+  <div class="q-label">GitHub repository</div>
+  <div class="q-hint">Публичный репозиторий с кодом. Для non-code проектов &mdash; можно оставить пустым.</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Github</span>
+  </div>
+</div>
+
+</div> <!-- end page-1 -->
+
+<h2 id="page-2">5. Page 2 &mdash; Company &amp; legal entity</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Юрлицо-эмитент и страна</strong> &middot; критично для санкций-скрининга</div>
+    <div class="page-num">PAGE 2 / 11</div>
+  </div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_company_legal_name</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Legal name of issuing entity</div>
+  <div class="q-hint">Точное юридическое название компании, на которую будет оформлен листинговый договор. Пример: &laquo;Example Labs Foundation Ltd.&raquo;</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Partner_Legal_Name</span>
+  </div>
+</div>
+
+<div class="q required stopfactor">
+  <div class="q-head">
+    <div class="q-id">Q_company_country</div>
+    <div class="q-type">Single Choice (Country Dropdown)</div>
+  </div>
+  <div class="q-label">Country of registration</div>
+  <div class="q-hint">Страна инкорпорации компании (не страна founders, не страна операций).</div>
+  <div class="branching">
+    <strong>Stop-factor check:</strong> если выбрана страна из sanctions list (Iran, North Korea, Syria, Cuba, Crimea region, Russia post-Feb 2022, Belarus, Myanmar) &rarr; форма фиксирует флаг <code>Listing_SanctionedCountry = true</code>; webhook-обработчик переводит Deal в terminal-стадию <code>Отказ / Sanctions</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-stop">STOP-FACTOR</span>
+    <span class="pill pill-map">Partner_Country</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_company_reg_number</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Company registration number</div>
+  <div class="q-hint">Регистрационный номер в реестре страны инкорпорации. Пример: UK Company Number 12345678; BVI IBC No. 2012345.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Partner_Reg_Number</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_company_reg_date</div>
+    <div class="q-type">Date</div>
+  </div>
+  <div class="q-label">Date of incorporation</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Partner_Reg_Date</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_company_registered_address</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Registered office address</div>
+  <div class="q-hint">Полный адрес, как в registry extract. Улица, город, индекс, страна.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Partner_Reg_Address</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_company_directors</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Directors &amp; authorized signatories</div>
+  <div class="q-hint">ФИО всех директоров / authorized persons, которые будут подписывать договор от имени компании. Один на строку: &laquo;Имя Фамилия, должность, email, страна паспорта&raquo;.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Partner_Directors</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_company_ubo</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">UBO (Ultimate Beneficial Owners) with &gt;25% stake</div>
+  <div class="q-hint">ФИО + % доли + страна паспорта для каждого владельца с долей более 25%. Данные будут верифицированы через Sumsub KYB.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Partner_UBO</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_company_website_same</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Is the issuing entity the same as the project team that operates the website?</div>
+  <ul class="q-options">
+    <li>Yes &mdash; issuing entity = operating entity</li>
+    <li>No &mdash; different entity (please explain below)</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Partner_Entity_Structure_Flag</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_company_structure_explain</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Explain the legal structure</div>
+  <div class="q-hint">Если существуют Foundation, Labs, Ops company &mdash; опишите роли и взаимоотношения.</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать только если <code>Q_company_website_same == "No"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-map">Partner_Structure_Description</span>
+  </div>
+</div>
+
+</div> <!-- end page-2 -->
+
+<h2 id="page-3">6. Page 3 &mdash; Token details &amp; network</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Технические параметры токена</strong> &middot; определяет network support &amp; onchain mode</div>
+    <div class="page-num">PAGE 3 / 11</div>
+  </div>
+
+<div class="q required stopfactor">
+  <div class="q-head">
+    <div class="q-id">Q_token_network</div>
+    <div class="q-type">Single Choice (Dropdown)</div>
+  </div>
+  <div class="q-label">Blockchain network of the token</div>
+  <div class="q-hint">Основная сеть выпуска токена. Если токен multichain &mdash; выберите сеть, на которой вы хотите листинг в Vault.</div>
+  <ul class="q-options">
+    <li>Ethereum (ERC-20)</li>
+    <li>Arbitrum</li>
+    <li>Optimism</li>
+    <li>Base</li>
+    <li>Polygon PoS</li>
+    <li>BNB Chain (BEP-20)</li>
+    <li>Avalanche C-Chain</li>
+    <li>Tron (TRC-20)</li>
+    <li>Solana (SPL)</li>
+    <li>Bitcoin (BRC-20 / Runes)</li>
+    <li>Sui</li>
+    <li>Aptos</li>
+    <li>Near</li>
+    <li>Cosmos / IBC chain</li>
+    <li>TON</li>
+    <li>Other (please specify)</li>
+  </ul>
+  <div class="branching">
+    <strong>Branching (режим листинга):</strong>
+    <ul style="margin: 6px 0 0 0;">
+      <li>Ethereum / Arbitrum / Optimism / Base / Polygon / BNB Chain / Avalanche / Tron / Solana &rarr; <code>Listing_Network_Supported = true</code>, переход на <a href="#page-4">Page 4</a>.</li>
+      <li>Любая другая сеть &rarr; <code>Listing_Network_Supported = false</code>, <code>Listing_Mode_Candidate = Virtual-Only</code>, показать warning на Page 11.</li>
+      <li><code>Other</code> &rarr; показать <code>Q_token_network_other</code> и флаг для ручного ревью.</li>
+    </ul>
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-stop">STOP-FACTOR (мягкий)</span>
+    <span class="pill pill-map">Token_Network</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_token_network_other</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Specify other network</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать только если <code>Q_token_network == "Other"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-map">Token_Network_Other</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_token_contract</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Token contract address</div>
+  <div class="q-hint">Полный адрес контракта в выбранной сети. Для SPL &mdash; mint address. Для Tron &mdash; в формате T...</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill">Validation: regex по сети</span>
+    <span class="pill pill-map">Token_Contract_Address</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_token_explorer</div>
+    <div class="q-type">URL</div>
+  </div>
+  <div class="q-label">Explorer link to the token contract</div>
+  <div class="q-hint">Прямая ссылка на Etherscan / Tronscan / Solscan / etc. для верификации контракта.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Explorer_URL</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_token_decimals</div>
+    <div class="q-type">Number (Integer)</div>
+  </div>
+  <div class="q-label">Token decimals</div>
+  <div class="q-hint">Стандартно: ERC-20 / BEP-20 = 18, USDC/USDT = 6, SPL = обычно 6 или 9.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill">Validation: 0..32</span>
+    <span class="pill pill-map">Token_Decimals</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_token_tge_status</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">TGE status</div>
+  <ul class="q-options">
+    <li>TGE completed &mdash; token is live and trading</li>
+    <li>TGE scheduled within 30 days</li>
+    <li>TGE scheduled &gt; 30 days out</li>
+    <li>Pre-TGE, no date yet</li>
+  </ul>
+  <div class="branching">
+    <strong>Branching:</strong> Если <code>Pre-TGE, no date yet</code> &rarr; soft-warning: &laquo;Vault listing требует активный TGE; мы можем зарезервировать slot, но активация листинга &mdash; после TGE&raquo; + флаг <code>Listing_Pre_TGE = true</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_TGE_Status</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_token_tge_date</div>
+    <div class="q-type">Date</div>
+  </div>
+  <div class="q-label">TGE date (actual or planned)</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать если <code>Q_token_tge_status != "Pre-TGE, no date yet"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-map">Token_TGE_Date</span>
+  </div>
+</div>
+
+<div class="q required stopfactor">
+  <div class="q-head">
+    <div class="q-id">Q_token_security_flag</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Is this token classified as a security?</div>
+  <div class="q-hint">По законодательству юрисдикции юрлица-эмитента или по Howey test.</div>
+  <ul class="q-options">
+    <li>No &mdash; pure utility token</li>
+    <li>No &mdash; but also not sure, we have a legal opinion saying &laquo;not a security&raquo;</li>
+    <li>Yes &mdash; it is a security token (STO)</li>
+    <li>Unsure / no opinion yet</li>
+  </ul>
+  <div class="branching">
+    <strong>Stop-factor:</strong> <code>Yes</code> или <code>Unsure</code> &rarr; hard stop. Flag <code>Listing_Security_Flag = true</code>, terminal-стадия <code>Отказ / Security</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-stop">STOP-FACTOR</span>
+    <span class="pill pill-map">Token_Security_Classification</span>
+  </div>
+</div>
+
+</div> <!-- end page-3 -->
+
+<h2 id="page-4">7. Page 4 &mdash; Market &amp; liquidity</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Существующие рынки и ликвидность</strong> &middot; определяет mode: Full / Partial / Partner-Rate</div>
+    <div class="page-num">PAGE 4 / 11</div>
+  </div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_market_exchanges</div>
+    <div class="q-type">Multi Choice (Checkbox)</div>
+  </div>
+  <div class="q-label">Exchanges where the token is currently listed</div>
+  <div class="q-hint">Отметьте все биржи, где токен торгуется сейчас. &laquo;Not listed on any CEX&raquo; исключает остальные опции.</div>
+  <ul class="q-options">
+    <li>Binance</li>
+    <li>KuCoin <em>(supported by Vault)</em></li>
+    <li>Kraken</li>
+    <li>OKX</li>
+    <li>Bybit</li>
+    <li>Bitget</li>
+    <li>Gate.io</li>
+    <li>MEXC</li>
+    <li>HTX / Huobi</li>
+    <li>Coinbase</li>
+    <li>Other CEX (please list below)</li>
+    <li>DEX only (Uniswap / PancakeSwap / Raydium / etc.)</li>
+    <li>Not listed on any CEX or DEX yet</li>
+  </ul>
+  <div class="branching">
+    <strong>Mode detection:</strong>
+    <ul style="margin: 6px 0 0 0;">
+      <li>KuCoin отмечен &rarr; <code>Listing_Market_KuCoin = true</code>, <code>Listing_Mode_Candidate = Full</code> (если сеть тоже supported).</li>
+      <li>KuCoin не отмечен, но есть другой CEX &rarr; <code>Listing_Market_OtherCEX = true</code>, <code>Listing_Mode_Candidate = Custom-Negotiation</code>.</li>
+      <li>Только DEX или Not listed &rarr; <code>Listing_Mode_Candidate = Partner-Rate-Only</code>.</li>
+    </ul>
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Exchanges_List</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_market_other_cex</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">List other CEX where the token is listed</div>
+  <div class="q-hint">Название биржи + торговая пара (напр., &laquo;LBank: TKN/USDT&raquo;).</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать если в <code>Q_market_exchanges</code> отмечено <code>Other CEX</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-map">Token_Other_CEX_List</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_market_avg_daily_volume</div>
+    <div class="q-type">Number</div>
+  </div>
+  <div class="q-label">Average daily trading volume (USD, last 30 days, all CEX combined)</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать если в <code>Q_market_exchanges</code> отмечена хотя бы одна CEX.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Daily_Volume_USD</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_market_maker</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Market maker / liquidity provider (if any)</div>
+  <div class="q-hint">Название партнёра (Wintermute, GSR, Flowdesk и т.д.). Укажите &laquo;None&raquo;, если нет.</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Market_Maker</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_market_partner_rate</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">If Vault offers Partner-Rate-Only mode (no sell-back), would you be interested?</div>
+  <div class="q-hint">Partner-Rate-Only &mdash; Vault продаёт ваш токен по курсу, который вы зафиксировали. Обратная операция (продажа пользователем) не поддерживается.</div>
+  <ul class="q-options">
+    <li>Yes &mdash; buy-only mode is acceptable</li>
+    <li>No &mdash; we need full buy/sell to list</li>
+    <li>Depends on commercial terms &mdash; need discussion</li>
+  </ul>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать только если <code>Listing_Mode_Candidate == "Partner-Rate-Only"</code> (т.е. нет рынка на CEX).
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-map">Token_PartnerRate_Consent</span>
+  </div>
+</div>
+
+</div> <!-- end page-4 -->
+
+<h2 id="page-5">8. Page 5 &mdash; Token economics</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Supply, distribution, vesting</strong> &middot; ключевые цифры для risk review</div>
+    <div class="page-num">PAGE 5 / 11</div>
+  </div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_econ_total_supply</div>
+    <div class="q-type">Number</div>
+  </div>
+  <div class="q-label">Total supply (max)</div>
+  <div class="q-hint">Максимальная эмиссия. Если токен с infinite supply (напр., rebasing) &mdash; укажите текущий supply и пометьте в <code>Q_econ_supply_note</code>.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Total_Supply</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_econ_circulating_supply</div>
+    <div class="q-type">Number</div>
+  </div>
+  <div class="q-label">Circulating supply (current, or at TGE if pre-TGE)</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Circulating_Supply</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_econ_current_price</div>
+    <div class="q-type">Number (Decimal)</div>
+  </div>
+  <div class="q-label">Current token price (USD)</div>
+  <div class="q-hint">Для торгующихся токенов &mdash; текущая рыночная цена. Для pre-TGE &mdash; последняя funding round valuation.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Current_Price_USD</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_econ_fdv</div>
+    <div class="q-type">Number</div>
+  </div>
+  <div class="q-label">Fully diluted valuation (USD)</div>
+  <div class="q-hint">= total_supply &times; current_price.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_FDV_USD</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_econ_distribution</div>
+    <div class="q-type">Matrix Grid</div>
+  </div>
+  <div class="q-label">Tokenomics distribution</div>
+  <div class="q-hint">Для каждой категории allocation укажите % от total supply, объём токенов, vesting план (месяцев), % unlocked at TGE, дату первого release.</div>
+  <p><strong>Rows (pre-filled allocation categories):</strong></p>
+  <ul class="q-options">
+    <li>Team</li>
+    <li>Advisors</li>
+    <li>Private / Seed investors</li>
+    <li>Public sale</li>
+    <li>Foundation / Treasury</li>
+    <li>Ecosystem / Community</li>
+    <li>Staking rewards</li>
+    <li>Liquidity</li>
+    <li>Airdrop</li>
+    <li>Marketing / Partnerships</li>
+    <li>Other (specify in note below)</li>
+  </ul>
+  <p><strong>Columns:</strong> % of Total Supply &middot; Token Amount &middot; Vesting (months) &middot; TGE Unlock (%) &middot; First Release Date</p>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill">Validation: сумма % = 100</span>
+    <span class="pill pill-map">Token_Distribution_Matrix</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_econ_burn_schedule</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Burn / emission schedule (if applicable)</div>
+  <div class="q-hint">Опишите механизм: fixed cap, deflationary burn, inflation rate, staking inflation. Если токен с fixed supply и нет burn &mdash; напишите &laquo;Fixed supply, no burn&raquo;.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Burn_Emission</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_econ_supply_note</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Additional notes on supply / tokenomics</div>
+  <div class="q-hint">Rebasing, bonding curve, dynamic supply, token upgrades, governance-controlled emission etc.</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Supply_Notes</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_econ_top10_holders</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Top 10 token holder addresses</div>
+  <div class="q-hint">Формат: <code>&lt;address&gt; | &lt;token amount&gt; | &lt;% of supply&gt; | &lt;holder info: team/investor/treasury/exchange&gt;</code> &mdash; по одной строке. Пропустите, если pre-TGE.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (if post-TGE)</span>
+    <span class="pill pill-map">Token_Top10_Holders</span>
+  </div>
+</div>
+
+</div> <!-- end page-5 -->
+
+<h2 id="page-6">9. Page 6 &mdash; Utility &amp; product</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Утилитарность токена + стадия продукта</strong> &middot; стоп-фактор utility</div>
+    <div class="page-num">PAGE 6 / 11</div>
+  </div>
+
+<div class="q required stopfactor">
+  <div class="q-head">
+    <div class="q-id">Q_utility_description</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Token utility (100+ words)</div>
+  <div class="q-hint">Чётко опишите: зачем пользователю держать токен, какие функции он даёт (governance, fee payment, staking, access, reward). Если utility &mdash; только &laquo;speculation&raquo; или &laquo;value accrual&raquo;, так и напишите.</div>
+  <div class="branching">
+    <strong>Stop-factor:</strong> manual review по ответу. При ключевых маркерах &laquo;pure speculation&raquo;, &laquo;no functional use&raquo; &mdash; compliance flag <code>Listing_Utility_Weak = true</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill">Validation: min 100 words</span>
+    <span class="pill pill-stop">STOP-FACTOR (soft)</span>
+    <span class="pill pill-map">Token_Utility_Description</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_utility_functions</div>
+    <div class="q-type">Multi Choice (Checkbox)</div>
+  </div>
+  <div class="q-label">Primary token functions (check all that apply)</div>
+  <ul class="q-options">
+    <li>Governance / voting</li>
+    <li>Fee payment / gas</li>
+    <li>Staking &amp; rewards</li>
+    <li>Access to product features / membership</li>
+    <li>Collateral / lending</li>
+    <li>Incentive / airdrop / loyalty</li>
+    <li>Ecosystem reward / node operation</li>
+    <li>Liquidity provision reward</li>
+    <li>Other (specify)</li>
+  </ul>
+  <div class="branching">
+    <strong>Stop-factor check:</strong> если ни одна опция не отмечена &rarr; <code>Listing_Utility_Weak = true</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Utility_Functions</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_product_stage</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Product development stage</div>
+  <ul class="q-options">
+    <li>Idea / whitepaper only</li>
+    <li>Testnet / closed beta</li>
+    <li>MVP live (public)</li>
+    <li>Product in production with active users</li>
+    <li>Mature product with revenue</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Product_Stage</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_product_url</div>
+    <div class="q-type">URL</div>
+  </div>
+  <div class="q-label">Product demo / live URL</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать если <code>Q_product_stage != "Idea / whitepaper only"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-map">Token_Product_URL</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_product_dau</div>
+    <div class="q-type">Number</div>
+  </div>
+  <div class="q-label">Current Daily Active Users (DAU)</div>
+  <div class="q-hint">По продукту. 0 если нет пользователей.</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать если <code>Q_product_stage IN ["MVP live", "Product in production", "Mature product"]</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Product_DAU</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_roadmap</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Development plan &mdash; next 3 months</div>
+  <div class="q-hint">Product milestones + marketing milestones, кратко.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Roadmap_Q</span>
+  </div>
+</div>
+
+</div> <!-- end page-6 -->
+
+<h2 id="page-7">10. Page 7 &mdash; Team &amp; anti-anonymity</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Команда проекта</strong> &middot; anonymous team = hard stop</div>
+    <div class="page-num">PAGE 7 / 11</div>
+  </div>
+
+<div class="q required stopfactor">
+  <div class="q-head">
+    <div class="q-id">Q_team_anonymity</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Is the core team public (doxxed) or anonymous?</div>
+  <ul class="q-options">
+    <li>Fully public &mdash; all core team has verified identity (LinkedIn / public profile)</li>
+    <li>Partially public &mdash; some team members are public, some are pseudonymous</li>
+    <li>Fully anonymous / pseudonymous team</li>
+  </ul>
+  <div class="branching">
+    <strong>Stop-factor:</strong> <code>Fully anonymous</code> &rarr; hard stop, <code>Listing_Team_Anonymous = true</code>, terminal-стадия <code>Отказ / Anonymous Team</code>. <code>Partially public</code> &rarr; soft flag, compliance ревью вручную.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-stop">STOP-FACTOR</span>
+    <span class="pill pill-map">Token_Team_Anonymity</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_team_members</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Core team members</div>
+  <div class="q-hint">Формат: <code>Имя Фамилия | Должность | Email | LinkedIn URL | Telegram ID | Страна | 100+ слов про опыт и достижения</code> &mdash; одна запись на строку (или разделяйте <code>---</code>). Минимум CEO/Founder и CTO.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Team_Members</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_advisors</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Advisors / investors</div>
+  <div class="q-hint">Имя + роль (advisor / investor / board) + ссылка на публичное подтверждение (твит, пресс-релиз, LinkedIn).</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Advisors_Investors</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_funding_rounds</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Funding rounds history</div>
+  <div class="q-hint">Формат: <code>Round | Raised USD | Valuation | Date | Lead investor | Announcement URL</code>.</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Funding_History</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_partnerships</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Notable official partnerships</div>
+  <div class="q-hint">Формат: <code>Partner name | Collaboration type | Announcement URL</code>.</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Token_Partnerships</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_competitors</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Main competitors &amp; competitive advantages (100+ words)</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill">Validation: min 100 words</span>
+    <span class="pill pill-map">Token_Competitive_Analysis</span>
+  </div>
+</div>
+
+</div> <!-- end page-7 -->
+
+<h2 id="page-8">11. Page 8 &mdash; Legal, compliance &amp; sanctions self-declaration</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Юридическая часть</strong> &middot; санкции, legal opinion, audits</div>
+    <div class="page-num">PAGE 8 / 11</div>
+  </div>
+
+<div class="q required stopfactor">
+  <div class="q-head">
+    <div class="q-id">Q_sanctions_self</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Are the issuing entity, its directors, or UBOs listed on any sanctions list (OFAC, UN, EU, UK)?</div>
+  <ul class="q-options">
+    <li>No &mdash; none of the above are sanctioned</li>
+    <li>Yes &mdash; one or more entities/persons are on a sanctions list</li>
+    <li>Unsure &mdash; have not checked</li>
+  </ul>
+  <div class="branching">
+    <strong>Stop-factor:</strong> <code>Yes</code> &rarr; hard stop, <code>Listing_Sanctions_SelfDecl = true</code>. <code>Unsure</code> &rarr; soft warning + обязательный OFAC-скрининг на Stage 3.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-stop">STOP-FACTOR</span>
+    <span class="pill pill-map">Token_Sanctions_SelfDecl</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_legal_opinion_status</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Legal opinion on token classification</div>
+  <ul class="q-options">
+    <li>Yes &mdash; we have a legal opinion from a qualified law firm (will upload on Page 9)</li>
+    <li>No, but we are willing to obtain one if needed</li>
+    <li>No, and we don't plan to get one</li>
+  </ul>
+  <div class="branching">
+    <strong>Stop-factor:</strong> <code>No, and we don't plan to get one</code> &rarr; hard stop, <code>Listing_No_LegalOpinion = true</code>, terminal-стадия <code>Отказ / No Legal Opinion</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-stop">STOP-FACTOR</span>
+    <span class="pill pill-map">Token_Legal_Opinion_Status</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_legal_opinion_jurisdiction</div>
+    <div class="q-type">Single Choice (Country Dropdown)</div>
+  </div>
+  <div class="q-label">Legal opinion jurisdiction</div>
+  <div class="q-hint">Страна, под правом которой подготовлен Legal Opinion. Предпочтительные: Switzerland, Singapore, UAE, BVI, Cayman, Liechtenstein, Estonia.</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать если <code>Q_legal_opinion_status == "Yes"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-map">Token_Legal_Opinion_Jurisdiction</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_audit_status</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Smart contract audit status</div>
+  <ul class="q-options">
+    <li>Yes &mdash; audited by recognized firm (will upload audit report)</li>
+    <li>Audit in progress</li>
+    <li>Not audited &mdash; no plans</li>
+    <li>N/A &mdash; token contract is standard (ERC-20 reference) without custom logic</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Audit_Status</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_audit_firm</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Auditing company name</div>
+  <div class="q-hint">Certik, Quantstamp, Trail of Bits, OpenZeppelin, Hacken, Halborn и т.д.</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать если <code>Q_audit_status IN ["Yes", "Audit in progress"]</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-map">Token_Audit_Firm</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_litigation</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Outstanding litigation or regulatory action against the project / issuing entity?</div>
+  <ul class="q-options">
+    <li>No &mdash; none</li>
+    <li>Yes &mdash; specify below</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Token_Litigation_Flag</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_litigation_details</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Litigation details</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать если <code>Q_litigation == "Yes"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-stop">STOP-FACTOR (soft)</span>
+    <span class="pill pill-map">Token_Litigation_Details</span>
+  </div>
+</div>
+
+</div> <!-- end page-8 -->
+
+<h2 id="page-9">12. Page 9 &mdash; Mandatory document uploads</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Документы</strong> &middot; файлы летят прямо в WorkDrive</div>
+    <div class="page-num">PAGE 9 / 11</div>
+  </div>
+
+<div class="callout callout-warn">
+  <strong>Важно.</strong> Документы загружаются в WorkDrive в папку <code>/Deals/{Deal_ID}/Survey_Attachments/</code>. Max размер файла &mdash; 20 MB. Допустимые форматы: PDF, DOCX, PNG, JPG. Имена файлов сохраняются как есть; Vault переименовывает по шаблону <code>{DealID}_{DocType}_{Timestamp}.pdf</code> при перемещении в финальную папку.
+</div>
+
+<div class="q upload">
+  <div class="q-head">
+    <div class="q-id">Q_upload_whitepaper</div>
+    <div class="q-type">File Upload</div>
+  </div>
+  <div class="q-label">Whitepaper (technical + tokenomics)</div>
+  <div class="q-hint">Основной документ проекта. Может быть комбинированным (technical + economics) или двумя файлами.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-upload">UPLOAD</span>
+    <span class="pill">Formats: PDF, DOCX</span>
+    <span class="pill pill-map">Token_Whitepaper_URL</span>
+  </div>
+</div>
+
+<div class="q upload">
+  <div class="q-head">
+    <div class="q-id">Q_upload_registry_extract</div>
+    <div class="q-type">File Upload</div>
+  </div>
+  <div class="q-label">Registry extract / certificate of incorporation</div>
+  <div class="q-hint">Официальная выписка из реестра страны регистрации, выданная не ранее 6 месяцев назад. Содержит: reg number, директоров, адрес.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-upload">UPLOAD</span>
+    <span class="pill">Formats: PDF</span>
+    <span class="pill pill-map">Partner_Registry_Extract_URL</span>
+  </div>
+</div>
+
+<div class="q upload">
+  <div class="q-head">
+    <div class="q-id">Q_upload_legal_opinion</div>
+    <div class="q-type">File Upload</div>
+  </div>
+  <div class="q-label">Legal opinion on token classification</div>
+  <div class="q-hint">Memo or formal opinion подтверждающий, что токен &mdash; не security по применимому праву.</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать только если <code>Q_legal_opinion_status == "Yes"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-upload">UPLOAD</span>
+    <span class="pill">Formats: PDF</span>
+    <span class="pill pill-map">Token_Legal_Opinion_URL</span>
+  </div>
+</div>
+
+<div class="q upload">
+  <div class="q-head">
+    <div class="q-id">Q_upload_audit_report</div>
+    <div class="q-type">File Upload</div>
+  </div>
+  <div class="q-label">Smart contract audit report</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать только если <code>Q_audit_status == "Yes"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-upload">UPLOAD</span>
+    <span class="pill">Formats: PDF</span>
+    <span class="pill pill-map">Token_Audit_Report_URL</span>
+  </div>
+</div>
+
+<div class="q upload">
+  <div class="q-head">
+    <div class="q-id">Q_upload_ubo_passports</div>
+    <div class="q-type">File Upload (multiple)</div>
+  </div>
+  <div class="q-label">UBO passports / ID documents</div>
+  <div class="q-hint">Сканы паспортов всех UBO с долей &gt;25%. Можно загрузить несколько файлов. Также используется для предзаполнения Sumsub KYB.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-upload">UPLOAD (multi)</span>
+    <span class="pill">Formats: PDF, PNG, JPG</span>
+    <span class="pill pill-map">Partner_UBO_IDs_URL_List</span>
+  </div>
+</div>
+
+<div class="q upload">
+  <div class="q-head">
+    <div class="q-id">Q_upload_pitch_deck</div>
+    <div class="q-type">File Upload</div>
+  </div>
+  <div class="q-label">Pitch deck / investor presentation</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-upload">UPLOAD</span>
+    <span class="pill">Formats: PDF, PPTX</span>
+    <span class="pill pill-map">Token_Pitch_Deck_URL</span>
+  </div>
+</div>
+
+<div class="q upload">
+  <div class="q-head">
+    <div class="q-id">Q_upload_financial_plan</div>
+    <div class="q-type">File Upload</div>
+  </div>
+  <div class="q-label">Financial plan / treasury runway (optional)</div>
+  <div class="q-hint">Если есть &mdash; поможет compliance-ревью. 12+ month treasury runway &mdash; позитивный сигнал.</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-upload">UPLOAD</span>
+    <span class="pill">Formats: PDF, XLSX</span>
+    <span class="pill pill-map">Token_Financial_Plan_URL</span>
+  </div>
+</div>
+
+<div class="q upload">
+  <div class="q-head">
+    <div class="q-id">Q_upload_company_structure</div>
+    <div class="q-type">File Upload</div>
+  </div>
+  <div class="q-label">Corporate structure chart (Foundation / Labs / Ops)</div>
+  <div class="branching">
+    <strong>Visibility:</strong> показывать только если <code>Q_company_website_same == "No"</code>.
+  </div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (conditional)</span>
+    <span class="pill pill-upload">UPLOAD</span>
+    <span class="pill">Formats: PDF, PNG</span>
+    <span class="pill pill-map">Partner_Structure_Chart_URL</span>
+  </div>
+</div>
+
+</div> <!-- end page-9 -->
+
+<h2 id="page-10">13. Page 10 &mdash; Commercial preferences</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Коммерческие предпочтения</strong> &middot; помогают собрать оффер</div>
+    <div class="page-num">PAGE 10 / 11</div>
+  </div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_commercial_target_date</div>
+    <div class="q-type">Date</div>
+  </div>
+  <div class="q-label">Target go-live date for listing</div>
+  <div class="q-hint">Когда вам нужно, чтобы листинг стал активен. Vault SLA &mdash; 20 рабочих дней от подписанного договора.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Listing_Target_GoLive</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_commercial_expected_volume</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Expected listing volume (first 6 months, USD)</div>
+  <div class="q-hint">Оценочно, не обязывающее. Помогает подобрать commercial tier.</div>
+  <ul class="q-options">
+    <li>&lt; $100K</li>
+    <li>$100K &ndash; $500K</li>
+    <li>$500K &ndash; $2M</li>
+    <li>$2M &ndash; $10M</li>
+    <li>&gt; $10M</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Listing_Expected_Volume_Tier</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_commercial_cobrand</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Are you interested in co-branded marketing at launch?</div>
+  <ul class="q-options">
+    <li>Yes &mdash; joint PR, social, AMA</li>
+    <li>No &mdash; plain listing is fine</li>
+    <li>Maybe &mdash; let's discuss</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Listing_CoBrand_Interest</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_commercial_notes</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Any special commercial requests or constraints</div>
+  <div class="q-hint">Exclusivity, minimum price commitments, rebate structure, anything commercial, что вы хотите обсудить.</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Listing_Commercial_Notes</span>
+  </div>
+</div>
+
+<!-- ============== v2: SERVICE SCOPE BLOCK ============== -->
+<div style="margin-top:24px;padding:16px;border:1px solid #0ea5e9;border-radius:6px;background:rgba(14,165,233,0.04);">
+  <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#0ea5e9;margin-bottom:6px;">Service scope (v2 block)</div>
+  <div style="font-size:13px;margin-bottom:14px;">Вопросы ниже определяют, какие SKU клиент запрашивает. Eligibility считается автоматически при submit опросника на основе ответов Page 3/4 (ликвидность, CEX-листинги) и этого блока. Финальный assignment делает sales в Stage 4.</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_tier_requested</div>
+    <div class="q-type">Multi-Select (Checkbox)</div>
+  </div>
+  <div class="q-label">Which Vault product functions do you want for this token?</div>
+  <div class="q-hint">Отметьте все интересующие функции. Базовая функция &laquo;Deposit &amp; withdrawal + priority display in wallet&raquo; включена всегда.</div>
+  <ul class="q-options">
+    <li><strong>Basic</strong> &mdash; Deposit &amp; withdrawal, priority display in wallet <em>(included, can&rsquo;t uncheck)</em></li>
+    <li><strong>+Swap</strong> &mdash; token swap for users (requires DEX liquidity or CEX-listing)</li>
+    <li><strong>+Utility-Card</strong> &mdash; top-up Vault card via swap + off-ramp (requires Swap)</li>
+    <li><strong>+OnOff-Ramp</strong> &mdash; custom on/off ramp integration (requires issuer buy-back commitment + triumvirate approval)</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Listing_Tier_Requested</span>
+  </div>
+</div>
+
+<!-- Branching block: shown only if OnOff-Ramp checked -->
+<div style="margin-top:10px;padding:12px;border-left:3px solid #0ea5e9;background:rgba(14,165,233,0.06);">
+<div style="font-size:11px;color:#0ea5e9;margin-bottom:8px;"><strong>BRANCHING:</strong> показывается только если в Q_tier_requested выбран <code>+OnOff-Ramp</code></div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_onramp_buyback_ready</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">Are you (issuer) ready to commit to a buy-back arrangement for your token as part of the on/off ramp structure?</div>
+  <div class="q-hint">Custom on/off ramp требует, чтобы эмитент обратно выкупал токен по согласованной финансовой схеме. Без этого commitment OnOff-Ramp не доступен &mdash; возможен downgrade до +Utility-Card.</div>
+  <ul class="q-options">
+    <li>Yes &mdash; we confirm readiness to buy-back</li>
+    <li>No &mdash; not ready &mdash; <em>auto-downgrades OnOff-Ramp off</em></li>
+    <li>Need more details before answering</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (if OnOff-Ramp checked)</span>
+    <span class="pill pill-map">Listing_Buyback_Ready</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_onramp_buyback_model</div>
+    <div class="q-type">File Upload (PDF/XLSX, max 20 MB)</div>
+  </div>
+  <div class="q-label">Upload your buy-back financial model (optional on this step, required in Stage 6)</div>
+  <div class="q-hint">Draft is fine &mdash; можно загрузить предварительный вариант. В Stage 6 (KYB) требуется финализированная модель, согласованная с вашим finance-отделом.</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL (at this stage)</span>
+    <span class="pill pill-map">Listing_Buyback_Model_Url</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_onramp_volume_estimate</div>
+    <div class="q-type">Currency (USD)</div>
+  </div>
+  <div class="q-label">Estimated monthly on/off ramp volume (USD)</div>
+  <div class="q-hint">Оценочный объём операций on/off ramp через ваш токен в месяц. Важно для расчёта buy-back модели.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (if OnOff-Ramp checked)</span>
+    <span class="pill pill-map">Listing_OnRamp_Volume_Estimate_Usd</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_onramp_ack_triumvirate</div>
+    <div class="q-type">Single Checkbox (acknowledgment)</div>
+  </div>
+  <div class="q-label">Acknowledgment: I understand that OnOff-Ramp requires additional approval from Vault leadership (Alexey, Kirill, Valeria) and may add 1&ndash;2 weeks to timeline</div>
+  <div class="q-hint">Без этого acknowledgment OnOff-Ramp не активируется. Если не готовы принять дополнительное время &mdash; отметьте в Q_tier_requested только стандартные пакеты.</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED (if OnOff-Ramp checked)</span>
+    <span class="pill pill-map">Listing_OnRamp_Ack_Triumvirate</span>
+  </div>
+</div>
+
+</div> <!-- end branching -->
+</div> <!-- end service-scope block -->
+
+</div> <!-- end page-10 -->
+
+<h2 id="page-11">14. Page 11 &mdash; Final declaration &amp; consent</h2>
+
+<div class="page">
+  <div class="page-header">
+    <div><strong>Декларации и подписи</strong> &middot; финальный экран</div>
+    <div class="page-num">PAGE 11 / 11</div>
+  </div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_declaration_accuracy</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">I confirm that all information provided is true, complete, and accurate to the best of my knowledge.</div>
+  <ul class="q-options">
+    <li>Yes, I confirm</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Listing_Declaration_Accuracy</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_declaration_kyb_consent</div>
+    <div class="q-type">Single Choice (Radio)</div>
+  </div>
+  <div class="q-label">I consent to Vault performing KYB / sanctions / PEP screening on the issuing entity and its UBOs via Sumsub.</div>
+  <ul class="q-options">
+    <li>Yes, I consent</li>
+  </ul>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Listing_KYB_Consent</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_declaration_signer</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Your full name (person completing this form)</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Listing_Form_Signer</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_declaration_position</div>
+    <div class="q-type">Short Text</div>
+  </div>
+  <div class="q-label">Your position at the issuing entity</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill pill-map">Listing_Form_Signer_Position</span>
+  </div>
+</div>
+
+<div class="q required">
+  <div class="q-head">
+    <div class="q-id">Q_declaration_email</div>
+    <div class="q-type">Email</div>
+  </div>
+  <div class="q-label">Your corporate email</div>
+  <div class="q-meta">
+    <span class="pill pill-req">REQUIRED</span>
+    <span class="pill">Validation: domain must match Q_identity_website (warning, not hard block)</span>
+    <span class="pill pill-map">Listing_Form_Signer_Email</span>
+  </div>
+</div>
+
+<div class="q optional">
+  <div class="q-head">
+    <div class="q-id">Q_declaration_additional</div>
+    <div class="q-type">Long Text</div>
+  </div>
+  <div class="q-label">Anything else you'd like Vault's compliance team to know</div>
+  <div class="q-meta">
+    <span class="pill pill-opt">OPTIONAL</span>
+    <span class="pill pill-map">Listing_Additional_Notes</span>
+  </div>
+</div>
+
+</div> <!-- end page-11 -->
+
+<h2 id="stopfactor-logic">15. Сводная таблица стоп-факторов</h2>
+
+<table>
+<tr><th>Stop-factor</th><th>Triggered by</th><th>CRM flag</th><th>Action on webhook</th></tr>
+<tr>
+  <td>Security classification</td>
+  <td><code>Q_token_security_flag</code> = Yes / Unsure</td>
+  <td><code>Listing_Security_Flag</code></td>
+  <td>Deal &rarr; <code>Отказ / Security</code>, Slack alert to compliance</td>
+</tr>
+<tr>
+  <td>Anonymous team</td>
+  <td><code>Q_team_anonymity</code> = Fully anonymous</td>
+  <td><code>Listing_Team_Anonymous</code></td>
+  <td>Deal &rarr; <code>Отказ / Anonymous Team</code>, Slack alert</td>
+</tr>
+<tr>
+  <td>Sanctioned country</td>
+  <td><code>Q_company_country</code> in sanctions list</td>
+  <td><code>Listing_SanctionedCountry</code></td>
+  <td>Deal &rarr; <code>Отказ / Sanctions</code>, Slack alert, notify legal</td>
+</tr>
+<tr>
+  <td>Sanctions self-declaration</td>
+  <td><code>Q_sanctions_self</code> = Yes</td>
+  <td><code>Listing_Sanctions_SelfDecl</code></td>
+  <td>Deal &rarr; <code>Отказ / Sanctions</code>, Slack alert</td>
+</tr>
+<tr>
+  <td>No legal opinion (hard)</td>
+  <td><code>Q_legal_opinion_status</code> = &laquo;No, and we don't plan to get one&raquo;</td>
+  <td><code>Listing_No_LegalOpinion</code></td>
+  <td>Deal &rarr; <code>Отказ / No Legal Opinion</code></td>
+</tr>
+<tr>
+  <td>Weak utility (soft)</td>
+  <td>Нет ни одной опции в <code>Q_utility_functions</code> или флаги в <code>Q_utility_description</code></td>
+  <td><code>Listing_Utility_Weak</code></td>
+  <td>Deal остаётся в compliance-ревью, но с warning для compliance officer</td>
+</tr>
+<tr>
+  <td>Unsupported network (soft)</td>
+  <td><code>Q_token_network</code> не в списке supported</td>
+  <td><code>Listing_Network_Supported = false</code></td>
+  <td>Mode &rarr; Virtual-Only, warning manager, commercial offer adjusts</td>
+</tr>
+<tr>
+  <td>No market (soft)</td>
+  <td><code>Q_market_exchanges</code> = &laquo;Not listed&raquo; или DEX-only</td>
+  <td><code>Listing_Mode_Candidate = Partner-Rate-Only</code></td>
+  <td>Mode &rarr; Partner-Rate, Vault продаёт по курсу партнёра, sell-back отключен</td>
+</tr>
+<tr>
+  <td>Litigation</td>
+  <td><code>Q_litigation</code> = Yes</td>
+  <td><code>Listing_Litigation_Flag</code></td>
+  <td>Soft flag, compliance ревью вручную</td>
+</tr>
+<tr>
+  <td>Pre-TGE</td>
+  <td><code>Q_token_tge_status</code> = Pre-TGE, no date yet</td>
+  <td><code>Listing_Pre_TGE</code></td>
+  <td>Warning, Deal &laquo;reserved slot&raquo;, активация после TGE</td>
+</tr>
+</table>
+
+<h2 id="branching-summary">16. Сводка правил ветвления</h2>
+
+<table>
+<tr><th>Condition</th><th>Shown question</th><th>Hidden question</th></tr>
+<tr><td><code>Q_identity_category == "Other"</code></td><td><code>Q_identity_category_other</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_company_website_same == "No"</code></td><td><code>Q_company_structure_explain</code>, <code>Q_upload_company_structure</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_token_network == "Other"</code></td><td><code>Q_token_network_other</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_token_tge_status != "Pre-TGE"</code></td><td><code>Q_token_tge_date</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_market_exchanges</code> contains &laquo;Other CEX&raquo;</td><td><code>Q_market_other_cex</code></td><td>&mdash;</td></tr>
+<tr><td>Mode candidate = Partner-Rate-Only</td><td><code>Q_market_partner_rate</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_product_stage != "Idea"</code></td><td><code>Q_product_url</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_product_stage IN ["MVP live", "Production", "Mature"]</code></td><td><code>Q_product_dau</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_legal_opinion_status == "Yes"</code></td><td><code>Q_legal_opinion_jurisdiction</code>, <code>Q_upload_legal_opinion</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_audit_status IN ["Yes", "In progress"]</code></td><td><code>Q_audit_firm</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_audit_status == "Yes"</code></td><td><code>Q_upload_audit_report</code></td><td>&mdash;</td></tr>
+<tr><td><code>Q_litigation == "Yes"</code></td><td><code>Q_litigation_details</code></td><td>&mdash;</td></tr>
+<tr style="background:rgba(14,165,233,0.05);"><td><strong style="color:#0ea5e9;">(v2)</strong> <code>Q_tier_requested</code> contains &laquo;+OnOff-Ramp&raquo;</td><td><code>Q_onramp_buyback_ready</code>, <code>Q_onramp_buyback_model</code>, <code>Q_onramp_volume_estimate</code>, <code>Q_onramp_ack_triumvirate</code></td><td>&mdash;</td></tr>
+</table>
+
+<h2 id="webhook-spec">17. Webhook спецификация</h2>
+
+<h3>Endpoint &amp; auth</h3>
+<p>Zoho Survey &rarr; HTTPS POST to Vault CRM endpoint: <code>https://www.zohoapis.com/crm/v2/functions/listing_handle_survey_webhook/actions/execute?auth_type=apikey&amp;zapikey=&lt;api_key&gt;</code></p>
+<p>Auth: API key (pre-shared) + optional HMAC signature header <code>X-Survey-Signature</code> с SHA256 подписью payload + shared secret из ENV.</p>
+
+<h3>Payload shape (submitted on final page)</h3>
+<pre><code>{
+  "survey_id": "listing_dd_v1",
+  "response_id": "1234567890",
+  "submitted_at": "2026-04-22T15:30:00Z",
+  "deal_id": "5719234000001234567",   // from URL pre-fill
+  "language": "en",
+  "answers": {
+    "Q_identity_project_name": "Example Protocol",
+    "Q_identity_ticker": "EXP",
+    "Q_identity_website": "https://example.xyz",
+    "Q_identity_category": "DeFi / Lending / DEX",
+    "Q_identity_description": "Example Protocol is...",
+    "Q_identity_twitter": "https://twitter.com/exampleproto",
+    "Q_company_legal_name": "Example Labs Foundation Ltd.",
+    "Q_company_country": "British Virgin Islands",
+    "Q_company_reg_number": "2012345",
+    "Q_company_reg_date": "2023-05-12",
+    "Q_company_registered_address": "PO Box 3321, Road Town, Tortola, BVI",
+    "Q_company_directors": "Alice Smith, CEO, alice@example.xyz, UK",
+    "Q_company_ubo": "Alice Smith, 60%, UK; Bob Chen, 30%, SG",
+    "Q_company_website_same": "Yes",
+    "Q_token_network": "Ethereum (ERC-20)",
+    "Q_token_contract": "0x1234...abcd",
+    "Q_token_explorer": "https://etherscan.io/token/0x1234...abcd",
+    "Q_token_decimals": 18,
+    "Q_token_tge_status": "TGE completed",
+    "Q_token_tge_date": "2024-11-15",
+    "Q_token_security_flag": "No — pure utility token",
+    "Q_market_exchanges": ["KuCoin", "Gate.io"],
+    "Q_market_avg_daily_volume": 850000,
+    "Q_market_maker": "Wintermute",
+    "Q_econ_total_supply": 1000000000,
+    "Q_econ_circulating_supply": 230000000,
+    "Q_econ_current_price": 0.42,
+    "Q_econ_fdv": 420000000,
+    "Q_econ_distribution": [
+      {"category": "Team", "pct": 20, "amount": 200000000, "vesting_months": 48, "tge_unlock_pct": 0, "first_release": "2025-11-15"},
+      {"category": "Private / Seed", "pct": 15, "amount": 150000000, "vesting_months": 24, "tge_unlock_pct": 10, "first_release": "2024-11-15"}
+      // ...
+    ],
+    "Q_econ_burn_schedule": "Fixed supply 1B, 2% of fees burned monthly",
+    "Q_utility_description": "EXP is used for...",
+    "Q_utility_functions": ["Governance / voting", "Fee payment / gas", "Staking & rewards"],
+    "Q_product_stage": "Product in production with active users",
+    "Q_product_url": "https://app.example.xyz",
+    "Q_product_dau": 12500,
+    "Q_team_anonymity": "Fully public",
+    "Q_team_members": "Alice Smith | CEO | alice@example.xyz | ...",
+    "Q_sanctions_self": "No — none of the above are sanctioned",
+    "Q_legal_opinion_status": "Yes",
+    "Q_legal_opinion_jurisdiction": "Switzerland",
+    "Q_audit_status": "Yes",
+    "Q_audit_firm": "Certik",
+    "Q_litigation": "No",
+    "Q_commercial_target_date": "2026-05-30",
+    "Q_commercial_expected_volume": "$500K – $2M",
+    "Q_declaration_accuracy": "Yes, I confirm",
+    "Q_declaration_kyb_consent": "Yes, I consent",
+    "Q_declaration_signer": "Alice Smith",
+    "Q_declaration_position": "CEO",
+    "Q_declaration_email": "alice@example.xyz"
+  },
+  "attachments": {
+    "Q_upload_whitepaper":        "https://workdrive.zoho.com/file/abc123",
+    "Q_upload_registry_extract":  "https://workdrive.zoho.com/file/def456",
+    "Q_upload_legal_opinion":     "https://workdrive.zoho.com/file/ghi789",
+    "Q_upload_audit_report":      "https://workdrive.zoho.com/file/jkl012",
+    "Q_upload_ubo_passports":    ["https://workdrive.zoho.com/file/mno345",
+                                   "https://workdrive.zoho.com/file/pqr678"],
+    "Q_upload_pitch_deck":        null,
+    "Q_upload_financial_plan":    null,
+    "Q_upload_company_structure": null
+  }
+}</code></pre>
+
+<h3>Server-side processing (<code>listing_handle_survey_webhook</code> pseudocode)</h3>
+<pre><code>void listing_handle_survey_webhook(Map payload)
+{
+  deal_id = payload.get("deal_id");
+  answers = payload.get("answers");
+  attachments = payload.get("attachments");
+
+  // 1. Map answers to Deal custom fields (dictionary-based)
+  update_map = Map();
+  FIELD_MAP = {
+    "Q_identity_project_name": "Token_Project_Name",
+    "Q_identity_ticker": "Token_Ticker",
+    // ... full map as per pills in each question
+  };
+  for each qid in answers
+  {
+    crm_field = FIELD_MAP.get(qid);
+    if (crm_field != null) update_map.put(crm_field, answers.get(qid));
+  }
+
+  // 2. Attachments: copy files to /Deals/{Deal_ID}/Survey_Attachments/ via WorkDrive API,
+  //    write back the final WorkDrive URLs
+  for each att_key in attachments
+  {
+    src = attachments.get(att_key);
+    if (src != null)
+    {
+      final_url = listing_move_to_deal_folder(deal_id, src, att_key);
+      crm_field = FIELD_MAP.get(att_key);
+      update_map.put(crm_field, final_url);
+    }
+  }
+
+  // 3. Stop-factor evaluation
+  stop_reason = listing_evaluate_stop_factors(answers);
+  if (stop_reason != null)
+  {
+    update_map.put("Listing_Stop_Reason", stop_reason);
+    update_map.put("Stage", "Отказ / " + stop_reason);
+  }
+  else
+  {
+    update_map.put("Stage", "Compliance Review");
+  }
+
+  // 4. Mode detection
+  mode = listing_detect_mode(answers.get("Q_token_network"), answers.get("Q_market_exchanges"));
+  update_map.put("Listing_Mode_Candidate", mode);
+
+  // 4b. v2: Service Tier pre-qualification
+  // Basic всегда eligible (если не stop-factor).
+  update_map.put("Listing_Tier_Basic_Eligible", stop_reason == null);
+  // Swap: DEX TVL >= threshold OR whitelisted CEX-листинг.
+  dex_tvl       = toLong(answers.getOrDefault("Q_market_dex_tvl_usd", 0));
+  cex_listed_wl = listing_has_whitelisted_cex(answers.get("Q_market_exchanges"));
+  update_map.put("Listing_Tier_Swap_Eligible",
+                 dex_tvl &gt;= SWAP_TVL_THRESHOLD || cex_listed_wl);
+  // Utility-Card: требует Swap + USDT/USDC в accepted payment methods.
+  pay_methods   = answers.getOrDefault("Q_commercial_accepted_pay", List());
+  update_map.put("Listing_Tier_Utility_Card_Eligible",
+                 update_map.get("Listing_Tier_Swap_Eligible") == true
+                 &amp;&amp; (pay_methods.contains("USDT") || pay_methods.contains("USDC")));
+  // OnOff-Ramp pre-screen.
+  tier_req = answers.getOrDefault("Q_tier_requested", List());
+  if (tier_req.contains("OnOff-Ramp"))
+  {
+    buyback_ok = (answers.get("Q_onramp_buyback_ready") == "Yes");
+    model_ok   = (update_map.get("Listing_Buyback_Model_Url") != null);
+    ack_ok     = (answers.get("Q_onramp_ack_triumvirate") == true);
+    update_map.put("Listing_Tier_OnRamp_PreScreen",
+                   (buyback_ok &amp;&amp; model_ok &amp;&amp; ack_ok) ? "passed" : "failed");
+  }
+  else
+  {
+    update_map.put("Listing_Tier_OnRamp_PreScreen", "not_requested");
+  }
+
+  // 5. Update Deal
+  zoho.crm.updateRecord("Deals", deal_id, update_map);
+
+  // 6. Notify
+  listing_slack_notify(deal_id, stop_reason, mode);
+}</code></pre>
+
+<h2 id="zoho-settings">18. Zoho Survey settings</h2>
+
+<h3>Theme</h3>
+<p>Vault dark theme: primary <code>#58a6ff</code>, accent <code>#a371f7</code>, background <code>#0d1117</code>, surface <code>#161b22</code>. Logo в header &mdash; <code>vault_logo_white.svg</code>. Favicon &mdash; vault-icon.</p>
+
+<h3>Languages</h3>
+<p>EN (primary) + RU. Переключалка языка на Page 0. Переводы всех вопросов и опций &mdash; в Survey Language Manager.</p>
+
+<h3>Respondent settings</h3>
+<ul>
+  <li>Anonymous access: OFF. URL-token обязателен.</li>
+  <li>Allow to save and continue later: ON. Resume-ссылка приходит на email респондента.</li>
+  <li>Progress bar: ON. &laquo;Page X of 11&raquo;.</li>
+  <li>Back/forward navigation: ON, кроме terminal-стадии после stop-factor trigger.</li>
+  <li>Duplicate responses: Allowed (один deal может иметь revisions).</li>
+</ul>
+
+<h3>Completion settings</h3>
+<ul>
+  <li>Custom thank-you page: &laquo;Thank you! Ваша заявка получена. Vault BD team свяжется с вами в течение 3 рабочих дней&raquo;.</li>
+  <li>Auto-email notifications: manager of Deal + <code>listings@vault.ist</code>.</li>
+  <li>Redirect URL after submit: <code>https://vault.ist/listings/thank-you?deal_id={deal_id}</code>.</li>
+  <li>Webhook: POST to Zoho CRM Deluge endpoint, на каждый submit.</li>
+  <li>Email confirmation to respondent: ON, с копией всех ответов в PDF.</li>
+</ul>
+
+<h3>Access &amp; permissions</h3>
+<ul>
+  <li>Survey owner: <code>automations@vault.ist</code> (service account).</li>
+  <li>Editors: BD lead, compliance lead, automations lead.</li>
+  <li>Response access: BD manager + compliance team.</li>
+  <li>Archival: ответы хранятся 7 лет (compliance SLA).</li>
+</ul>
+
+<h2 id="implementation">19. Пошаговый план имплементации</h2>
+
+<div class="callout callout-ok">
+  <strong>Оценка трудозатрат:</strong> 3&ndash;4 дня на фулл-сетап опросника в Zoho Survey. 1 день на маппинг полей в CRM. 2 дня на написание Deluge-функций webhook-обработчика. 1 день на QA end-to-end. <strong>Итого ~8 рабочих дней.</strong>
+</div>
+
+<h3>Sprint план</h3>
+<table>
+<tr><th>Шаг</th><th>Действия</th><th>Выход</th><th>Часы</th></tr>
+<tr>
+  <td>1</td>
+  <td>Создать все custom fields в Deal по <code>FIELD_MAP</code> (40+ полей). Настроить секции в layout: Identity, Company, Token, Market, Economics, Utility, Team, Compliance, Attachments, Commercial.</td>
+  <td>Deal layout v2</td>
+  <td>8</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>Создать Survey в Zoho Survey, добавить 11 страниц, все вопросы согласно spec. Настроить типы полей, required flags, validations.</td>
+  <td>Survey draft</td>
+  <td>12</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>Настроить skip-logic по таблице в разделе 16. Проверить все ветвления вручную.</td>
+  <td>Skip-logic tested</td>
+  <td>6</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>Настроить file upload поля, проверить WorkDrive integration, папка-target.</td>
+  <td>Uploads work end-to-end</td>
+  <td>4</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>Перевести на RU, настроить language switcher. Сверить, что branching работает в обоих языках.</td>
+  <td>Bilingual survey</td>
+  <td>6</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td>Написать Deluge <code>listing_handle_survey_webhook()</code> + вспомогательные <code>listing_evaluate_stop_factors()</code>, <code>listing_detect_mode()</code>, <code>listing_move_to_deal_folder()</code>, <code>listing_slack_notify()</code>.</td>
+  <td>Webhook handler deployed</td>
+  <td>12</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td>Настроить webhook в Survey &rarr; CRM endpoint. Тестовый submit, проверка всех полей.</td>
+  <td>Integration live</td>
+  <td>4</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td>E2E QA: 4 тестовых submit (happy path, security stop, anonymous stop, sanctions stop), проверить CRM fields, Slack notifications, WorkDrive files.</td>
+  <td>QA sign-off</td>
+  <td>6</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td>Документация для BD команды: как выдать ссылку, как отслеживать заявки, как читать поля в Deal.</td>
+  <td>Onboarding page in Zoho Learn</td>
+  <td>3</td>
+</tr>
+</table>
+
+<div class="callout">
+  <strong>Следующие шаги после v1:</strong>
+  <ul style="margin: 8px 0 0 0;">
+    <li>Встроить pre-check tool: public landing-page, где партнёр может за 2 минуты узнать, может ли Vault листить его токен (network check + sanctions check) без заполнения полной формы.</li>
+    <li>Добавить AI-ассистента на сложных вопросах (tokenomics distribution matrix) &mdash; загружаешь whitepaper, LLM предзаполняет поля, человек проверяет.</li>
+    <li>Интеграция с CoinGecko API для автозаполнения supply/price/volume по ticker-у, если токен уже листится.</li>
+  </ul>
+</div>
+
+<p style="margin-top: 60px; color: var(--text-muted); font-size: 12px; text-align: center; border-top: 1px solid var(--border); padding-top: 20px;">
+  Listing_Survey_Structure_v1.html &middot; 22 April 2026 &middot; Vault Partnership Tooling &middot; owner: Святослав Шпаночкин
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Listing Process &mdash; Full Design Specification v2.0</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #1c2128; --border: #30363d;
+    --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --green: #3fb950;
+    --orange: #d29922; --red: #f85149; --purple: #bc8cff; --teal: #39d353;
+    --cyan: #56d4dd; --pink: #f778ba; --yellow: #e3b341;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 40px 20px; }
+  .container { max-width: 1280px; margin: 0 auto; }
+  h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; color: var(--accent); }
+  .subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 40px; }
+  h2 { font-size: 22px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 17px; font-weight: 600; margin: 28px 0 12px; color: var(--purple); }
+  h4 { font-size: 14px; font-weight: 600; margin: 18px 0 8px; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.5px; }
+  h5 { font-size: 12px; font-weight: 600; margin: 12px 0 6px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  p { margin-bottom: 12px; font-size: 15px; }
+  .dim { color: var(--text-dim); }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--accent); font-family: SFMono-Regular, Consolas, monospace; }
+  pre { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 14px; overflow-x: auto; font-size: 12px; line-height: 1.5; color: var(--text-dim); margin: 12px 0; }
+  pre code { background: transparent; padding: 0; color: var(--text); }
+  .audience-banner { background: linear-gradient(90deg, rgba(86,212,221,0.08), rgba(188,140,255,0.08)); border: 1px solid var(--border); border-radius: 10px; padding: 20px 28px; margin-bottom: 32px; }
+  .audience-banner h3 { margin-top: 0; color: var(--cyan); }
+  .audience-tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 8px; }
+  .tag-business { background: rgba(86,212,221,0.15); color: var(--cyan); border: 1px solid rgba(86,212,221,0.3); }
+  .tag-tech { background: rgba(188,140,255,0.15); color: var(--purple); border: 1px solid rgba(188,140,255,0.3); }
+  .part-header { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px 32px; margin: 48px 0 24px; }
+  .part-header.business { border-left: 6px solid var(--cyan); }
+  .part-header.tech { border-left: 6px solid var(--purple); }
+  .part-header h2 { border: none; padding: 0; margin: 0 0 8px; font-size: 26px; }
+  .part-header .lead { color: var(--text-dim); font-size: 14px; }
+  .entity-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; }
+  .entity-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 4px; }
+  .entity-card .name { font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .entity-card .desc { font-size: 14px; color: var(--text-dim); line-height: 1.7; }
+  .tbl { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 13px; }
+  .tbl th { text-align: left; padding: 10px 12px; background: var(--surface2); color: var(--text-dim); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+  .tbl td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .tbl tr:hover { background: rgba(88,166,255,0.04); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-open { background: rgba(88,166,255,0.15); color: var(--accent); }
+  .badge-active { background: rgba(63,185,80,0.15); color: var(--green); }
+  .badge-closed { background: rgba(248,81,73,0.15); color: var(--red); }
+  .badge-warn { background: rgba(210,153,34,0.15); color: var(--orange); }
+  .badge-auto { background: rgba(188,140,255,0.15); color: var(--purple); }
+  .badge-manual { background: rgba(86,212,221,0.15); color: var(--cyan); }
+  .badge-external { background: rgba(210,153,34,0.15); color: var(--orange); }
+  .badge-terminal { background: rgba(248,81,73,0.15); color: var(--red); }
+  .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+  .callout.warn { border-left-color: var(--orange); }
+  .callout.success { border-left-color: var(--green); }
+  .callout.purple { border-left-color: var(--purple); }
+  .callout.pink { border-left-color: var(--pink); }
+  .callout.ai { border-left-color: var(--cyan); }
+  .callout.stop { border-left-color: var(--red); background: rgba(248,81,73,0.04); }
+  .callout.legal { border-left-color: var(--yellow); background: rgba(227,179,65,0.04); }
+  .section-sep { height: 1px; background: var(--border); margin: 40px 0; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .arrow { color: var(--accent); font-weight: 700; }
+  .req { color: var(--orange); font-size: 12px; font-weight: 600; }
+  .fn { color: var(--cyan); font-size: 12px; font-style: italic; }
+  .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px 28px; margin-bottom: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .toc a:hover { text-decoration: underline; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin: 6px 0; }
+  .stage-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; position: relative; }
+  .stage-card.gate-manual { border-left: 6px solid var(--cyan); }
+  .stage-card.gate-auto { border-left: 6px solid var(--purple); }
+  .stage-card.gate-external { border-left: 6px solid var(--orange); }
+  .stage-card.gate-done { border-left: 6px solid var(--green); }
+  .stage-card .stage-num { position: absolute; top: 16px; right: 24px; font-size: 42px; font-weight: 900; color: var(--surface2); line-height: 1; }
+  .stage-card .stage-title { font-size: 18px; font-weight: 700; color: var(--accent); margin-bottom: 4px; padding-right: 60px; }
+  .stage-card .stage-type { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); margin-bottom: 14px; }
+  .stage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .stage-grid > div { background: var(--surface2); border-radius: 6px; padding: 10px 14px; }
+  .stage-grid > div h5 { margin: 0 0 6px; font-size: 11px; color: var(--text-dim); }
+  .stage-grid > div p, .stage-grid > div ul { font-size: 13px; margin: 0; color: var(--text); line-height: 1.5; }
+  .stage-grid > div ul { padding-left: 16px; }
+  .stage-grid > div li { margin: 3px 0; }
+  .diagram-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin: 20px 0; overflow-x: auto; }
+  .diagram-wrap svg { max-width: 100%; height: auto; }
+  ul.custom { padding-left: 24px; margin: 12px 0; font-size: 15px; }
+  ul.custom li { margin: 6px 0; color: var(--text); }
+  .matrix-cell { text-align: center; font-size: 11px; padding: 12px 8px !important; }
+  .cell-full { background: rgba(63,185,80,0.10); color: var(--green); }
+  .cell-partial { background: rgba(210,153,34,0.10); color: var(--orange); }
+  .cell-virtual { background: rgba(86,212,221,0.10); color: var(--cyan); }
+  .cell-blocked { background: rgba(248,81,73,0.10); color: var(--red); }
+  .cell-custom { background: rgba(188,140,255,0.10); color: var(--purple); }
+  .field-list { font-family: SFMono-Regular, Consolas, monospace; font-size: 12px; background: var(--surface2); border-radius: 6px; padding: 12px 16px; margin: 8px 0; }
+  .field-list .field-row { display: grid; grid-template-columns: 260px 180px 1fr; gap: 12px; padding: 4px 0; border-bottom: 1px dashed var(--border); }
+  .field-list .field-row:last-child { border-bottom: none; }
+  .field-list .field-name { color: var(--accent); }
+  .field-list .field-type { color: var(--orange); }
+  .field-list .field-desc { color: var(--text-dim); }
+  .webhook-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+  .webhook-block .webhook-title { font-size: 14px; font-weight: 700; color: var(--pink); margin-bottom: 8px; }
+  .webhook-block pre { margin: 8px 0 0; }
+  .legend-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0; font-size: 12px; color: var(--text-dim); }
+  .legend-row span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .gate-stripe { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+  .footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+  .roadmap-item { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 10px 0; }
+  .roadmap-item .rm-week { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .roadmap-item .rm-title { font-size: 15px; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
+  .roadmap-item.priority-1 { border-left-color: var(--green); }
+  .roadmap-item.priority-1 .rm-title { color: var(--green); }
+  .roadmap-item.priority-2 { border-left-color: var(--cyan); }
+  .roadmap-item.priority-2 .rm-title { color: var(--cyan); }
+  .roadmap-item.priority-3 { border-left-color: var(--purple); }
+  .roadmap-item.priority-3 .rm-title { color: var(--purple); }
+  .roadmap-item.priority-4 { border-left-color: var(--orange); }
+  .roadmap-item.priority-4 .rm-title { color: var(--orange); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Token Listing Process &mdash; Full Design Specification</h1>
+<p class="subtitle">Zoho CRM Blueprint + смежные системы &middot; Версия 3.0 &middot; 23.04.2026 &middot; Scope: листинг как самостоятельная услуга, без referral-программы и без продуктовой интеграции</p>
+
+<div class="callout" style="border-left:4px solid var(--cyan);background:rgba(14,165,233,0.08);padding:12px 16px;margin:16px 0;border-radius:4px;">
+<strong style="color:var(--cyan);font-size:13px;">Changelog v3.0 (на основе ответа Nick Lykhovets в Slack, 23.04.2026)</strong>
+<p style="margin:6px 0 0 0;font-size:14px;">Добавлена ось Service Tiers: Basic / +Swap / +Utility-Card / +OnOff-Ramp. Pre-qualification делается на уровне опросника, финальный assignment — sales. Custom tier (OnOff-Ramp) требует triumvirate-апрува (Алексей, Кирилл, Валерия) с buy-back commitment issuer&rsquo;а. Правки точечные: новые поля Deal, required-gate на Stage 4, triumvirate substage на Stage 5, edge-case downgrade. Остальной дизайн не изменялся.</p>
+</div>
+
+<div class="audience-banner">
+  <h3>Для кого этот документ</h3>
+  <p style="margin-bottom: 10px;"><span class="audience-tag tag-business">Часть A</span> Для коммерческой, юридической, compliance и менеджерской команды. Описывает процесс простым языком, со схемами. Отвечает на вопросы: &laquo;Из каких шагов состоит листинг?&raquo;, &laquo;Когда нужна подпись?&raquo;, &laquo;Какие документы собираем на каждом шаге?&raquo;.</p>
+  <p style="margin-bottom: 0;"><span class="audience-tag tag-tech">Часть B</span> Для команды автоматизации и разработки. Содержит спецификацию Blueprint-стадий, custom fields, Deluge-функций, webhook-ов, интеграций с Zoho Survey / Zoho Flow / Zoho Forms / Zoho Sign / Zoho Invoice / Sumsub / Slack.</p>
+</div>
+
+<div class="toc">
+<strong style="color:var(--text-dim);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Содержание</strong>
+<ol>
+<li><a href="#overview">Обзор и главные решения</a></li>
+<li style="margin-top:12px;"><strong style="color:var(--cyan)">Часть A &mdash; для бизнес-команды</strong></li>
+<li style="margin-left:20px;"><a href="#flow-simple">Процесс листинга в 9 стадиях: простая версия</a></li>
+<li style="margin-left:20px;"><a href="#matrix-simple">Матрица сценариев: что мы можем листить</a></li>
+<li style="margin-left:20px;"><a href="#stop-factors">Стоп-факторы: когда мы откажем</a></li>
+<li style="margin-left:20px;"><a href="#documents">Документы: что собираем и на каком шаге</a></li>
+<li style="margin-left:20px;"><a href="#timeline">Сроки и тайминг</a></li>
+<li style="margin-top:12px;"><strong style="color:var(--purple)">Часть B &mdash; техническая спецификация</strong></li>
+<li style="margin-left:20px;"><a href="#architecture">Архитектура и смежные системы</a></li>
+<li style="margin-left:20px;"><a href="#fields">Deal: custom fields и layout</a></li>
+<li style="margin-left:20px;"><a href="#blueprint">Blueprint: стадии, transitions, required fields</a></li>
+<li style="margin-left:20px;"><a href="#deluge">Deluge-функции</a></li>
+<li style="margin-left:20px;"><a href="#webhooks">Webhook-интерфейсы</a></li>
+<li style="margin-left:20px;"><a href="#emails">Email и Slack-уведомления</a></li>
+<li style="margin-left:20px;"><a href="#survey-integration">Интеграция с Zoho Survey (отдельный документ)</a></li>
+<li style="margin-left:20px;"><a href="#edge-cases">Граничные случаи и откаты</a></li>
+<li style="margin-left:20px;"><a href="#implementation">Порядок внедрения</a></li>
+</ol>
+</div>
+
+<!-- =============== OVERVIEW =============== -->
+<h2 id="overview">1. Обзор и главные решения</h2>
+
+<div class="callout ai">
+<strong>Главный принцип:</strong> воронка листинга &mdash; это state machine на Zoho CRM Blueprint с чёткими ролевыми гейтами. Автоматика делает всё, что можно автоматизировать (отправка опросника, авто-проверка стоп-факторов, генерация оффера и инвойса, создание Zoho Sign envelope). Ручные гейты &mdash; только там, где нужно человеческое решение: compliance, подтверждение платежа, коммерческая валидация.
+</div>
+
+<h3>Типы гейтов в воронке</h3>
+<p>В документе и на схемах различаются три типа гейтов:</p>
+<div class="legend-row">
+  <span><span class="gate-stripe" style="background:var(--cyan)"></span><strong>Manual (ручной)</strong> &mdash; действие сотрудника внутри Zoho: кнопка, форма, ввод полей.</span>
+  <span><span class="gate-stripe" style="background:var(--purple)"></span><strong>Auto (автоматический)</strong> &mdash; Deluge/Flow делает transition без участия человека.</span>
+  <span><span class="gate-stripe" style="background:var(--orange)"></span><strong>External (внешнее событие)</strong> &mdash; ждём webhook или действие в системе вне Zoho (Sumsub, Slack, клиент, оплата, Zoho Sign со стороны подписанта).</span>
+</div>
+<p class="dim" style="font-size:13px;">Compliance-ревью классифицируется как <strong>External</strong>, несмотря на то, что решение принимает член команды: оно принимается вне CRM &mdash; в Zoho Forms со ссылкой из Slack &mdash; и для Blueprint это приход события извне.</p>
+
+<h3>Scope этого документа</h3>
+<p>Описывается только <strong>листинг токена как самостоятельная услуга</strong>. Не включены:</p>
+<ul class="custom">
+  <li>Referral-программа партнёров (B2B: компания приводит клиентов за комиссию) &mdash; отдельный флоу</li>
+  <li>Рефералы агентов (физические лица по agent agreement) &mdash; отдельный флоу</li>
+  <li>Продуктовая интеграция (WL / API) &mdash; отдельный продукт, другие контракты, другая юрисдикция</li>
+</ul>
+
+<h3>Ключевые дизайн-решения</h3>
+<div class="grid-2">
+  <div class="entity-card">
+    <div class="label">Решение №1</div>
+    <div class="name">Zoho Survey + Zoho Flow для опросника DD</div>
+    <div class="desc">Опросник Due Diligence делается в Zoho Survey (нативные ветвления, валидации, upload-поля, прогресс-бар). Клиент получает публичную ссылку. Без Zoho Flow здесь не обойтись: Survey не умеет напрямую триггерить Blueprint-transitions, поэтому <strong>Flow забирает completion-event из Survey, дополняет полями, вызывает Deluge-функцию в CRM</strong>, которая обновляет Deal и двигает стадию.</div>
+  </div>
+  <div class="entity-card">
+    <div class="label">Решение №2</div>
+    <div class="name">Compliance-ревью: два решения, одна форма</div>
+    <div class="desc">У compliance два варианта решения: <strong>Approve</strong> или <strong>Reject с причиной</strong>. Решение принимается через Zoho Forms; в Slack уходит короткое уведомление со ссылкой на форму. KYB-воронка (см. Решение №3) запускается не после compliance-Approve, а <strong>после акцепта оффера клиентом</strong> на Stage 5 &mdash; compliance её не маршрутизирует.</div>
+  </div>
+  <div class="entity-card">
+    <div class="label">Решение №3</div>
+    <div class="name">KYB через Sumsub &mdash; отдельный флоу с оплатой</div>
+    <div class="desc">KYB запускается <strong>после акцепта оффера клиентом</strong> (не после compliance-Approve): выставляется отдельный KYB-инвойс $500, после получения оплаты compliance через Zoho Form получает сводку и формирует Sumsub-ссылку для клиента; результат проверки возвращается в CRM и определяет переход на Stage 7 или terminal. Детальный разбор подстадий &mdash; в разделе &laquo;Стадии по порядку&raquo; (Stage 6). Механизм возврата результата из Sumsub (webhook / ручной ввод compliance) &mdash; <strong>TBD</strong> на этапе имплементации. KYB внутри листинг-воронки &mdash; не то же самое, что корпоративный B2B KYB партнёра: это проверка эмитента токена в рамках листинг-сделки.</div>
+  </div>
+  <div class="entity-card">
+    <div class="label">Решение №4</div>
+    <div class="name">Контракт Panama &harr; Issuer</div>
+    <div class="desc">Listing Agreement подписывается между <strong>COREACCESS SOLUTIONS S.A. (Panama)</strong> и компанией-эмитентом токена. Dubai DMCC в этом флоу не участвует (нужен только для ПО). MSA Panama&harr;Dubai &mdash; внутренняя корпоративная договорённость Vault Group, не завязана на клиента.</div>
+  </div>
+  <div class="entity-card">
+    <div class="label">Решение №5</div>
+    <div class="name">Коммерческий оффер собирается автоматически</div>
+    <div class="desc">Данные, необходимые для расчёта условий оффера (рынок, сеть, размер эмитента, требуемая ликвидность), приходят через опросник на Stage 2. Логика тарифицирования &mdash; <strong>в CRM как набор layout rules и формул</strong>: по матрице и по полям Deal автоматически вычисляется структура fee и генерируется текст оффера. Менеджер только <strong>проверяет</strong> сгенерированное и отправляет.</div>
+  </div>
+  <div class="entity-card">
+    <div class="label">Решение №6</div>
+    <div class="name">Оплата листинга &mdash; ручной мультиэтап</div>
+    <div class="desc">У нас нет онлайн-интеграции с банком. Порядок подтверждения оплаты: <strong>клиент оплатил &rarr; Finance увидели поступление &rarr; уведомили менеджера и прислали Receipt &rarr; менеджер загрузил Receipt в Deal</strong>. Этого достаточно, чтобы закрыть инвойс и двинуть Deal дальше &mdash; маршрут через compliance на этом шаге не обязателен (не все платежи через него проходят). <strong>Автоматизация этого этапа &mdash; задача следующей фазы.</strong></div>
+  </div>
+  <div class="entity-card">
+    <div class="label">Решение №7</div>
+    <div class="name">Техподключение &mdash; обсуждается с Delivery-командой</div>
+    <div class="desc">После подтверждения оплаты deal переходит в &laquo;Closed Won&raquo;, но техническая интеграция (whitelist адресов, exchange pair setup, backend listing, публикация в приложении) лежит за пределами CRM-воронки. Как именно мы будем передавать работу Delivery-команде &mdash; предмет <strong>отдельного обсуждения</strong>: от простого уведомления в Slack до автогенерации проектной структуры во внешних системах.</div>
+  </div>
+  <div class="entity-card">
+    <div class="label">Решение №8</div>
+    <div class="name">Согласование правок к договорам &mdash; внутри Zoho Sign</div>
+    <div class="desc">Zoho Sign поддерживает <strong>in-envelope collaboration</strong>: подписант может запросить правки, envelope остаётся в статусе Pending, правки ходят между участниками без выхода из процесса. Отдельная стадия Blueprint не нужна &mdash; статус envelope отражается в поле Deal.Listing_Sign_Status. <strong>Отдельно:</strong> наши юристы <strong>не являются пользователями Zoho</strong>, поэтому для обработки правок от клиента нужен отдельный механизм передачи правок юристам и возврата их ответа в систему &mdash; с контролем SLA. Этот механизм проектируется на этапе имплементации.</div>
+  </div>
+  <div class="entity-card" style="border-color:var(--cyan);">
+    <div class="label" style="color:var(--cyan);">Решение №9 (v3)</div>
+    <div class="name">Service Tiers &mdash; pre-qualify в опроснике, assignment в sales</div>
+    <div class="desc">Листинг &mdash; не единый SKU, а стек из 4-х: <strong>Basic</strong> (депозит/вывод, отображение в кошельке на приоритетных позициях) &rarr; <strong>+Swap</strong> (при наличии DEX-пулов или CEX-листингов, за доп. плату) &rarr; <strong>+Utility-Card</strong> (пополнение карты через своп и оффрамп; требует Swap) &rarr; <strong>+OnOff-Ramp</strong> (custom; требует <strong>buy-back commitment</strong> issuer&rsquo;а и triumvirate-апрува: Алексей, Кирилл, Валерия). Tier eligibility для первых трёх считается автоматически в <code>listing_handle_survey_webhook</code> на основе ответов Page 4 (ликвидность) + Page 10 (pay methods). Для OnOff-Ramp &mdash; pre-screen по checkbox-ам и загрузке финансовой модели; финальное решение даёт triumvirate. Клиенту tier не показывается &mdash; это внутренний сигнал для sales в Stage 4.</div>
+  </div>
+</div>
+
+<!-- =============== PART A =============== -->
+<div class="part-header business">
+  <h2 style="color: var(--cyan);">ЧАСТЬ A &mdash; для бизнес-команды</h2>
+  <p class="lead">Процесс листинга для юристов, compliance, коммерческой команды и менеджеров. Без кода, без technical jargon.</p>
+</div>
+
+<!-- =============== FLOW SIMPLE =============== -->
+<h2 id="flow-simple">2. Процесс листинга в 9 стадиях</h2>
+
+<p>Весь путь клиента от первого контакта до живого листинга &mdash; это 9 стадий CRM Blueprint. Каждая стадия имеет чёткого ответственного и явный тип гейта.</p>
+
+<div class="legend-row">
+  <span><span class="gate-stripe" style="background:var(--cyan)"></span>Manual (ручной гейт)</span>
+  <span><span class="gate-stripe" style="background:var(--purple)"></span>Auto (автоматический гейт)</span>
+  <span><span class="gate-stripe" style="background:var(--orange)"></span>External (ждём внешнее событие)</span>
+  <span><span class="dot" style="background:var(--red)"></span>Стоп-фактор / terminal</span>
+  <span><span class="dot" style="background:var(--green)"></span>Closed Won</span>
+</div>
+
+<div class="diagram-wrap">
+<pre class="mermaid">
+flowchart TD
+  S0((Новый Deal<br/>листинг токена)):::start
+
+  S1["👤 Stage 1 — Валидация контакта<br/>(имя + email)"]:::manual
+  S2["🕒 Stage 2 — Ожидание опросника<br/>клиент заполняет Zoho Survey"]:::external
+  S2a["⚙️ Auto: проверка жёстких<br/>стоп-факторов"]:::auto
+  S3["🕒 Stage 3 — Compliance-ревью<br/>Approve / Reject"]:::external
+  S4["👤 Stage 4 — Commercial<br/>менеджер проверяет авто-оффер"]:::manual
+  S5["🕒 Stage 5 — Ожидание акцепта<br/>менеджер ведёт клиента"]:::external
+  S6["🕒 Stage 6 — KYB через Sumsub<br/>KYB-инвойс $500 → оплата →<br/>compliance запускает KYB → результат"]:::external
+  S7["🕒 Stage 7 — Подписание<br/>Zoho Sign + amendments"]:::external
+  S7a["⚙️ Auto: инвойс за листинг<br/>сгенерирован и отправлен"]:::auto
+  S8["👤 Stage 8 — Оплата<br/>ручное подтверждение"]:::manual
+  S9(["✅ Stage 9 — Closed Won<br/>передача в Delivery"]):::done
+
+  T1[Stop: security token]:::stop
+  T2[Stop: anonymous team]:::stop
+  T3[Stop: sanctioned country]:::stop
+  T4[Stop: no whitepaper]:::stop
+  T5[Rejected by Compliance]:::stop
+  T6[KYB failed]:::stop
+  T7[Client refused / signing declined]:::stop
+
+  S0 --> S1
+  S1 -- btn: Отправить опросник --> S2
+  S2 --> S2a
+  S2a -. security .-> T1
+  S2a -. anonymous .-> T2
+  S2a -. sanctioned .-> T3
+  S2a -. no whitepaper .-> T4
+  S2a -- all pass --> S3
+  S3 -- Approve --> S4
+  S3 -- Reject + reason --> T5
+  S4 -- btn: Отправить оффер --> S5
+  S5 -- client accepted --> S6
+  S5 -. long silence / hard no .-> T7
+  S6 -- Sumsub Approved --> S7
+  S6 -. Sumsub Rejected .-> T6
+  S7 -- all signed --> S7a
+  S7 -. declined .-> T7
+  S7a -- invoice sent --> S8
+  S8 -- payment received --> S9
+
+  classDef start fill:#161b22,stroke:#58a6ff,color:#58a6ff,stroke-width:2px
+  classDef manual fill:#1c2128,stroke:#56d4dd,color:#56d4dd,stroke-width:3px
+  classDef auto fill:#1c2128,stroke:#bc8cff,color:#bc8cff,stroke-width:3px,stroke-dasharray: 5 3
+  classDef external fill:#1c2128,stroke:#d29922,color:#d29922,stroke-width:3px
+  classDef done fill:#1c2128,stroke:#3fb950,color:#3fb950,stroke-width:3px
+  classDef stop fill:#1c2128,stroke:#f85149,color:#f85149
+</pre>
+</div>
+
+<p class="dim" style="font-size:13px;">Обозначения в узлах схемы: 👤 = ручной гейт (cyan), ⚙️ = автоматический гейт (purple, штриховой контур), 🕒 = ожидание внешнего события (orange).</p>
+
+<h3>Стадии по порядку</h3>
+
+<!-- Stage 1 -->
+<div class="stage-card gate-manual">
+  <div class="stage-num">1</div>
+  <div class="stage-title">Валидация контакта</div>
+  <div class="stage-type"><span class="badge badge-manual">ручной гейт</span> &middot; менеджер</div>
+  <p>Менеджер получает новый Deal (создаётся вручную из входящего реплая или автоматически из формы сайта). На этой стадии достаточно минимума: <strong>имя контакта и email</strong> &mdash; всё остальное соберёт опросник. Менеджер проверяет, что данные есть, ставит себя ответственным и нажимает кнопку &laquo;Отправить опросник&raquo;.</p>
+  <div class="stage-grid">
+    <div>
+      <h5>Что делает менеджер</h5>
+      <ul>
+        <li>Проверяет имя и email контакта</li>
+        <li>Ставит ответственного менеджера (себя)</li>
+        <li>Кликает кнопку &laquo;Отправить опросник&raquo;</li>
+      </ul>
+    </div>
+    <div>
+      <h5>Что делает система</h5>
+      <ul>
+        <li>Блокирует кнопку, если нет First Name или Email</li>
+        <li>Генерирует персональную ссылку на Zoho Survey с prefilled deal_id</li>
+        <li>Отправляет email с приглашением заполнить DD</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Stage 2 -->
+<div class="stage-card gate-external">
+  <div class="stage-num">2</div>
+  <div class="stage-title">Ожидание ответов опросника</div>
+  <div class="stage-type"><span class="badge badge-external">внешнее событие</span> &middot; клиент заполняет Zoho Survey</div>
+  <p>Клиент получает email со ссылкой на опросник Due Diligence в Zoho Survey. Заполняет разделы с ветвлениями, прикладывает обязательные документы (whitepaper, выписка из реестра, tokenomics, legal opinion, аудит и другие &mdash; см. <code>Listing_Survey_Structure_v1.html</code>). На этой стадии Deal &laquo;спит&raquo; &mdash; автоматические напоминания по email уходят через 3 и 7 дней, если Deal всё ещё на Stage 2.</p>
+  <p>Когда клиент отправляет заполненный опросник, Zoho Flow ловит это событие, подтягивает дополнительные данные и вызывает Deluge-функцию в CRM. Функция раскладывает ответы в поля Deal, перекладывает аттачменты в WorkDrive и автоматически проверяет жёсткие стоп-факторы.</p>
+  <div class="stage-grid">
+    <div>
+      <h5>Жёсткие стоп-факторы (авто)</h5>
+      <ul>
+        <li>Токен = security &rarr; stop</li>
+        <li>Команда анонимная без KYC founders &rarr; stop</li>
+        <li>Страна эмитента под санкциями &rarr; stop</li>
+        <li>Whitepaper не приложен и не обещан &rarr; stop</li>
+      </ul>
+    </div>
+    <div>
+      <h5>Что копируется в Deal</h5>
+      <ul>
+        <li>Network, ticker, contract address</li>
+        <li>Флаги по рынкам (KuCoin / other CEX / DEX / нет)</li>
+        <li>Tokenomics: supply, burn, lockup</li>
+        <li>WorkDrive-ссылки на все аттачменты</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Stage 3 -->
+<div class="stage-card gate-external">
+  <div class="stage-num">3</div>
+  <div class="stage-title">Compliance-ревью</div>
+  <div class="stage-type"><span class="badge badge-external">внешнее событие</span> &middot; compliance-менеджер принимает решение вне CRM</div>
+  <p>Если жёсткие стоп-факторы не сработали, автоматика публикует в Slack-канал короткое сообщение вида:</p>
+  <pre><code>Listing DD готов на ревью: &lt;Ticker&gt; / &lt;Issuer Company&gt;
+Опросник: [link] · Документы: [WorkDrive folder]
+Принять решение: [Открыть Zoho Form]</code></pre>
+  <p>Slack в этом флоу <strong>не является интерактивным</strong>: внутри сообщения только текст и ссылки. Само решение compliance принимает в <strong>Zoho Forms</strong> &mdash; там в одной форме собраны все данные для оценки и два варианта решения:</p>
+  <ul class="custom">
+    <li><strong>Approve</strong> &mdash; все compliance-требования выполнены, Deal идёт на Stage 4. KYB на Stage 6 далее обязателен автоматически.</li>
+    <li><strong>Reject + reason</strong> &mdash; обязательное поле причины, Deal в terminal, клиенту уходит email.</li>
+  </ul>
+  <p class="dim" style="font-size:13px;">Альтернативно в Slack можно зашить ссылки на быстрые Approve/Reject, но более богатый интерфейс даёт Zoho Form &mdash; там собраны контекст, документы и форма решения в одном месте.</p>
+  <div class="stage-grid">
+    <div>
+      <h5>Что проверяет compliance</h5>
+      <ul>
+        <li>Legal Opinion (и его качество)</li>
+        <li>Команда и UBO по OSINT</li>
+        <li>Whitepaper &mdash; что декларирует токен</li>
+        <li>Tokenomics: эмиссия, burn, лок-ап</li>
+        <li>Аудит смарт-контракта (если есть)</li>
+      </ul>
+    </div>
+    <div>
+      <h5>Что делает система после решения</h5>
+      <ul>
+        <li>Approve &rarr; Stage 4 (KYB в Stage 6 далее запустится автоматически)</li>
+        <li>Reject &rarr; terminal + email клиенту</li>
+        <li>Сохраняет причину, reviewer, timestamp</li>
+        <li>Ссылка на Zoho Form-отклик сохраняется в Deal как Note</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Stage 4 -->
+<div class="stage-card gate-manual">
+  <div class="stage-num">4</div>
+  <div class="stage-title">Commercial &mdash; проверка авто-оффера</div>
+  <div class="stage-type"><span class="badge badge-manual">ручной гейт</span> &middot; менеджер</div>
+  <p>К моменту входа в Stage 4 все данные для формирования оффера уже в Deal (из опросника). Логика тарифицирования (матрица <em>рынок &times; сеть</em>, объём ликвидности, нестандартные запросы) <strong>зашита в CRM как формулы и layout rules</strong>. Результат &mdash; автоматически сгенерированный коммерческий оффер: fee structure, amount, условия, listing mode по матрице.</p>
+  <p>Менеджер <strong>проверяет</strong> сгенерированное, правит при необходимости (редкие исключения) и нажимает кнопку &laquo;Отправить оффер&raquo;. Система отправляет оффер клиенту по email. Формат доставки оффера (как PDF в письме, как ссылка на защищённую страницу, как текст) &mdash; деталь, которая может меняться и не завязана на этот Blueprint.</p>
+  <div class="stage-grid">
+    <div>
+      <h5>Что автоматика уже знает</h5>
+      <ul>
+        <li>Listing_Mode (Full / Partial / Virtual / Custom / Blocked)</li>
+        <li>Предлагаемая fee structure и amount</li>
+        <li>Минимальный объём ликвидности</li>
+      </ul>
+    </div>
+    <div>
+      <h5>Что делает менеджер</h5>
+      <ul>
+        <li>Ревьюит авто-оффер</li>
+        <li>Правит fee, если есть основания</li>
+        <li>Жмёт &laquo;Отправить оффер&raquo;</li>
+        <li>При необходимости просит financial responsible подтвердить нестандартные условия</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Stage 5 -->
+<div class="stage-card gate-external">
+  <div class="stage-num">5</div>
+  <div class="stage-title">Ожидание акцепта оффера</div>
+  <div class="stage-type"><span class="badge badge-external">внешнее событие</span> &middot; менеджер ведёт клиента до решения</div>
+  <p>Клиент получил оффер и принимает решение. На этой стадии <strong>нет автоматического реджекта по истечению срока</strong>: пока клиент не дал чёткий отказ или полностью не пропал со связи, менеджер продолжает его вести. В Deal &mdash; автоматические напоминания менеджеру через 3, 7 и 14 дней, чтобы пинговать клиента.</p>
+  <p>Переход на следующую стадию делает менеджер вручную: кнопка &laquo;Клиент принял оффер&raquo; (с полем <code>offer_accepted_note</code> &mdash; как именно подтвердил: email, звонок, чат) или &laquo;Клиент отказался&raquo;.</p>
+  <p>После акцепта Deal идёт на Stage 6 &mdash; KYB через Sumsub.</p>
+</div>
+
+<!-- Stage 6 -->
+<div class="stage-card gate-manual">
+  <div class="stage-num">6</div>
+  <div class="stage-title">KYB</div>
+  <div class="stage-type"><span class="badge badge-manual">ручной мультиэтап</span> &middot; менеджер + compliance (через Zoho Form) + клиент</div>
+  <p>Stage 6 &mdash; это не одно действие, а последовательность. За KYB клиент платит отдельный фиксированный fee ($500). <strong>Compliance-команда не является пользователями CRM</strong> &mdash; вся их работа на этой стадии идёт через специальные Zoho Forms, ссылки на которые приходят им в выделенный Slack-канал. CRM из Sumsub API напрямую ничего не вызывает.</p>
+  <p>Внутри стадии &mdash; подстатусы (поле <code>Listing_KYB_Substage</code>):</p>
+  <div class="stage-grid">
+    <div>
+      <h5>6.1 &mdash; Инвойс KYB отправлен (авто)</h5>
+      <p>После акцепта оффера на Stage 5 система автоматически генерирует инвойс на $500 (Zoho Invoice, строка &laquo;KYB fee&raquo;) и отправляет клиенту email-ом. Фиксируется <code>Listing_KYB_Invoice_Id</code>.</p>
+    </div>
+    <div>
+      <h5>6.2 &mdash; Ждём Receipt от клиента</h5>
+      <p>Клиент оплачивает инвойс. Finance видит поступление по своему каналу, уведомляет менеджера и пересылает ему Receipt. Онлайн-интеграции с банком нет &mdash; автоматизация этой точки задача следующей фазы.</p>
+    </div>
+    <div>
+      <h5>6.3 &mdash; Менеджер загружает Receipt</h5>
+      <p>Менеджер добавляет Receipt в Deal (WorkDrive / attachment), заполняет <code>Listing_KYB_Payment_Receipt_Url</code> и нажимает кнопку транзишена Blueprint &laquo;Запустить KYB&raquo;.</p>
+    </div>
+    <div>
+      <h5>6.4 &mdash; Zoho Form #1 для compliance (авто)</h5>
+      <p>По клику менеджера Blueprint автоматически формирует <strong>Zoho Form #1</strong> со сводкой по клиенту (данные из опросника, результат Compliance-ревью из Stage 3, Receipt оплаты) и <strong>пустым полем для Sumsub-ссылки</strong>. Ссылка на форму приходит в выделенный Slack-канал compliance (доступ только у уполномоченных).</p>
+    </div>
+    <div>
+      <h5>6.5 &mdash; Compliance вносит Sumsub-ссылку</h5>
+      <p>Compliance верифицирует оплату и данные по клиенту прямо в форме, формирует Sumsub-ссылку под клиента (создаёт applicant в Sumsub UI &mdash; внутренний процесс compliance, не фиксируется здесь), вставляет ссылку в поле формы и жмёт Send. Blueprint ловит submission, двигает подстатус.</p>
+    </div>
+    <div>
+      <h5>6.6 &mdash; Email клиенту + Zoho Form #2 (авто)</h5>
+      <p>По submit Form #1 автоматически: (a) клиенту на email уходит Sumsub-ссылка с инструкциями; (b) для compliance формируется <strong>Zoho Form #2</strong> &mdash; предзаполненная сводка + поля для итогового результата KYB. Ссылка на Form #2 уходит в тот же Slack-канал compliance.</p>
+    </div>
+    <div>
+      <h5>6.7 &mdash; Клиент проходит KYB</h5>
+      <p>Клиент проходит KYB в Sumsub (корпоративные документы, UBO, proof of business activity). Deal в подстатусе &laquo;In Review&raquo;. <strong>TBD:</strong> наличие webhook-а от Sumsub в нашей подписке. До подтверждения &mdash; режим ручного ввода через Form #2.</p>
+    </div>
+    <div>
+      <h5>6.8 &mdash; Результат</h5>
+      <p>Compliance вносит результат в Form #2 (или прилетает через webhook, если он есть). <code>Listing_KYB_Status</code> = <strong>Approved</strong> &rarr; Stage 7 (Zoho Sign envelope); <strong>Rejected</strong> &rarr; terminal &laquo;KYB Failed&raquo; с причиной. Детали из Sumsub прикрепляются в timeline Deal.</p>
+    </div>
+  </div>
+  <div class="callout">
+    <strong>Стоимость KYB: $500 за одну проверку.</strong> Это корпоративный KYC/AML-стандарт Vault, отдельный инвойс до запуска проверки. Если клиенту нужно несколько applicant-ов (редкий кейс &mdash; дочерние юрлица) &mdash; выставляем несколько $500-строк либо отдельные инвойсы, на усмотрение finance.
+  </div>
+  <div class="callout warn">
+    <strong>Важное разграничение.</strong> KYB в рамках листинга &mdash; это проверка именно эмитента токена в контексте листинг-сделки. Это <strong>не то же самое</strong>, что корпоративный B2B KYB при онбординге партнёра в Vault (partnership-уровень). Если клиент уже прошёл B2B KYB как партнёр Vault, это <strong>не отменяет</strong> KYB на листинг-флоу &mdash; пересечение двух проверок оценивается отдельно на этапе имплементации.
+  </div>
+</div>
+
+<!-- Stage 7 -->
+<div class="stage-card gate-external">
+  <div class="stage-num">7</div>
+  <div class="stage-title">Подписание договоров</div>
+  <div class="stage-type"><span class="badge badge-external">внешнее событие</span> &middot; Zoho Sign + client legal</div>
+  <p>После успешного прохождения KYB автоматически готовится и отправляется Zoho Sign envelope с шаблоном Listing Agreement (pre-merge полями Deal). Envelope содержит:</p>
+  <ul class="custom">
+    <li><strong>Listing Agreement</strong> &mdash; между COREACCESS SOLUTIONS S.A. (Panama) и компанией-эмитентом. Условия листинга, fee-структура, обязательства сторон, SLA.</li>
+    <li><strong>DPA / Privacy Addendum</strong> (если применимо) &mdash; обработка персональных данных end-users.</li>
+  </ul>
+  <p>Envelope отправляется подписантам (обычно: директор Panama + директор компании-эмитента). Blueprint ждёт webhook &laquo;All Signed&raquo;. После подписания &mdash; PDF сохраняются в WorkDrive в папке клиента, ссылки прикрепляются к Deal.</p>
+  <div class="callout legal">
+    <strong>За актуальность шаблона в системе отвечает legal-команда.</strong> Текущая версия Listing Agreement, DPA и любых приложений хранится как Zoho Sign Template. Legal поддерживает этот шаблон: обновления при смене юрисдикций, нормативных требований или внутренних политик вносит юридическая команда, не команда автоматизации.
+  </div>
+  <div class="callout success">
+    <strong>Согласование правок &mdash; внутри Zoho Sign.</strong> Если подписант запрашивает правки, используем встроенную функцию Zoho Sign (collaborators / in-envelope redlines): envelope остаётся в статусе Pending, правки ходят между участниками, никакая отдельная стадия Blueprint не нужна. Когда все стороны согласны &mdash; подписание продолжается в том же envelope. Статус отражается в поле <code>Listing_Sign_Status</code>.
+  </div>
+  <div class="callout warn">
+    <strong>Юристы вне Zoho.</strong> Наши юристы не являются пользователями Zoho, поэтому передача правок от клиента юристам и возврат их ответа требует отдельного механизма с контролем SLA &mdash; проектируется на этапе имплементации.
+  </div>
+</div>
+
+<!-- AUTO: invoice (между Stage 7 и Stage 8) -->
+<div class="stage-card gate-auto">
+  <div class="stage-title">Между Stage 7 и Stage 8 &mdash; авто-генерация инвойса</div>
+  <div class="stage-type"><span class="badge badge-auto">автоматика</span> &middot; без участия человека</div>
+  <p>После получения webhook &laquo;All Signed&raquo; от Zoho Sign система автоматически:</p>
+  <ul class="custom">
+    <li>Генерирует invoice на сумму <code>Listing_Fee_Amount_Usd</code> (в Zoho Invoice). KYB fee оплачен отдельным инвойсом на Stage 6 &mdash; здесь только listing fee.</li>
+    <li>Отправляет клиенту PDF-инвойс на contact.email и billing_email.</li>
+    <li>Фиксирует <code>Listing_Invoice_Id</code> и <code>Listing_Invoice_Sent_At</code>.</li>
+    <li>Сохраняет подписанный PDF-пакет из Zoho Sign в папку клиента в WorkDrive.</li>
+  </ul>
+  <p class="dim" style="font-size:13px;">Порядок договор &rarr; инвойс &rarr; оплата зафиксирован: инвойс формируется только после того, как envelope подписан всеми сторонами.</p>
+</div>
+
+<!-- Stage 8 -->
+<div class="stage-card gate-manual">
+  <div class="stage-num">8</div>
+  <div class="stage-title">Оплата листинга</div>
+  <div class="stage-type"><span class="badge badge-manual">ручной мультиэтап</span> &middot; клиент + Finance + менеджер</div>
+  <p>У Vault нет онлайн-интеграции с банком &mdash; оплату мы не видим автоматически. Порядок тот же, что и для KYB-инвойса на Stage 6:</p>
+  <div class="stage-grid">
+    <div>
+      <h5>8.1 &mdash; Клиент оплачивает</h5>
+      <p>Клиент оплачивает listing-инвойс по реквизитам из PDF.</p>
+    </div>
+    <div>
+      <h5>8.2 &mdash; Finance видит поступление</h5>
+      <p>Finance получает информацию о поступлении по своему каналу (бухгалтерия, банк-выписка), уведомляет менеджера и пересылает ему Receipt.</p>
+    </div>
+    <div>
+      <h5>8.3 &mdash; Менеджер загружает Receipt</h5>
+      <p>Менеджер добавляет Receipt в Deal (WorkDrive / attachment), заполняет <code>Listing_Payment_Receipt_Url</code> и жмёт кнопку Blueprint &laquo;Оплата подтверждена&raquo;. Автоматика закрывает инвойс в Zoho Invoice (Paid), обновляет <code>Listing_Payment_Confirmed_At</code>.</p>
+    </div>
+    <div>
+      <h5>8.4 &mdash; Переход в Closed Won</h5>
+      <p>После закрытия инвойса Blueprint автоматически двигает Deal в Stage 9. Отказ клиента или затянувшееся молчание &rarr; terminal &laquo;Closed Lost&raquo; по решению менеджера.</p>
+    </div>
+  </div>
+  <div class="callout">
+    <strong>Автоматизация сверки платежей &mdash; задача следующей фазы.</strong> Сейчас цепочка держится на ручном канале Finance &rarr; менеджер. Пути дальше (почтовый парсинг банк-уведомлений, интеграция с банковским API, Zoho Books) обсуждаются отдельно.
+  </div>
+</div>
+
+<!-- Stage 9 -->
+<div class="stage-card gate-done">
+  <div class="stage-num">9</div>
+  <div class="stage-title">Closed Won &mdash; передача в Delivery</div>
+  <div class="stage-type"><span class="badge badge-active">terminal (happy path)</span> &middot; trigger для Delivery-команды</div>
+  <p>Deal закрывается как Won. Автоматически &mdash; уведомление в Slack с саммари: ticker, network, market flags, ссылки на подписанные доки, дата go-live из оффера. Клиенту уходит welcome email с контактами для технических вопросов. Менеджеру ставится напоминание через 7 дней &mdash; спросить клиента, всё ли идёт по плану.</p>
+  <div class="callout warn">
+    <strong>Техническая интеграция &mdash; отдельное обсуждение с Delivery-командой.</strong> Как именно мы передаём работу (Jira, репозиторий, Zoho Projects, иное) &mdash; обсуждается отдельно. CRM на этом этапе только фиксирует факт передачи: что, кому, когда. Сама Delivery-воронка живёт вне этого Blueprint.
+  </div>
+</div>
+
+<!-- =============== MATRIX SIMPLE =============== -->
+<h2 id="matrix-simple">3. Матрица сценариев</h2>
+<p>Возможность листинга и набор функций определяются двумя осями: <strong>наличие рынка на CEX</strong> и <strong>поддержка блокчейна</strong>. Матрица ниже &mdash; то, что автоматика зашьёт в оффер на Stage 4.</p>
+
+<table class="tbl">
+<thead>
+<tr>
+<th></th>
+<th>EVM / Tron / Solana<br/><span style="font-weight:400;color:var(--text-dim)">поддерживаемые сети</span></th>
+<th>Прочие сети<br/><span style="font-weight:400;color:var(--text-dim)">не поддерживаемые</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Рынок на KuCoin</strong><br/><span class="dim">уже интегрирована</span></td>
+  <td class="matrix-cell cell-full"><strong>Полный режим</strong><br/>buy/sell<br/>on-chain deposit/withdraw<br/>fiat on-ramp/off-ramp</td>
+  <td class="matrix-cell cell-full"><strong>Полный режим (off-chain)</strong><br/>buy/sell<br/>без on-chain операций<br/>fiat on-ramp/off-ramp</td>
+</tr>
+<tr>
+  <td><strong>Рынок на другой CEX</strong><br/><span class="dim">Binance, Bybit, Kraken, OKX и т.д.</span></td>
+  <td class="matrix-cell cell-custom"><strong>Требует обсуждения</strong><br/>оценить стоимость интеграции нового CEX<br/>+ срок подключения</td>
+  <td class="matrix-cell cell-custom"><strong>Требует обсуждения</strong><br/>двойная интеграция<br/>(CEX + nothing on-chain)</td>
+</tr>
+<tr>
+  <td><strong>Только DEX</strong><br/><span class="dim">Uniswap, PancakeSwap</span></td>
+  <td class="matrix-cell cell-blocked"><strong>Вне текущего scope</strong><br/>DEX не рассматриваем<br/>(требование Кирилла, 21.04)</td>
+  <td class="matrix-cell cell-blocked"><strong>Вне scope</strong></td>
+</tr>
+<tr>
+  <td><strong>Рынка нет</strong></td>
+  <td class="matrix-cell cell-virtual"><strong>Ограниченный режим</strong><br/>только покупка token по курсу партнёра<br/>продажа недоступна</td>
+  <td class="matrix-cell cell-virtual"><strong>Максимально ограниченный</strong><br/>только виртуальный баланс<br/>только покупка</td>
+</tr>
+</tbody>
+</table>
+
+<div class="callout warn">
+<strong>Источник матрицы:</strong> документ Кирилла Морозова от 22.04 &laquo;Описание требований к листингу партнёрских токенов&raquo;. Матрица имплементируется как layout rule на Deal: при заполнении полей <code>token_has_market_on_kucoin</code>, <code>token_market_cex_name</code>, <code>token_network</code> &mdash; автоматически проставляется <code>Listing_Mode</code> и соответствующий badge. В ячейках одной строки цвет одинаковый: сетевое отличие влияет на техническую реализацию, но не на коммерческий класс сделки.
+</div>
+
+<!-- =============== STOP FACTORS =============== -->
+<h2 id="stop-factors">4. Стоп-факторы</h2>
+<p>Это причины, по которым мы гарантированно откажем в листинге. Разделены на <strong>жёсткие</strong> (проверяются автоматически на Stage 2 по ответам опросника) и <strong>мягкие</strong> (проверяются вручную compliance-менеджером на Stage 3).</p>
+
+<h3>Жёсткие стоп-факторы (автоматическая проверка)</h3>
+<div class="callout stop">
+Любой из этих факторов автоматически переводит Deal в terminal-стадию. Compliance-команда получает уведомление, но ручного действия не требуется.
+</div>
+<table class="tbl">
+<thead><tr><th>Фактор</th><th>Как определяется</th><th>Источник</th></tr></thead>
+<tbody>
+<tr><td>Токен является security</td><td>Ответ в опроснике &laquo;Security&raquo; или &laquo;Not sure&raquo;</td><td>Валерия, 21.04</td></tr>
+<tr><td>Анонимная команда без KYC founders</td><td>Ответ в опроснике &laquo;Anonymous&raquo;</td><td>Валерия, 21.04</td></tr>
+<tr><td>Страна регистрации под санкциями</td><td>Страна из опросника в OFAC/UN/EU списке (Iran, North Korea, Syria, Cuba, Crimea, Russia post-2022, Belarus, Myanmar)</td><td>OFAC/UN/EU sanctions lists</td></tr>
+<tr><td>Нет whitepaper и не обещают предоставить</td><td>Upload в опроснике пропущен и ответ &laquo;When will you provide&raquo; = &laquo;Never&raquo;</td><td>Надежда, 21.04</td></tr>
+</tbody>
+</table>
+
+<h3>Мягкие стоп-факторы (ручная проверка compliance)</h3>
+<div class="callout warn">
+Эти факторы требуют человеческого суждения. Compliance может отклонить Deal на Stage 3 с причиной, но автоматика не отклонит сама.
+</div>
+<table class="tbl">
+<thead><tr><th>Фактор</th><th>Критерий</th></tr></thead>
+<tbody>
+<tr><td>Негативная репутация команды</td><td>Упоминания в crypto-scam базах, pump-and-dump истории, rug-pulls</td></tr>
+<tr><td>Отсутствие Legal Opinion</td><td>Legal Opinion не приложен и не запланирован в разумные сроки</td></tr>
+<tr><td>Подозрительная tokenomics</td><td>Team wallets &gt;50%, без lockup, без burn-schedule</td></tr>
+<tr><td>Отсутствие аудита смарт-контракта</td><td>Для токенов в EVM/Tron/Solana &mdash; критично</td></tr>
+<tr><td>Неадекватные запросы</td><td>Требование анонимного листинга, скрытой команды, &laquo;не упоминать в соцсетях&raquo;</td></tr>
+<tr><td>Tokenomics без burn schedule при &laquo;deflationary&raquo; нарративе</td><td>Inconsistency &mdash; если декларируют deflation, должна быть burn schedule</td></tr>
+</tbody>
+</table>
+
+<!-- =============== DOCUMENTS =============== -->
+<h2 id="documents">5. Документы &mdash; что собираем и когда</h2>
+
+<table class="tbl">
+<thead><tr><th>Документ</th><th>Обязательность</th><th>Когда собираем</th><th>Источник</th></tr></thead>
+<tbody>
+<tr><td>Whitepaper токена</td><td><span class="req">обязательно</span></td><td>Stage 2 (upload в опроснике)</td><td>Клиент</td></tr>
+<tr><td>Выписка из реестра страны регистрации эмитента</td><td><span class="req">обязательно</span></td><td>Stage 2</td><td>Клиент</td></tr>
+<tr><td>Tokenomics документ</td><td><span class="req">обязательно</span></td><td>Stage 2</td><td>Клиент</td></tr>
+<tr><td>Legal Opinion</td><td>обязательно для утверждения compliance</td><td>Stage 2 (либо обещание &laquo;получим к подписанию&raquo;)</td><td>Клиент</td></tr>
+<tr><td>Аудит смарт-контракта</td><td>рекомендуется</td><td>Stage 2</td><td>Клиент</td></tr>
+<tr><td>KYC/AML политика</td><td>рекомендуется</td><td>Stage 2</td><td>Клиент</td></tr>
+<tr><td>Корпоративные документы эмитента</td><td><span class="req">обязательно</span></td><td>Stage 6 (Sumsub)</td><td>Клиент через Sumsub</td></tr>
+<tr><td>UBO declaration</td><td><span class="req">обязательно</span></td><td>Stage 6</td><td>Клиент через Sumsub</td></tr>
+<tr><td>Listing Agreement (Panama &harr; Issuer)</td><td><span class="req">обязательно</span></td><td>Stage 7 (подпись через Zoho Sign)</td><td>Мы генерируем из шаблона &mdash; за актуальность отвечает legal</td></tr>
+<tr><td>DPA / Privacy Addendum</td><td>если применимо</td><td>Stage 7</td><td>Мы генерируем &mdash; за актуальность отвечает legal</td></tr>
+<tr><td>Receipt по оплате KYB + listing</td><td><span class="req">обязательно</span></td><td>Stage 6 (KYB $500) и Stage 8 (listing fee) &mdash; выписка / скриншот / письмо Finance</td><td>Клиент платит &rarr; Finance видит и пересылает Receipt менеджеру &rarr; менеджер загружает в Deal (WorkDrive)</td></tr>
+</tbody>
+</table>
+
+<!-- =============== TIMELINE =============== -->
+<h2 id="timeline">6. Сроки и тайминг</h2>
+<p>Типовой тайминг от старта до живого листинга (happy path):</p>
+
+<table class="tbl">
+<thead><tr><th>Стадия</th><th>Целевой срок</th><th>Worst case</th></tr></thead>
+<tbody>
+<tr><td>Stage 1 &mdash; Валидация контакта</td><td>1 час</td><td>1 день</td></tr>
+<tr><td>Stage 2 &mdash; Ожидание опросника</td><td>3 дня</td><td>10 дней</td></tr>
+<tr><td>Stage 3 &mdash; Compliance</td><td>2 рабочих дня</td><td>5 рабочих дней</td></tr>
+<tr><td>Stage 4 &mdash; Commercial (проверка оффера)</td><td>несколько часов</td><td>1 день</td></tr>
+<tr><td>Stage 5 &mdash; Акцепт оффера</td><td>3 дня</td><td>открытый хвост (ведёт менеджер)</td></tr>
+<tr><td>Stage 6 &mdash; KYB через Sumsub</td><td>5 рабочих дней</td><td>14 рабочих дней</td></tr>
+<tr><td>Stage 7 &mdash; Zoho Sign (включая amendments)</td><td>2 дня</td><td>14 дней</td></tr>
+<tr><td>Stage 8 &mdash; Оплата + загрузка Receipt</td><td>3 рабочих дня</td><td>10 рабочих дней</td></tr>
+<tr><td>Stage 9 &mdash; Техподключение (Delivery)</td><td>5 рабочих дней</td><td>15 рабочих дней</td></tr>
+<tr><td><strong>ИТОГО happy path</strong></td><td><strong>~3 недели</strong></td><td><strong>~8 недель</strong></td></tr>
+</tbody>
+</table>
+
+<div class="section-sep"></div>
+
+<!-- =============== PART B =============== -->
+<div class="part-header tech">
+  <h2 style="color: var(--purple);">ЧАСТЬ B &mdash; техническая спецификация</h2>
+  <p class="lead">Для команды автоматизации. Custom fields, Deluge-функции, webhook-интерфейсы, Blueprint transitions, интеграции.</p>
+</div>
+
+<!-- =============== ARCHITECTURE =============== -->
+<h2 id="architecture">7. Архитектура и смежные системы</h2>
+
+<table class="tbl">
+<thead><tr><th>Система</th><th>Роль</th><th>Интеграция с CRM</th><th>Использование по стадиям</th></tr></thead>
+<tbody>
+<tr><td><strong>Zoho CRM</strong></td><td>Core: модуль Deals, Blueprint &laquo;Token Listing&raquo;, Contacts, Accounts, custom fields, layout rules (автотарификация)</td><td>&mdash;</td><td>все стадии</td></tr>
+<tr><td><strong>Zoho Survey</strong></td><td>Опросник Due Diligence, upload документов, branching, валидации, stop-factor flags</td><td>Via Zoho Flow (см. ниже)</td><td>Stage 1&rarr;2, Stage 2</td></tr>
+<tr><td><strong>Zoho Flow</strong></td><td><strong>Клей между системами</strong>: забирает completion-события из Survey и маппит в Deluge-вызов CRM; также транслирует события от Zoho Invoice, Zoho Sign, Sumsub в функции обновления Deal. Без Flow Survey не сможет двигать Blueprint-стадии.</td><td>Flow =&gt; Deluge invokeUrl к CRM Function endpoint</td><td>Stage 2, 6, 7, 8</td></tr>
+<tr><td><strong>Zoho Forms</strong></td><td>Несколько форм для compliance: (1) <strong>Stage 3</strong> &mdash; Compliance Listing Review (Approve / Reject+reason); (2) <strong>Stage 6, Form #1</strong> &mdash; сводка по клиенту + поле для ввода Sumsub-ссылки; (3) <strong>Stage 6, Form #2</strong> &mdash; внесение итогового результата KYB. Compliance-команда не пользуется CRM напрямую &mdash; вся работа через формы.</td><td>Forms submission webhook &rarr; Deluge через Flow</td><td>Stage 3, Stage 6</td></tr>
+<tr><td><strong>Zoho Invoice</strong></td><td>Invoice generation для <strong>двух отдельных инвойсов</strong>: KYB fee ($500 после акцепта оффера, Stage 6) и основной listing fee (после подписания договора, между Stage 7 и Stage 8). <strong>Используем Invoice, не Books</strong> &mdash; бухгалтерия в Zoho не ведётся, нам нужна только функция выставления и отслеживания оплаты счетов.</td><td>Deluge &rarr; Invoice API create_invoice; webhook Paid приходит в CRM через Flow как справочный сигнал (оплата подтверждается ручным Receipt)</td><td>Stage 6 (KYB invoice), Stage 7&rarr;8 (listing invoice), Stage 8 (закрытие)</td></tr>
+<tr><td><strong>Zoho Sign</strong></td><td>Подписание Listing Agreement + DPA, in-envelope collaboration для согласования правок</td><td>Outbound: Deluge &rarr; Sign API create_document; template-merge полями Deal. Inbound: webhook on complete / declined / collaborate-requested</td><td>Stage 7</td></tr>
+<tr><td><strong>Zoho WorkDrive</strong></td><td>Хранение подписанных PDF, загруженных клиентом документов (survey attachments) и Receipt-ов по оплате KYB / listing</td><td>Deluge &rarr; WorkDrive upload; ссылки в Deal</td><td>Stage 2, 6, 7, 8</td></tr>
+<tr><td><strong>Zoho Learn</strong></td><td>Хранение процессной документации: регламенты, инструкции для менеджеров, compliance-чеклисты, FAQ по листингу</td><td>Ручное ведение; ссылки из уведомлений Slack</td><td>все стадии (в качестве reference)</td></tr>
+<tr><td><strong>Zoho RPA</strong> <em>(к обсуждению)</em></td><td>Потенциальное распознавание загруженных клиентом документов (выписки, legal opinions, whitepaper summary). Даёт структурированные данные для авто-валидации и compliance-чеклиста.</td><td>RPA-пайплайн читает WorkDrive, пишет распознанные поля обратно в Deal через API</td><td>Stage 2 (после upload); Stage 8 (parse банковской выписки)</td></tr>
+<tr><td><strong>Slack</strong></td><td>Уведомления команде: менеджерам о переходах стадий, compliance о новой заявке на ревью (Stage 3) и о готовности запустить KYB (Stage 6, Form #1), delivery о закрытии Won. Сообщения текстовые со ссылками на CRM-карточку и Zoho Forms.</td><td>Outbound: Deluge &rarr; Slack API chat.postMessage</td><td>все стадии (уведомления)</td></tr>
+<tr><td><strong>Sumsub</strong></td><td>KYB-онбординг юр.лица. Применяется вне CRM: compliance-офицер создаёт applicant в Sumsub вручную и вставляет выданную Sumsub ссылку в <strong>Zoho Form #1</strong>. По submit формы CRM рассылает ссылку клиенту по email. Из CRM прямых вызовов к Sumsub API не делаем.</td><td>Outbound: нет. Inbound: <strong>TBD</strong> &mdash; webhook applicantReviewed от Sumsub (доступность в подписке не подтверждена), либо Zoho Flow-коннектор, либо ручной ввод итога compliance через <strong>Zoho Form #2</strong>.</td><td>Stage 6</td></tr>
+</tbody>
+</table>
+
+<div class="callout ai">
+<strong>Почему без Zoho Flow нельзя:</strong> Zoho Survey не поддерживает прямой вызов CRM Function или прямое изменение Blueprint-стадии. Webhook Survey отдаёт только факт завершения + response_id. Чтобы превратить это в управляющее событие Deal, нужно промежуточное звено &mdash; Flow забирает survey webhook, делает по необходимости дополнительный GetResponse, потом вызывает CRM Deluge Function через invokeUrl. Аналогично для Zoho Invoice (webhook Paid), Zoho Sign и Zoho Forms &mdash; Flow является унифицированным relay, чтобы не плодить по одному Function на каждый трансляционный контракт.
+</div>
+
+<!-- =============== FIELDS =============== -->
+<h2 id="fields">8. Deal &mdash; custom fields и layout</h2>
+<p>Все кастомные поля, которые добавляются в Deal для листинг-воронки. API names &mdash; snake_case, all lowercase, префикс <code>Listing_</code> там, где поле специфичное только для этой воронки.</p>
+
+<h3>Identity и классификация</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Partnership_Type</span><span class="field-type">picklist</span><span class="field-desc">Token Listing (standalone) &middot; Product Integration (WL/API) &middot; Referral Agent &middot; Referral Partner</span></div>
+<div class="field-row"><span class="field-name">Listing_Token_Name</span><span class="field-type">text 100</span><span class="field-desc">Полное имя токена</span></div>
+<div class="field-row"><span class="field-name">Listing_Token_Ticker</span><span class="field-type">text 20</span><span class="field-desc">Тикер, uppercase, валидация [A-Z0-9]{2,20}</span></div>
+<div class="field-row"><span class="field-name">Listing_Token_Contract</span><span class="field-type">text 80</span><span class="field-desc">Contract address; regex по network</span></div>
+<div class="field-row"><span class="field-name">Listing_Token_Network</span><span class="field-type">picklist</span><span class="field-desc">Ethereum &middot; BSC &middot; Polygon &middot; Avalanche &middot; Arbitrum &middot; Base &middot; Tron &middot; Solana &middot; Other (specify)</span></div>
+<div class="field-row"><span class="field-name">Listing_Token_Network_Custom</span><span class="field-type">text 80</span><span class="field-desc">Если Network = Other</span></div>
+<div class="field-row"><span class="field-name">Listing_Network_Supported</span><span class="field-type">formula boolean</span><span class="field-desc">auto: true если Network in (Ethereum, BSC, Polygon, Avalanche, Arbitrum, Base, Tron, Solana)</span></div>
+</div>
+
+<h3>Market данные</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_Market_Kucoin</span><span class="field-type">boolean</span><span class="field-desc">Есть рынок на KuCoin</span></div>
+<div class="field-row"><span class="field-name">Listing_Market_Other_CEX</span><span class="field-type">boolean</span><span class="field-desc">Есть рынок на другом CEX</span></div>
+<div class="field-row"><span class="field-name">Listing_Market_CEX_Names</span><span class="field-type">multi-picklist</span><span class="field-desc">Binance, Bybit, OKX, Kraken, Gate.io, MEXC, Coinbase, Bitget</span></div>
+<div class="field-row"><span class="field-name">Listing_Market_DEX_Only</span><span class="field-type">boolean</span><span class="field-desc">Только DEX &mdash; вне scope</span></div>
+<div class="field-row"><span class="field-name">Listing_Market_24h_Volume_Usd</span><span class="field-type">number</span><span class="field-desc">Объём торгов на основном CEX, USD</span></div>
+<div class="field-row"><span class="field-name">Listing_Market_Pairs_Count</span><span class="field-type">number</span><span class="field-desc">Число торговых пар</span></div>
+<div class="field-row"><span class="field-name">Listing_Mode</span><span class="field-type">formula picklist</span><span class="field-desc">auto: Full / Partial / Virtual-Only / Custom-Negotiation / Blocked (по market + network)</span></div>
+</div>
+
+<h3>Compliance-данные из опросника</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_Token_Is_Security</span><span class="field-type">picklist</span><span class="field-desc">Utility / Security / Not Sure &mdash; флаг для auto-stop</span></div>
+<div class="field-row"><span class="field-name">Listing_Team_Transparency</span><span class="field-type">picklist</span><span class="field-desc">Full KYC / Partial / Anonymous &mdash; флаг для auto-stop</span></div>
+<div class="field-row"><span class="field-name">Listing_Issuer_Company</span><span class="field-type">text 200</span><span class="field-desc">Legal name эмитента</span></div>
+<div class="field-row"><span class="field-name">Listing_Issuer_Country</span><span class="field-type">picklist countries</span><span class="field-desc">Страна регистрации; OFAC sanctioned &rarr; auto-stop</span></div>
+<div class="field-row"><span class="field-name">Listing_Issuer_Reg_Number</span><span class="field-type">text 80</span><span class="field-desc">Registration number</span></div>
+<div class="field-row"><span class="field-name">Listing_Tokenomics_Burn_Schedule</span><span class="field-type">boolean</span><span class="field-desc">Есть burn schedule</span></div>
+<div class="field-row"><span class="field-name">Listing_Tokenomics_Max_Supply</span><span class="field-type">number</span><span class="field-desc">Hard cap</span></div>
+</div>
+
+<h3>Attachments из опросника (WorkDrive file URLs)</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_Whitepaper_Url</span><span class="field-type">url</span><span class="field-desc">Ссылка на whitepaper в WorkDrive</span></div>
+<div class="field-row"><span class="field-name">Listing_Registry_Extract_Url</span><span class="field-type">url</span><span class="field-desc">Выписка из реестра эмитента</span></div>
+<div class="field-row"><span class="field-name">Listing_Legal_Opinion_Url</span><span class="field-type">url</span><span class="field-desc">Legal Opinion PDF</span></div>
+<div class="field-row"><span class="field-name">Listing_Audit_Url</span><span class="field-type">url</span><span class="field-desc">Аудит смарт-контракта</span></div>
+<div class="field-row"><span class="field-name">Listing_Tokenomics_Url</span><span class="field-type">url</span><span class="field-desc">Tokenomics документация</span></div>
+<div class="field-row"><span class="field-name">Listing_KYC_Policy_Url</span><span class="field-type">url</span><span class="field-desc">KYC/AML политика эмитента</span></div>
+<div class="field-row"><span class="field-name">Listing_Payment_Receipt_Url</span><span class="field-type">url</span><span class="field-desc">Receipt по листинг-оплате, выданный Finance менеджеру (Stage 8: выписка / скриншот / письмо Finance). Менеджер загружает файл в WorkDrive и ссылку сюда.</span></div>
+</div>
+
+<h3>Compliance и ход ревью</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_Compliance_Reviewer</span><span class="field-type">user lookup</span><span class="field-desc">Кто принял решение (из Zoho Form)</span></div>
+<div class="field-row"><span class="field-name">Listing_Compliance_Decision</span><span class="field-type">picklist</span><span class="field-desc">Approved / Rejected / Pending</span></div>
+<div class="field-row"><span class="field-name">Listing_Compliance_Reject_Reason</span><span class="field-type">textarea</span><span class="field-desc">Причина отказа</span></div>
+<div class="field-row"><span class="field-name">Listing_Compliance_Reviewed_At</span><span class="field-type">datetime</span><span class="field-desc">Timestamp решения</span></div>
+<div class="field-row"><span class="field-name">Listing_Compliance_Form_Response_Url</span><span class="field-type">url</span><span class="field-desc">Ссылка на отклик в Zoho Forms</span></div>
+</div>
+
+<h3>Коммерческие поля</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_Fee_Structure</span><span class="field-type">picklist</span><span class="field-desc">Percentage / Fixed Monthly / Revenue Share / Hybrid</span></div>
+<div class="field-row"><span class="field-name">Listing_Fee_Amount_Usd</span><span class="field-type">currency</span><span class="field-desc">Сумма listing fee (авто-расчёт по матрице, редактируется менеджером)</span></div>
+<div class="field-row"><span class="field-name">Listing_Min_Liquidity_Usd</span><span class="field-type">currency</span><span class="field-desc">Требуемый минимум ликвидности</span></div>
+<div class="field-row"><span class="field-name">Listing_Auto_Offer_Text</span><span class="field-type">textarea 8000</span><span class="field-desc">Авто-сгенерированный текст оффера; менеджер правит при необходимости</span></div>
+<div class="field-row"><span class="field-name">Listing_MSA_Dubai_Required</span><span class="field-type">boolean</span><span class="field-desc">Default false для этой воронки</span></div>
+</div>
+
+<h3 style="color:var(--cyan);">Service Tiers (v3)</h3>
+<p style="font-size:13px;color:var(--text-dim);margin:-4px 0 10px 0;">Quip: pre-qualify выполняет <code>listing_handle_survey_webhook</code> на Stage 2&rarr;3, финальный <code>Listing_Tier_Assigned</code> проставляет sales в Stage 4. Custom tier (OnOff-Ramp) проходит через triumvirate-substage в Stage 5.</p>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_Tier_Requested</span><span class="field-type">multiselect</span><span class="field-desc">Что клиент запросил в опроснике (Page 10): Basic / Swap / Utility-Card / OnOff-Ramp. Заполняется автоматически из Survey.</span></div>
+<div class="field-row"><span class="field-name">Listing_Tier_Basic_Eligible</span><span class="field-type">boolean (computed)</span><span class="field-desc">Всегда true, если не сработал hard stop-factor. Считается в webhook.</span></div>
+<div class="field-row"><span class="field-name">Listing_Tier_Swap_Eligible</span><span class="field-type">boolean (computed)</span><span class="field-desc">true, если заявлены DEX-пулы с TVL &ge; порога ИЛИ есть листинг на &laquo;адекватной&raquo; CEX (whitelist CEX-ов настраивается отдельно).</span></div>
+<div class="field-row"><span class="field-name">Listing_Tier_Utility_Card_Eligible</span><span class="field-type">boolean (computed)</span><span class="field-desc">true, если Swap eligible + accepted payment methods включают USDT/USDC.</span></div>
+<div class="field-row"><span class="field-name">Listing_Tier_OnRamp_PreScreen</span><span class="field-type">picklist (computed)</span><span class="field-desc">not_requested / failed / passed. passed = клиент выбрал OnOff-Ramp + yes на buy-back + загружен <code>Listing_Buyback_Model_Url</code> + acknowledgment triumvirate-гейта.</span></div>
+<div class="field-row"><span class="field-name">Listing_Tier_Assigned</span><span class="field-type">multiselect</span><span class="field-desc">Финальный набор SKU, который идёт в оффер и контракт. Проставляется sales в Stage 4 (required перед Offer Prep).</span></div>
+<div class="field-row"><span class="field-name">Listing_Buyback_Ready</span><span class="field-type">boolean</span><span class="field-desc">Issuer подтвердил готовность к buy-back схеме (из Survey Page 10 branching). Required = true для OnRamp.</span></div>
+<div class="field-row"><span class="field-name">Listing_Buyback_Model_Url</span><span class="field-type">url</span><span class="field-desc">WorkDrive-ссылка на финансовую модель buy-back (upload в Survey, в Stage 6 может быть обновлён).</span></div>
+<div class="field-row"><span class="field-name">Listing_OnRamp_Volume_Estimate_Usd</span><span class="field-type">currency</span><span class="field-desc">Оценка monthly volume on/off ramp от issuer&rsquo;а (из Survey).</span></div>
+<div class="field-row"><span class="field-name">Listing_Triumvirate_Status</span><span class="field-type">picklist</span><span class="field-desc">N/A / Pending / Approved / Rejected. N/A если OnRamp не в Listing_Tier_Assigned. Заполняется через Zoho Form (Form #TR) после решения триумвирата.</span></div>
+<div class="field-row"><span class="field-name">Listing_Triumvirate_Decision_Note</span><span class="field-type">textarea</span><span class="field-desc">Комментарий триумвирата (особенно важен при Rejected &mdash; причина + рекомендация по downgrade).</span></div>
+</div>
+
+<h3>Оффер</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_Offer_Sent_At</span><span class="field-type">datetime</span><span class="field-desc">Когда отправлен клиенту</span></div>
+<div class="field-row"><span class="field-name">Listing_Offer_Accepted_At</span><span class="field-type">datetime</span><span class="field-desc">Когда менеджер зафиксировал акцепт</span></div>
+<div class="field-row"><span class="field-name">Listing_Offer_Accept_Channel</span><span class="field-type">picklist</span><span class="field-desc">Email / Call / Chat / In-person / Other</span></div>
+<div class="field-row"><span class="field-name">Listing_Offer_Accept_Note</span><span class="field-type">textarea</span><span class="field-desc">Свободный текст подтверждения (цитата клиента, контекст)</span></div>
+</div>
+
+<h3>KYB (Stage 6)</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_KYB_Substage</span><span class="field-type">picklist</span><span class="field-desc">Invoice Sent / Awaiting KYB Payment / Receipt Uploaded / Awaiting Compliance (Form #1) / Sumsub Link Sent / In Review / Result Pending (Form #2) / Done</span></div>
+<div class="field-row"><span class="field-name">Listing_KYB_Status</span><span class="field-type">picklist</span><span class="field-desc">Not Started / In Progress / Approved / Rejected &mdash; итог проверки Sumsub</span></div>
+<div class="field-row"><span class="field-name">Listing_KYB_Invoice_Id</span><span class="field-type">text 40</span><span class="field-desc">Zoho Invoice id для KYB fee ($500)</span></div>
+<div class="field-row"><span class="field-name">Listing_KYB_Payment_Receipt_Url</span><span class="field-type">url</span><span class="field-desc">Receipt по оплате KYB-инвойса, полученный Finance и пересланный менеджеру; менеджер загружает файл в WorkDrive и ссылку сюда.</span></div>
+<div class="field-row"><span class="field-name">Listing_KYB_Payment_Confirmed_At</span><span class="field-type">datetime</span><span class="field-desc">Когда менеджер загрузил Receipt в Deal (подстатус 6.3) &mdash; этот момент запускает отправку Form #1 compliance.</span></div>
+<div class="field-row"><span class="field-name">Listing_KYB_Form1_Response_Url</span><span class="field-type">url</span><span class="field-desc">Ссылка на ответ compliance в Zoho Form #1 (Sumsub-ссылка + верификация данных клиента)</span></div>
+<div class="field-row"><span class="field-name">Listing_KYB_Form2_Response_Url</span><span class="field-type">url</span><span class="field-desc">Ссылка на ответ compliance в Zoho Form #2 (итоговый результат KYB, причина отказа если Rejected)</span></div>
+<div class="field-row"><span class="field-name">Listing_KYB_Sumsub_Link</span><span class="field-type">url</span><span class="field-desc">Sumsub-ссылка для прохождения KYB клиентом; вводится compliance в Form #1 и автоматически уходит клиенту на email.</span></div>
+<div class="field-row"><span class="field-name">Listing_Sumsub_Applicant_Id</span><span class="field-type">text 40</span><span class="field-desc">Sumsub applicant id &mdash; если будет доступен через webhook/интеграцию (TBD)</span></div>
+<div class="field-row"><span class="field-name">Listing_Sumsub_Review_Url</span><span class="field-type">url</span><span class="field-desc">Ссылка на applicant-а в Sumsub dashboard &mdash; заполняет compliance через Form #2 (опционально)</span></div>
+</div>
+
+<h3>Listing-инвойс и оплата (Stage 7&mdash;8)</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_Invoice_Id</span><span class="field-type">text 40</span><span class="field-desc">Zoho Invoice id основного listing-счёта (только listing fee, без KYB)</span></div>
+<div class="field-row"><span class="field-name">Listing_Invoice_Sent_At</span><span class="field-type">datetime</span><span class="field-desc">Когда отправлен клиенту</span></div>
+<div class="field-row"><span class="field-name">Listing_Invoice_Closed_At</span><span class="field-type">datetime</span><span class="field-desc">Когда закрыт (status = Paid)</span></div>
+<div class="field-row"><span class="field-name">Listing_Payment_Substage</span><span class="field-type">picklist</span><span class="field-desc">Invoice Sent / Awaiting Payment / Receipt Uploaded / Closed</span></div>
+<div class="field-row"><span class="field-name">Listing_Payment_Confirmed_At</span><span class="field-type">datetime</span><span class="field-desc">Когда подтверждено финально</span></div>
+</div>
+
+<h3>Zoho Sign</h3>
+<div class="field-list">
+<div class="field-row"><span class="field-name">Listing_Sign_Envelope_Id</span><span class="field-type">text 40</span><span class="field-desc">Zoho Sign document id</span></div>
+<div class="field-row"><span class="field-name">Listing_Sign_Status</span><span class="field-type">picklist</span><span class="field-desc">Not Sent / Sent / Collaboration Requested / Partially Signed / Completed / Declined</span></div>
+<div class="field-row"><span class="field-name">Listing_Agreement_Signed_Url</span><span class="field-type">url</span><span class="field-desc">Финальный PDF в WorkDrive</span></div>
+</div>
+
+<!-- =============== BLUEPRINT =============== -->
+<h2 id="blueprint">9. Blueprint &mdash; стадии, transitions, required fields</h2>
+
+<p>Blueprint &laquo;Token Listing&raquo; применяется к модулю Deals при условии <code>Partnership_Type = Token Listing (standalone)</code>. Все transitions описаны ниже. During Blueprint поля помечены <span class="req">req</span>.</p>
+
+<h3>Stage 1 &rarr; Stage 2: &laquo;Отправить опросник&raquo;</h3>
+<div class="callout">
+<strong>Type:</strong> <span class="badge badge-manual">Manual button</span> &middot; <strong>Actor:</strong> Sales Manager (owner of Deal)<br>
+<strong>During Blueprint required:</strong> <span class="req">Contact.First_Name</span>, <span class="req">Contact.Email</span>, <span class="req">Deal.Owner</span><br>
+<strong>Before transition (Custom Function):</strong> <code>listing_send_survey(deal_id)</code><br>
+<strong>After transition:</strong> автоматически ставит <code>Listing_Survey_Sent_At = now()</code>; триггерит email с survey link.
+</div>
+
+<h3>Stage 2 &rarr; Stage 3 (или terminal): автоматический через Zoho Flow</h3>
+<div class="callout purple">
+<strong>Type:</strong> <span class="badge badge-auto">Automatic via Zoho Flow</span><br>
+<strong>Trigger:</strong> Zoho Survey completion &rarr; Zoho Flow &rarr; CRM Deluge Function <code>listing_handle_survey_completion(response_id, deal_id)</code><br>
+<strong>Logic:</strong>
+<pre><code>response = invokeUrl Zoho Survey GetResponseDetails
+parsed   = map_answers_to_fields(response)
+update Deal with parsed fields
+upload attachments to WorkDrive, save URLs to Deal
+
+if parsed.is_security == "Security":        transition_to("Stop: Security Token")
+if parsed.team == "Anonymous":               transition_to("Stop: Anonymous Team")
+if is_sanctioned_country(parsed.country):    transition_to("Stop: Sanctioned Country")
+if parsed.whitepaper_url is null
+   and parsed.whitepaper_promise == "Never": transition_to("Stop: No Whitepaper")
+
+// v3: Service Tier pre-qualification
+Listing_Tier_Requested            = parsed.tiers_requested   // multiselect из Page 10
+Listing_Tier_Basic_Eligible       = true
+Listing_Tier_Swap_Eligible        = parsed.dex_tvl_usd &gt;= SWAP_TVL_THRESHOLD
+                                    OR parsed.cex_listed_whitelisted
+Listing_Tier_Utility_Card_Eligible = Listing_Tier_Swap_Eligible
+                                    AND ("USDT" IN parsed.accepted_pay OR "USDC" IN parsed.accepted_pay)
+if "OnOff-Ramp" IN parsed.tiers_requested:
+    Listing_Tier_OnRamp_PreScreen = (parsed.buyback_ready == true
+                                     AND parsed.buyback_model_url != null
+                                     AND parsed.onramp_ack_triumvirate == true)
+                                    ? "passed" : "failed"
+else:
+    Listing_Tier_OnRamp_PreScreen = "not_requested"
+
+transition_to("Stage 3 &mdash; Compliance Review")</code></pre>
+</div>
+
+<h3>Stage 3 &rarr; Stage 4 (или terminal): Zoho Forms / Slack + Flow</h3>
+<div class="callout purple">
+<strong>Type:</strong> <span class="badge badge-external">External event via Zoho Flow</span><br>
+<strong>Setup:</strong> при входе в Stage 3 &mdash; <code>listing_notify_compliance(deal_id)</code> постит в Slack-канал короткое сообщение со ссылками на опросник, документы и Zoho Form решения.<br>
+<strong>Trigger:</strong> submission Zoho Form &rarr; Zoho Flow &rarr; <code>listing_handle_compliance_decision(form_response_id)</code><br>
+<strong>Logic:</strong>
+<pre><code>decision = form.decision  // "Approved" | "Rejected"
+update Deal:
+    Listing_Compliance_Decision      = decision
+    Listing_Compliance_Reviewer      = form.submitter
+    Listing_Compliance_Reviewed_At   = now()
+    Listing_Compliance_Reject_Reason = form.reason (if Rejected)
+    Listing_Compliance_Form_Response_Url = form.response_url
+
+if decision == "Approved":
+    transition_to("Stage 4 &mdash; Commercial")
+else:
+    transition_to("Terminal: Rejected by Compliance")
+    send_email_rejection_to_client(deal_id, reason)</code></pre>
+</div>
+
+<h3>Stage 4 &rarr; Stage 5: &laquo;Отправить оффер&raquo;</h3>
+<div class="callout">
+<strong>Type:</strong> <span class="badge badge-manual">Manual button</span> &middot; <strong>Actor:</strong> Sales Manager<br>
+<strong>During Blueprint required:</strong> <span class="req">Listing_Fee_Structure</span>, <span class="req">Listing_Fee_Amount_Usd</span>, <span class="req">Listing_Mode</span> (уже заполнено автоматом), <span class="req">Listing_Auto_Offer_Text</span> (ревью менеджера), <span class="req" style="border-color:var(--cyan);">Listing_Tier_Assigned</span> <span style="color:var(--cyan);font-size:11px;">(v3)</span><br>
+<strong>Before transition:</strong> <code>listing_send_offer(deal_id)</code><br>
+<strong>Tier gate (v3):</strong> если в <code>Listing_Tier_Assigned</code> включён OnOff-Ramp &mdash; <strong>blocked до Triumvirate Approved</strong>. Менеджер видит это в Blueprint gate-сообщении и инициирует triumvirate-substage (см. ниже). Причина: структура контракта и цена для OnOff-Ramp зависят от решения триумвирата, отправлять оффер до апрува бессмысленно.<br>
+<strong>Logic:</strong>
+<pre><code>// Коммерческие поля уже посчитаны layout rules при входе в Stage 4
+// на базе Listing_Mode + Market_* + Network + Tokenomics_*
+// Менеджер мог подкорректировать fee_amount вручную.
+
+send_email(contact.email, template="listing_offer", merge=deal_fields)
+update Deal:
+    Listing_Offer_Sent_At = now()
+schedule_reminders_to_manager(+3d, +7d, +14d)</code></pre>
+</div>
+
+<h3 style="color:var(--cyan);">Stage 4 &mdash; Triumvirate Approval substage (v3, только для OnOff-Ramp tier)</h3>
+<div class="callout" style="border-color:var(--cyan);background:rgba(14,165,233,0.05);">
+<strong>Type:</strong> <span class="badge badge-manual">Manual trigger</span> &middot; <strong>Actor:</strong> Sales Manager initiates, approvers = <strong>Alexey / Kirill / Valeria</strong><br>
+<strong>When:</strong> только если <code>Listing_Tier_OnRamp_PreScreen = passed</code> и менеджер намерен включить OnOff-Ramp в <code>Listing_Tier_Assigned</code>.<br>
+<strong>During substage required:</strong> <span class="req">Listing_Buyback_Ready = true</span>, <span class="req">Listing_Buyback_Model_Url</span> (из Survey или обновлён менеджером), <span class="req">Listing_OnRamp_Volume_Estimate_Usd</span><br>
+<strong>Mechanism:</strong> отдельная Zoho Form (<code>Form #TR</code>), pre-filled Deal summary + ссылки на buy-back model. Отправляется всем трём по Slack-треду в <code>#listing-triumvirate</code>. Решение собирается через submit Form #TR любым из трёх (правило консенсуса &mdash; <strong>все три must Approve</strong>; любой Reject &rarr; Rejected).<br>
+<strong>Outcome:</strong><br>
+<pre><code>if Listing_Triumvirate_Status == Approved:
+    unlock Stage 4 &rarr; 5 transition
+    (sales продолжает с OnOff-Ramp в Listing_Tier_Assigned)
+elif Listing_Triumvirate_Status == Rejected:
+    Listing_Tier_Assigned = Listing_Tier_Assigned \ {OnOff-Ramp}
+    notify sales to rebuild offer (downgrade path &mdash; см. Edge cases)
+    unlock Stage 4 &rarr; 5 transition (без OnOff-Ramp)</code></pre>
+<strong>Tempo:</strong> SLA ответа триумвирата &mdash; 5 рабочих дней. Менеджер видит escalation-reminder в ClickUp, если &gt; SLA.<br>
+<strong>Положение в Blueprint:</strong> substage Stage 4, не отдельная стадия &mdash; не ломает существующий flow, только блокирует transition пока не проставлен <code>Listing_Triumvirate_Status</code>.
+</div>
+
+<h3>Stage 5 &rarr; Stage 6: &laquo;Клиент принял оффер&raquo;</h3>
+<div class="callout">
+<strong>Type:</strong> <span class="badge badge-manual">Manual button</span> &middot; <strong>Actor:</strong> Sales Manager<br>
+<strong>During Blueprint required:</strong> <span class="req">Listing_Offer_Accept_Channel</span>, <span class="req">Listing_Offer_Accept_Note</span><br>
+<strong>Before transition:</strong> <code>listing_handle_offer_accept(deal_id)</code><br>
+<strong>Logic:</strong>
+<pre><code>update Deal.Listing_Offer_Accepted_At = now()
+transition_to("Stage 6 &mdash; KYB")
+update Listing_KYB_Substage = "Invoice Sent"
+trigger listing_generate_kyb_invoice(deal_id)  // $500 KYB fee invoice</code></pre>
+<strong>Альтернативный переход:</strong> кнопка &laquo;Клиент отказался&raquo; &rarr; terminal &laquo;Client Refused&raquo;. Авто-expiry по времени <strong>нет</strong> &mdash; менеджер ведёт клиента до явного решения.
+</div>
+
+<h3>Stage 6 &mdash; внутренние переходы (substage flow)</h3>
+<div class="callout purple">
+<strong>Stage 6 &mdash; это последовательность substage-переходов внутри одной Blueprint-стадии.</strong> Compliance-команда работает не в CRM, а в двух Zoho Forms: Form #1 (сводка + Sumsub-ссылка) и Form #2 (итог KYB). CRM &laquo;видит&raquo; Stage 6 через webhook-и этих форм и через действия менеджера. Работа compliance в самом Sumsub &mdash; вне scope документа.
+<table class="tbl" style="margin-top:12px;">
+<thead><tr><th>Substage &rarr;</th><th>Триггер</th><th>Функция / действие</th></tr></thead>
+<tbody>
+<tr><td>6.1 Invoice Sent &rarr; Awaiting KYB Payment</td><td>Auto при входе в Stage 6</td><td><code>listing_generate_kyb_invoice(deal_id)</code> &mdash; выставляет KYB-инвойс на $500, шлёт email клиенту, substage &rarr; &laquo;Awaiting KYB Payment&raquo;.</td></tr>
+<tr><td>6.2 Awaiting KYB Payment (ожидание)</td><td>&mdash;</td><td>Deal ждёт, пока Finance увидит поступление и перешлёт Receipt менеджеру. Onlайн-сверки с банком нет &mdash; автоматизация этой точки задача следующей фазы.</td></tr>
+<tr><td>6.3 Awaiting KYB Payment &rarr; Receipt Uploaded</td><td>Manual: менеджер загружает Receipt</td><td>Required: <span class="req">Listing_KYB_Payment_Receipt_Url</span>. Заполняется <code>Listing_KYB_Payment_Confirmed_At = now()</code>. Substage &rarr; &laquo;Receipt Uploaded&raquo;. Кнопка Blueprint &laquo;Запустить KYB&raquo; вызывает <code>listing_trigger_kyb_form_1(deal_id)</code>.</td></tr>
+<tr><td>6.4 Receipt Uploaded &rarr; Awaiting Compliance (Form #1)</td><td>Auto после 6.3</td><td><code>listing_trigger_kyb_form_1</code>: генерирует предзаполненный URL Zoho Form #1 (сводка по клиенту + поле для Sumsub-ссылки), постит в Slack-канал compliance. Substage &rarr; &laquo;Awaiting Compliance (Form #1)&raquo;.</td></tr>
+<tr><td>6.5 Awaiting Compliance &rarr; Sumsub Link Sent</td><td>Form #1 submission webhook (через Flow)</td><td><code>listing_handle_kyb_form_1_submit</code>: сохраняет <code>Listing_KYB_Sumsub_Link</code>, <code>Listing_KYB_Form1_Response_Url</code>. Шлёт клиенту email <code>listing_sumsub_link</code>. Автоматически формирует предзаполненный URL Zoho Form #2 и постит в тот же Slack-thread. Substage &rarr; &laquo;Sumsub Link Sent&raquo;.</td></tr>
+<tr><td>6.6 Sumsub Link Sent &rarr; In Review</td><td>Неявно (клиент начал проходить KYB)</td><td>Ожидание со стороны CRM. Отдельного явного события нет &mdash; подстатус остаётся до поступления результата. Можно ставить Slack-reminder compliance/менеджеру на 5-й день (edge cases).</td></tr>
+<tr><td>6.7 In Review &rarr; Result Pending (Form #2)</td><td>Form #2 submission webhook (через Flow) или Sumsub webhook (TBD)</td><td><code>listing_handle_kyb_form_2_submit</code>: сохраняет <code>Listing_KYB_Form2_Response_Url</code>, заполняет <code>Listing_KYB_Status</code> (Approved / Rejected) и причину отказа если Rejected.</td></tr>
+<tr><td>6.8 Result Pending &rarr; Done</td><td>Auto в том же обработчике</td><td><code>listing_handle_kyb_result(deal_id)</code>: если Approved &rarr; Substage = Done, transition to Stage 7 (contract signing, envelope only). Если Rejected &rarr; Substage = Done, transition to Terminal &laquo;KYB Failed&raquo;, email клиенту с причиной.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Stage 6 &rarr; Stage 7: результат KYB</h3>
+<div class="callout warn">
+<strong>TBD: механизм возврата результата из Sumsub в CRM.</strong> Варианты, которые нужно оценить на этапе имплементации:
+<ol style="margin:8px 0 0 20px;padding:0;font-size:13px;">
+  <li><strong>Webhook applicantReviewed от Sumsub через Zoho Flow</strong> &mdash; проверить доступность в подписке. Если доступен: Flow проверяет подпись, вызывает CRM Deluge Function. Формат подписи (HMAC алгоритм, header) &mdash; по документации Sumsub на момент подключения.</li>
+  <li><strong>Нативный Sumsub-коннектор в Zoho Flow или Zoho Marketplace</strong> &mdash; проверить наличие.</li>
+  <li><strong>Ручной ввод compliance через Zoho Form #2</strong> (baseline) &mdash; compliance-офицер после завершения проверки Sumsub открывает подготовленную Form #2 (ссылка пришла в Slack на substage 6.5), указывает Approved / Rejected и причину отказа. Webhook Form #2 &rarr; Flow &rarr; <code>listing_handle_kyb_form_2_submit</code>.</li>
+</ol>
+</div>
+<div class="callout purple">
+<strong>Независимо от механизма:</strong> когда <code>Listing_KYB_Status</code> заполнен, запускается <code>listing_handle_kyb_result(deal_id)</code>:
+<pre><code>if Listing_KYB_Status == "Approved":
+    update Listing_KYB_Substage = "Done"
+    transition_to("Stage 7 &mdash; Contract Signing")
+    trigger listing_generate_sign_envelope(deal_id)   // только envelope, без invoice
+
+if Listing_KYB_Status == "Rejected":
+    update Listing_KYB_Substage = "Done"
+    save_reject_details_to_timeline(deal_id, details)
+    transition_to("Terminal: KYB Failed")
+    send_email(contact.email, template="listing_kyb_rejected")</code></pre>
+<strong>Важно:</strong> CRM не вызывает Sumsub API на создание applicant-а. Applicant создаётся compliance вручную, Sumsub-ссылка попадает в CRM через Form #1.
+</div>
+
+<h3>Auto после Approved KYB: <code>listing_generate_sign_envelope</code></h3>
+<div class="callout purple">
+<strong>Type:</strong> <span class="badge badge-auto">Automatic (serverless)</span> &middot; <strong>Когда:</strong> вызывается из <code>listing_handle_kyb_result</code> при Approved.<br>
+<strong>Порядок:</strong> сначала договор &rarr; подписание &rarr; потом listing-инвойс (между Stage 7 и Stage 8) &rarr; оплата (Stage 8). KYB fee уже оплачен отдельным инвойсом на Stage 6 &mdash; здесь больше ничего по инвойсу не делаем.<br>
+<strong>Logic:</strong>
+<pre><code>envelope = Zoho Sign API create_from_template({
+    template_id: "listing_agreement_panama",
+    merge:        deal_template_fields(deal_id)
+})
+update Deal:
+    Listing_Sign_Envelope_Id = envelope.id
+    Listing_Sign_Status      = "Sent"
+slack_notify_manager(deal_id, "envelope отправлен клиенту на подпись")</code></pre>
+</div>
+
+<h3>Stage 7 &rarr; Stage 8: автоматический (Zoho Sign webhook через Flow)</h3>
+<div class="callout purple">
+<strong>Trigger:</strong> Zoho Sign webhook completed / declined / collaboration_requested &rarr; Flow &rarr; <code>listing_handle_sign_webhook(envelope_id, status)</code>. По Completed CRM сначала генерирует listing-инвойс, потом двигает стадию &mdash; в таком порядке, как договаривались: сначала договор, потом инвойс, потом оплата.<br>
+<strong>Logic:</strong>
+<pre><code>switch status:
+  "Completed":
+      download_signed_pdf_to_workdrive(envelope_id)
+      update Deal:
+          Listing_Agreement_Signed_Url = workdrive_url
+          Listing_Sign_Status          = "Completed"
+
+      // auto-invoice между Stage 7 и Stage 8
+      invoice = Zoho Invoice API create_invoice({
+          customer_id: account.Invoice_Customer_Id,
+          line_items:  [{ name: "Token Listing Fee",
+                          rate: Deal.Listing_Fee_Amount_Usd }],
+          due_date:    today + 14d
+      })
+      update Deal:
+          Listing_Invoice_Id      = invoice.id
+          Listing_Invoice_Sent_At = now()
+      send_email(contact.email + billing_email, template="listing_invoice")
+
+      transition_to("Stage 8 &mdash; Payment")
+      update Listing_Payment_Substage = "Invoice Sent"
+
+  "Declined":
+      update Deal.Listing_Sign_Status = "Declined"
+      transition_to("Terminal: Client Refused")
+
+  "CollaborationRequested":
+      // Zoho Sign встроенное согласование правок
+      // Отдельная стадия Blueprint НЕ нужна
+      update Deal.Listing_Sign_Status = "Collaboration Requested"
+      slack_notify_manager(deal_id, "client requested amendments in Zoho Sign")
+      slack_notify_legal_channel(deal_id, "amendments")  // юристы вне Zoho &mdash; SLA
+</code></pre>
+</div>
+
+<h3>Stage 8: оплата listing-инвойса</h3>
+<div class="callout">
+<strong>Type:</strong> <span class="badge badge-manual">Manual multistep</span> &middot; <strong>Actor:</strong> Sales Manager (Finance &mdash; вне CRM)<br>
+<strong>Substages</strong> (поле <code>Listing_Payment_Substage</code>):
+<pre><code>Invoice Sent         // инвойс сформирован и отправлен (устанавливается Stage 7&rarr;8)
+Awaiting Payment     // ждём оплату; Finance видит поступление по своему каналу
+Receipt Uploaded     // менеджер загрузил Receipt в Deal, готов к закрытию
+Closed               // инвойс помечен Paid, переход на Stage 9</code></pre>
+<strong>Поток:</strong> клиент оплачивает &rarr; Finance получает выписку и пересылает Receipt менеджеру &rarr; менеджер загружает Receipt в Deal, заполняет <code>Listing_Payment_Receipt_Url</code>, substage &rarr; &laquo;Receipt Uploaded&raquo;. Сверка платежей автоматизируется на следующей фазе.<br>
+<strong>Transition &laquo;Оплата подтверждена&raquo;:</strong> доступна, когда <span class="req">Listing_Payment_Receipt_Url</span> заполнен. Вызывает <code>listing_close_payment(deal_id)</code>.<br>
+<strong>Logic:</strong>
+<pre><code>validate Listing_Payment_Receipt_Url is not null
+
+Zoho Invoice API mark_as_paid(Listing_Invoice_Id, {
+    payment_date: now(),
+    payment_mode: "Bank Transfer",
+    amount:       Deal.Listing_Fee_Amount_Usd
+})
+update Deal:
+    Listing_Invoice_Closed_At    = now()
+    Listing_Payment_Confirmed_At = now()
+    Listing_Payment_Substage     = "Closed"
+
+transition_to("Stage 9 &mdash; Closed Won")</code></pre>
+</div>
+
+<h3>Stage 9: Closed Won side-effects</h3>
+<div class="callout success">
+<strong>Trigger:</strong> on entry &mdash; <code>listing_closed_won_handoff(deal_id)</code><br>
+<strong>Logic:</strong>
+<pre><code>slack_post(channel=&lt;канал листингов, TBD&gt;, summary={
+    ticker:   Deal.Listing_Token_Ticker,
+    network:  Deal.Listing_Token_Network,
+    mode:     Deal.Listing_Mode,
+    signed:   Deal.Listing_Agreement_Signed_Url,
+    invoice:  Deal.Listing_Invoice_Id
+})
+send_welcome_email(contact.email)
+schedule_reminder_to_manager(+7d, "check how onboarding is going")</code></pre>
+Как именно это попадает к Delivery-команде (что создаём во внешних системах или не создаём вовсе) &mdash; предмет отдельного обсуждения, вне этого документа.
+</div>
+
+<!-- =============== DELUGE FUNCTIONS =============== -->
+<h2 id="deluge">10. Deluge-функции (signatures + key logic)</h2>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_send_survey(deal_id)</div>
+<pre><code>// Stage 1&rarr;2 transition side-effect
+// 1. Generate unique survey link via Zoho Survey API с prefilled params
+//    (deal_id, token_ticker, contact_email)
+// 2. Save link to Deal.Listing_Survey_Url
+// 3. Send email template "Listing DD Survey" to contact.email
+// 4. Schedule reminders at +3d, +7d (if still Stage 2)
+// Error handling: try/catch, log в Slack (канал ошибок автоматизации, TBD), rollback stage</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_handle_survey_completion(response_id, deal_id)</div>
+<pre><code>// Вызывается из Zoho Flow (Survey completion &rarr; Flow &rarr; эта функция)
+// 1. response = invokeUrl Zoho Survey GetResponse
+// 2. parsed   = map_answers_to_fields(response)
+// 3. for each attachment in response: upload to WorkDrive, save URL в Deal
+// 4. Update Deal fields из parsed
+// 5. Check stop factors:
+//    - is_security / anonymous / sanctioned / no_whitepaper
+//    - если что-то &rarr; transition_to("Terminal: Stop Factor") + Slack alert
+// 6. Else &rarr; transition_to("Stage 3")
+// 7. listing_notify_compliance(deal_id)
+// Errors: keep in Stage 2, Slack alert менеджеру</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_notify_compliance(deal_id)</div>
+<pre><code>// Called on Stage 3 entry
+// 1. Fetch Deal + Contact + Account
+// 2. Form URL: https://forms.zohopublic.com/.../listing_compliance_review?deal_id=...
+// 3. Slack post в канал compliance (имя канала &mdash; TBD):
+//    "Listing DD готов к ревью: &lt;Ticker&gt; / &lt;Issuer&gt;
+//     Опросник: [Survey link] &middot; Документы: [WorkDrive folder]
+//     Принять решение: [Zoho Form]"
+// Compliance не работает в CRM &mdash; все решения приходят обратно через webhook Zoho Form.</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_handle_compliance_decision(form_response_id)</div>
+<pre><code>// Called via Zoho Flow из Zoho Forms submission
+// payload = {
+//   decision: "Approved" | "Rejected",
+//   reason:   optional (required if Rejected),
+//   submitter: user_email,
+//   deal_id:  from hidden param
+// }
+// 1. Find Deal by deal_id
+// 2. Update Deal compliance-fields (decision, reviewer, timestamp, reason)
+// 3. If Approved &rarr; transition_to("Stage 4")
+//    If Rejected &rarr; transition_to("Terminal: Rejected by Compliance")
+//                     + send_email_rejection_to_client
+// 4. Post Slack reply в thread: "Recorded: &lt;decision&gt; by &lt;Submitter&gt;"</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_send_offer(deal_id)</div>
+<pre><code>// Stage 4&rarr;5 transition side-effect
+// 1. Merge Deal fields в email-шаблон "listing_offer"
+//    (fee structure, amount, matrix mode, timeline expectations)
+// 2. Optionally attach PDF-версию оффера (рендерится из того же шаблона)
+// 3. send_email(contact.email + billing_email, template)
+// 4. update Listing_Offer_Sent_At = now()
+// 5. schedule_reminders_to_manager(+3d, +7d, +14d)</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_handle_offer_accept(deal_id)</div>
+<pre><code>// Stage 5&rarr;6 transition side-effect
+// 1. validate Listing_Offer_Accept_Channel &amp; _Note заполнены
+// 2. Listing_Offer_Accepted_At = now()
+// 3. transition_to("Stage 6 &mdash; KYB")
+// 4. update Listing_KYB_Substage = "Invoice Sent"
+// 5. trigger listing_generate_kyb_invoice(deal_id)</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_generate_kyb_invoice(deal_id)</div>
+<pre><code>// Substage Invoice Sent &mdash; автоматика при входе в Stage 6
+// 1. invoice = Zoho Invoice API create_invoice(
+//      customer_id = account.Invoice_Customer_Id,
+//      line_items  = [{name:"KYB fee", rate:500}],
+//      due_date    = today + 14d)
+// 2. update Deal.Listing_KYB_Invoice_Id = invoice.id
+// 3. send_invoice_email_to(contact.email + billing_email)
+// 4. update Listing_KYB_Substage = "Awaiting Payment"
+// 5. Slack-уведомление менеджеру: KYB invoice отправлен</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_trigger_kyb_form_1(deal_id)</div>
+<pre><code>// Substage 6.3 &rarr; 6.4. Вызывается кнопкой Blueprint "Запустить KYB"
+// после того как менеджер загрузил Receipt и заполнил
+// Listing_KYB_Payment_Receipt_Url.
+// 1. validate Listing_KYB_Payment_Receipt_Url is not null
+// 2. Listing_KYB_Payment_Confirmed_At = now()
+// 3. Собрать предзаполненный URL Zoho Form #1:
+//    https://forms.zohopublic.com/.../kyb_form_1
+//      ?deal_id=...&amp;ticker=...&amp;issuer=...&amp;receipt_url=...
+// 4. Slack post в канал compliance:
+//    "Ready to launch KYB: &lt;Ticker&gt; / &lt;Issuer&gt;
+//     Receipt: [WorkDrive] &middot; Сводка по клиенту &amp; ввод Sumsub-ссылки: [Form #1]"
+// 5. update Listing_KYB_Substage = "Awaiting Compliance (Form #1)"</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_handle_kyb_form_1_submit(form_response_id)</div>
+<pre><code>// Webhook Zoho Form #1 &rarr; Flow &rarr; функция.
+// payload = {
+//   deal_id: hidden prefill,
+//   sumsub_link: "https://in.sumsub.com/...",
+//   submitter: compliance_user_email,
+//   response_url: "https://forms.zoho.com/.../view-response/..."
+// }
+// 1. Find Deal by deal_id
+// 2. validate sumsub_link non-empty, https://
+// 3. update Deal:
+//      Listing_KYB_Sumsub_Link         = payload.sumsub_link
+//      Listing_KYB_Form1_Response_Url  = payload.response_url
+// 4. send_email(contact.email, template="listing_sumsub_link",
+//               merge={sumsub_link, ticker, issuer})
+// 5. Собрать предзаполненный URL Zoho Form #2:
+//    https://forms.zohopublic.com/.../kyb_form_2
+//      ?deal_id=...&amp;ticker=...&amp;issuer=...&amp;sumsub_link=...
+// 6. Slack reply в тот же thread: "Sumsub-ссылка отправлена клиенту.
+//    Вносить итог KYB по завершении: [Form #2]"
+// 7. update Listing_KYB_Substage = "Sumsub Link Sent"
+// Errors: Slack alert в канал ошибок автоматизации, substage не меняем</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_handle_kyb_form_2_submit(form_response_id)</div>
+<pre><code>// Webhook Zoho Form #2 &rarr; Flow &rarr; функция. Или (если подключен)
+// webhook applicantReviewed от Sumsub &mdash; отдельная функция, которая
+// в конце вызывает эту же логику handle_kyb_result.
+// payload = {
+//   deal_id: hidden prefill,
+//   kyb_result: "Approved" | "Rejected",
+//   reject_reason: optional (required if Rejected),
+//   sumsub_review_url: optional,
+//   submitter: compliance_user_email,
+//   response_url: "https://forms.zoho.com/.../view-response/..."
+// }
+// 1. Find Deal by deal_id
+// 2. update Deal:
+//      Listing_KYB_Status              = payload.kyb_result
+//      Listing_KYB_Form2_Response_Url  = payload.response_url
+//      Listing_Sumsub_Review_Url       = payload.sumsub_review_url (if given)
+// 3. update Listing_KYB_Substage = "Result Pending (Form #2)"
+// 4. call listing_handle_kyb_result(deal_id)</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_handle_kyb_result(deal_id)</div>
+<pre><code>// Централизованная обработка результата KYB.
+// Вызывается из listing_handle_kyb_form_2_submit (baseline),
+// либо из listing_handle_sumsub_webhook (если подключён Sumsub webhook).
+// 1. if Listing_KYB_Status == "Approved":
+//        update Listing_KYB_Substage = "Done"
+//        transition_to("Stage 7 &mdash; Contract Signing")
+//        trigger listing_generate_sign_envelope(deal_id)
+// 2. if Listing_KYB_Status == "Rejected":
+//        update Listing_KYB_Substage = "Done"
+//        save_reject_details_to_timeline(deal_id, reason)
+//        transition_to("Terminal: KYB Failed")
+//        send_email(contact.email, template="listing_kyb_rejected",
+//                   merge={reason})</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_generate_sign_envelope(deal_id)</div>
+<pre><code>// Serverless auto: вызывается из listing_handle_kyb_result при Approved.
+// Инвойс на этой стадии НЕ генерируется &mdash; только envelope.
+// Listing-инвойс выставится после Sign Completed (см. listing_handle_sign_webhook).
+// 1. envelope = Zoho Sign API create_from_template({
+//      template_id: "listing_agreement_panama",
+//      merge:        deal_template_fields(deal_id)
+//    })
+// 2. update Deal:
+//      Listing_Sign_Envelope_Id = envelope.id
+//      Listing_Sign_Status      = "Sent"
+// 3. Slack-уведомление менеджеру: envelope отправлен клиенту на подпись</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_handle_sign_webhook(envelope_id, status)</div>
+<pre><code>// Zoho Sign &rarr; Flow &rarr; функция
+// Completed:
+//   download signed PDF &rarr; WorkDrive /Clients/&lt;account&gt;/Signed/
+//   update Listing_Agreement_Signed_Url, Listing_Sign_Status="Completed"
+//   // auto-инвойс: сначала договор, потом инвойс, потом оплата
+//   invoice = Zoho Invoice API create_invoice(
+//       customer_id = account.Invoice_Customer_Id,
+//       line_items  = [{name:"Token Listing Fee", rate:Listing_Fee_Amount_Usd}],
+//       due_date    = today + 14d)
+//   update Deal.Listing_Invoice_Id, Listing_Invoice_Sent_At = now()
+//   send_email(contact.email + billing_email, template="listing_invoice")
+//   transition_to("Stage 8 &mdash; Payment")
+//   update Listing_Payment_Substage = "Invoice Sent"
+// Declined:
+//   Listing_Sign_Status = "Declined"
+//   transition_to("Terminal: Client Refused")
+// CollaborationRequested:
+//   Listing_Sign_Status = "Collaboration Requested"
+//   Slack notify sales manager
+//   Slack notify legal channel (юристы не в Zoho &mdash; SLA)
+//   Blueprint стадию НЕ меняем &mdash; amendments идут внутри envelope</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_close_payment(deal_id)</div>
+<pre><code>// Stage 8 &mdash; кнопка "Оплата подтверждена"
+// Менеджер нажимает после того, как сам загрузил Receipt в Deal.
+// Finance работает вне CRM, компетенция CRM &mdash; только факт Receipt.
+// 1. validate Listing_Payment_Receipt_Url is not null
+// 2. Zoho Invoice API mark_as_paid(Listing_Invoice_Id, {
+//      payment_date: now(),
+//      payment_mode: "Bank Transfer",
+//      amount: Listing_Fee_Amount_Usd })
+// 3. update Deal:
+//      Listing_Invoice_Closed_At    = now()
+//      Listing_Payment_Confirmed_At = now()
+//      Listing_Payment_Substage     = "Closed"
+// 4. transition_to("Stage 9 &mdash; Closed Won")</code></pre>
+</div>
+
+<div class="webhook-block">
+<div class="webhook-title">listing_closed_won_handoff(deal_id)</div>
+<pre><code>// Stage 9 entry
+// 1. Slack summary в канал листингов: ticker, network, mode, signed docs, invoice
+// 2. send_welcome_email(contact.email)
+// 3. schedule_reminder(+7d) менеджеру: "спроси клиента, как онбординг"
+// 4. Дальнейшая передача в Delivery &mdash; по договорённости с командой
+//    (точный механизм вне scope этого Blueprint)</code></pre>
+</div>
+
+<!-- =============== WEBHOOKS =============== -->
+<h2 id="webhooks">11. Webhook-интерфейсы (inbound)</h2>
+
+<p>Все inbound webhooks от внешних систем идут <strong>через Zoho Flow</strong>. Flow выполняет signature-check и маппинг полей, потом вызывает Deluge Function в CRM через invokeUrl. Один Function на каждый логический сценарий, а не на каждый источник.</p>
+
+<h3>Zoho Survey &rarr; Flow &rarr; CRM</h3>
+<div class="webhook-block">
+<div class="webhook-title">Trigger: survey completion</div>
+<pre><code>{
+  "survey_id":    "zoho_survey_id_xxx",
+  "response_id":  "zs_resp_yyy",
+  "completed_at": "2026-04-22T14:32:10Z",
+  "hidden_fields": { "deal_id": "zcrm_deal_id_zzz" }
+}</code></pre>
+<p class="dim" style="font-size: 13px;">Flow делает GetResponseDetails для полного ответа, потом передаёт в <code>listing_handle_survey_completion</code>.</p>
+</div>
+
+<h3>Zoho Forms (compliance decision) &rarr; Flow &rarr; CRM</h3>
+<div class="webhook-block">
+<div class="webhook-title">Trigger: form submitted</div>
+<pre><code>{
+  "form_id":      "compliance_listing_review",
+  "response_id":  "zfm_resp_yyy",
+  "submitter":    "user_email@vault.ist",
+  "deal_id":      "zcrm_deal_id_zzz",  // hidden prefilled
+  "decision":     "Approved",
+  "reason":       ""                   // required if "Rejected"
+}</code></pre>
+<p class="dim" style="font-size: 13px;">Flow передаёт в <code>listing_handle_compliance_decision</code>.</p>
+</div>
+
+<h3>Zoho Forms (KYB Form #1 &mdash; Sumsub-ссылка) &rarr; Flow &rarr; CRM</h3>
+<div class="webhook-block">
+<div class="webhook-title">Trigger: form submitted</div>
+<pre><code>{
+  "form_id":      "kyb_form_1",
+  "response_id":  "zfm_resp_kyb1_xxx",
+  "submitter":    "compliance_user@vault.ist",
+  "deal_id":      "zcrm_deal_id_zzz",  // hidden prefilled
+  "sumsub_link":  "https://in.sumsub.com/websdk/...",
+  "response_url": "https://forms.zoho.com/.../view-response/..."
+}</code></pre>
+<p class="dim" style="font-size: 13px;">Flow передаёт в <code>listing_handle_kyb_form_1_submit</code>.</p>
+</div>
+
+<h3>Zoho Forms (KYB Form #2 &mdash; итог) &rarr; Flow &rarr; CRM</h3>
+<div class="webhook-block">
+<div class="webhook-title">Trigger: form submitted</div>
+<pre><code>{
+  "form_id":           "kyb_form_2",
+  "response_id":       "zfm_resp_kyb2_xxx",
+  "submitter":         "compliance_user@vault.ist",
+  "deal_id":           "zcrm_deal_id_zzz",  // hidden prefilled
+  "kyb_result":        "Approved",          // "Approved" | "Rejected"
+  "reject_reason":     "",                   // required if Rejected
+  "sumsub_review_url": "https://dashboard.sumsub.com/...", // optional
+  "response_url":      "https://forms.zoho.com/.../view-response/..."
+}</code></pre>
+<p class="dim" style="font-size: 13px;">Flow передаёт в <code>listing_handle_kyb_form_2_submit</code>. Если в будущем подключим webhook applicantReviewed от Sumsub &mdash; он пишет те же поля (<code>Listing_KYB_Status</code>, и т.д.) и тоже в конце вызывает <code>listing_handle_kyb_result</code>.</p>
+</div>
+
+<h3>Zoho Invoice &rarr; Flow &rarr; CRM</h3>
+<div class="webhook-block">
+<div class="webhook-title">Trigger: invoice_paid (опционально)</div>
+<pre><code>{
+  "event":       "invoice.paid",
+  "invoice_id":  "INV-000042",
+  "customer_id": "zi_cust_xxx",
+  "amount":      10000,
+  "currency":    "USD",
+  "paid_at":     "2026-04-22T16:00:00Z"
+}</code></pre>
+<p class="dim" style="font-size: 13px;">Поскольку мы не видим оплату автоматически из банка, этот webhook сработает только если менеджер/finance сами отметят инвойс Paid в Zoho Invoice. Текущий дизайн <strong>не полагается</strong> на этот webhook как на триггер &mdash; переход делается вручную на Stage 8 (<code>listing_close_payment</code>). Webhook используется как резервный мониторинговый сигнал.</p>
+</div>
+
+<h3>Sumsub &rarr; CRM &mdash; TBD</h3>
+<div class="webhook-block">
+<div class="webhook-title">Trigger: результат KYB &mdash; механизм не зафиксирован</div>
+<p style="font-size: 13px; margin: 0;">Webhook от Sumsub (например, на событие завершения проверки applicant-а) &mdash; <strong>не подтверждён</strong> на уровне подписки Vault. До имплементации необходимо:</p>
+<ul class="custom" style="font-size: 13px; margin: 8px 0 0 0;">
+  <li>Проверить, какие webhook-и доступны в текущей подписке Sumsub</li>
+  <li>Проверить формат payload и механизм подписи (конкретный заголовок, алгоритм) &mdash; по документации Sumsub на момент подключения</li>
+  <li>Проверить, есть ли готовый Sumsub-коннектор в Zoho Flow / Marketplace &mdash; это может убрать необходимость собственного webhook-relay</li>
+  <li>Если webhook/интеграция недоступны &mdash; использовать ручной ввод результата compliance-офицером (см. <code>listing_handle_kyb_result</code>)</li>
+</ul>
+<p style="font-size: 13px; margin: 8px 0 0;">Финальная структура payload и signature-check прописываются на этапе имплементации, не в этом документе.</p>
+</div>
+
+<h3>Zoho Sign &rarr; Flow &rarr; CRM</h3>
+<div class="webhook-block">
+<div class="webhook-title">Trigger: envelope completed / declined / collaboration_requested</div>
+<pre><code>{
+  "request_id":    "zs_env_xxx",
+  "request_status":"completed",  // "declined" | "collaboration_requested"
+  "completed_at":  "2026-04-22T19:00:00Z",
+  "signed_by":     [{ "email": "...", "signed_at": "..." }]
+}</code></pre>
+</div>
+
+<!-- =============== EMAILS =============== -->
+<h2 id="emails">12. Email и Slack-уведомления</h2>
+
+<h3>Email templates (Zoho CRM Email Templates)</h3>
+<table class="tbl">
+<thead><tr><th>Template</th><th>Trigger</th><th>Получатель</th></tr></thead>
+<tbody>
+<tr><td><code>listing_survey_invite</code></td><td>Stage 1&rarr;2 transition</td><td>Contact</td></tr>
+<tr><td><code>listing_survey_reminder_3d</code></td><td>Scheduled +3 days если Stage 2</td><td>Contact</td></tr>
+<tr><td><code>listing_survey_reminder_7d</code></td><td>Scheduled +7 days если Stage 2</td><td>Contact</td></tr>
+<tr><td><code>listing_compliance_rejected</code></td><td>Terminal: Rejected by Compliance</td><td>Contact</td></tr>
+<tr><td><code>listing_offer_sent</code></td><td>Stage 4&rarr;5 transition</td><td>Contact (+ billing email)</td></tr>
+<tr><td><code>listing_offer_reminder</code></td><td>Scheduled +7d / +14d в Stage 5</td><td>Sales Manager (внутреннее)</td></tr>
+<tr><td><code>listing_kyb_invoice</code></td><td>Stage 6 entry (substage 6.1)</td><td>Contact + Billing email</td></tr>
+<tr><td><code>listing_sumsub_link</code></td><td>После submit Zoho Form #1 (substage 6.5)</td><td>Contact</td></tr>
+<tr><td><code>listing_kyb_rejected</code></td><td>Terminal: KYB Failed</td><td>Contact</td></tr>
+<tr><td><code>listing_docs_to_sign</code></td><td>Zoho Sign envelope notify (built-in)</td><td>Signers</td></tr>
+<tr><td><code>listing_invoice</code></td><td>Между Stage 7 и Stage 8 (после Sign Completed)</td><td>Contact + Billing email</td></tr>
+<tr><td><code>listing_welcome_live</code></td><td>Stage 9 entry</td><td>Contact + технический контакт</td></tr>
+</tbody>
+</table>
+
+<h3>Slack-уведомления по типам событий</h3>
+<p>Имена каналов конкретизируются на этапе имплементации. В дизайне фиксируем только <strong>тип событий</strong>, которые уходят в Slack:</p>
+<table class="tbl">
+<thead><tr><th>Тип события</th><th>Что отправляем</th><th>Получатели</th></tr></thead>
+<tbody>
+<tr><td>Листинговые события (общий канал)</td><td>Новый Deal &middot; переходы между стадиями &middot; stop-factor alerts &middot; переход в Closed Won с саммари</td><td>Sales + ответственные менеджеры</td></tr>
+<tr><td>Compliance-ревью (Stage 3)</td><td>Короткое сообщение со ссылкой на Zoho Form решения по Stage 3</td><td>Compliance-команда</td></tr>
+<tr><td>KYB старт (Stage 6 / substage 6.4)</td><td>Сообщение &laquo;Ready to launch KYB&raquo; со ссылками на Receipt (WorkDrive) и Zoho Form #1 (ввод Sumsub-ссылки)</td><td>Compliance-команда</td></tr>
+<tr><td>KYB итог (Stage 6 / substage 6.5)</td><td>Reply в тот же thread со ссылкой на Zoho Form #2 (итог KYB)</td><td>Compliance-команда</td></tr>
+<tr><td>Contract amendments (Stage 7)</td><td>Сообщение менеджеру + уведомление в legal-канал (юристы не в Zoho, SLA-контроль)</td><td>Sales manager, legal</td></tr>
+<tr><td>Ошибки автоматизации</td><td>Deluge failures, webhook signature mismatches, API errors</td><td>Технический ответственный</td></tr>
+</tbody>
+</table>
+<p class="dim" style="font-size:13px;">Для команды Delivery отдельный канал не выделяется: формат передачи Closed Won в Delivery обсуждается отдельно и не фиксируется в CRM-воронке.</p>
+
+<!-- =============== SURVEY INTEGRATION =============== -->
+<h2 id="survey-integration">13. Интеграция с Zoho Survey</h2>
+<div class="callout ai">
+Полная структура опросника &mdash; разделы, вопросы, типы полей, ветвления, валидации, mapping в CRM &mdash; в отдельном документе: <strong><code>Listing_Survey_Structure_v1.html</code></strong>.
+</div>
+<p>Ключевые моменты интеграции:</p>
+<ul class="custom">
+  <li>Survey link генерируется с pre-filled hidden field <code>deal_id</code> (через Survey API URL params)</li>
+  <li>Upload-поля в Survey складываются в Zoho Survey attachments &mdash; CRM-функция на completion-ивенте (через Zoho Flow) дочитывает их через API и перекладывает в WorkDrive</li>
+  <li><strong>Важно:</strong> Zoho Survey не может напрямую триггерить Blueprint-стадии или вызывать CRM Deluge Function &mdash; нужен Zoho Flow как relay (Survey &rarr; Flow &rarr; CRM invokeUrl к Function endpoint)</li>
+  <li>В ответе Survey каждый вопрос имеет <code>question_id</code> &mdash; mapping question_id &harr; Deal field хранится в Zoho Settings Config (чтобы менять без редеплоя функции)</li>
+  <li><strong>Зона для Zoho RPA (к обсуждению):</strong> после upload аттачментов запускать RPA-пайплайн, который распознаёт ключевые поля в whitepaper / registry extract / legal opinion и возвращает структурированные данные обратно в Deal. Это разгрузит compliance от чтения объёмных документов.</li>
+</ul>
+
+<!-- =============== EDGE CASES =============== -->
+<h2 id="edge-cases">14. Граничные случаи и откаты</h2>
+
+<table class="tbl">
+<thead><tr><th>Сценарий</th><th>Обработка</th></tr></thead>
+<tbody>
+<tr><td>Клиент заполнил опросник дважды</td><td>Second response &mdash; игнорируем, логируем в Slack</td></tr>
+<tr><td>Compliance принял решение, но Deal уже в другой стадии</td><td>Проверка is_in_stage в функции, если нет &mdash; только комментарий, без transition</td></tr>
+<tr><td>KYB долго в &laquo;In Review&raquo; (substage 6.6)</td><td>OK, Deal сидит в Stage 6. Slack reminder compliance и менеджеру на 5-й день (клиент не прошёл Sumsub) и на 10-й день (эскалация).</td></tr>
+<tr><td>Клиент пропал после оффера (Stage 5)</td><td>Автоматических terminal-переходов нет; Deal остаётся в Stage 5, менеджер ведёт до явного решения. Через 30 / 60 / 90 дней &mdash; Slack-напоминания менеджеру</td></tr>
+<tr><td>Клиент запросил правки в договоре</td><td>Zoho Sign внутренний collaboration &mdash; envelope остаётся в Pending, статус <code>Listing_Sign_Status = "Collaboration Requested"</code>. Отдельная стадия не требуется</td></tr>
+<tr><td>KYB прошёл, но Zoho Sign отклонил клиент</td><td>Deal переходит в Terminal &laquo;Client Refused&raquo;; <code>Listing_KYB_Status = Approved</code> остаётся &mdash; при reopen того же applicant в течение 6 мес повторный KYB Sumsub обычно не требуется (детали политики Sumsub по re-validation зависят от срока)</td></tr>
+<tr><td>Оплата пришла с неверной суммой</td><td>Finance фиксирует несоответствие во внешней переписке и не выдаёт Receipt менеджеру; менеджер запрашивает у клиента доплату / возврат. Deal остаётся в substage &laquo;Awaiting Payment&raquo;. Сверка через банк &mdash; зона Finance вне CRM.</td></tr>
+<tr><td>Страна эмитента попадает под санкции после подписания</td><td>Отдельный workflow: ежемесячная сверка Listing_Issuer_Country с обновлённым OFAC-списком &middot; Slack alert compliance</td></tr>
+<tr><td>Клиент хочет сменить условия после акцепта оффера</td><td>Reopen Stage 4 (Commercial) с сохранением всего history, обнуление Offer_* полей</td></tr>
+<tr><td>Invoice отменён или переиздан</td><td>Zoho Invoice API void/reissue; в Deal обновляется Listing_Invoice_Id и Listing_Invoice_Sent_At</td></tr>
+<tr style="background:rgba(14,165,233,0.04);"><td><strong style="color:var(--cyan);">(v3)</strong> Triumvirate отклонил OnOff-Ramp</td><td>Sales получает Slack-alert. Стандартный путь &mdash; <strong>downgrade до Utility-Card</strong>: <code>Listing_Tier_Assigned</code> пересобирается без OnOff-Ramp, <code>Listing_Auto_Offer_Text</code> перегенерируется через layout rules, <code>Listing_Fee_Amount_Usd</code> пересчитывается. Менеджер подтверждает новый оффер и отправляет клиенту объяснение причины отказа (можно использовать <code>Listing_Triumvirate_Decision_Note</code> как основу). Если клиент не согласен на downgrade &rarr; terminal Stage Closed Lost с причиной &laquo;custom-declined&raquo;.</td></tr>
+<tr style="background:rgba(14,165,233,0.04);"><td><strong style="color:var(--cyan);">(v3)</strong> Клиент выбрал OnOff-Ramp в опроснике, но pre-screen failed (нет модели / без buy-back)</td><td><code>Listing_Tier_OnRamp_PreScreen = failed</code>. Sales в Stage 4 видит reason-сообщение и может либо запросить недостающее у клиента (обновление через Form / письмо &mdash; upload модели), либо оставить только стандартные tier-ы. Триумвират в этом сценарии не активируется.</td></tr>
+<tr style="background:rgba(14,165,233,0.04);"><td><strong style="color:var(--cyan);">(v3)</strong> Eligibility рассчитан, но клиент заявил tier выше своего (например, Swap без ликвидности)</td><td>Sales видит в Deal layout &laquo;Requested vs Eligible&raquo; delta. Решение о продаже-допродаже или downgrade &mdash; на стороне sales: либо попросить клиента добавить ликвидность до листинга (возврат к Stage 3), либо собрать оффер на eligible-tier.</td></tr>
+</tbody>
+</table>
+
+<!-- =============== IMPLEMENTATION =============== -->
+<h2 id="implementation">15. Порядок внедрения</h2>
+
+<div class="callout ai">
+<strong>Принцип:</strong> неделя 1 &mdash; голая воронка с минимально необходимыми полями + опросник. Дальше инкрементально наращиваем автоматизации в порядке приоритетности, всегда сохраняя работоспособность рабочего потока.
+</div>
+
+<div class="roadmap-item priority-1">
+  <div class="rm-week">Неделя 1 &mdash; скелет</div>
+  <div class="rm-title">Голая воронка + опросник</div>
+  <p style="margin:0;font-size:13px;">Custom fields на Deal (минимум: identity, network, market flags, issuer basic info, survey URL, compliance decision, offer accept, KYB &amp; listing receipt URL, sign status). Blueprint все 9 стадий без автоматизаций &mdash; ручные transitions. Zoho Survey готов (DD questionnaire), Survey URL заносится в Deal менеджером вручную. Менеджер может провести тестового клиента по всему пути руками.</p>
+</div>
+
+<div class="roadmap-item priority-2">
+  <div class="rm-week">Неделя 2</div>
+  <div class="rm-title">Автоматизация Stage 1 &rarr; 3 (Survey loop)</div>
+  <p style="margin:0;font-size:13px;">Zoho Flow: Survey completion &rarr; CRM Function <code>listing_handle_survey_completion</code>. Маппинг ответов в Deal fields. Автоматическая отправка приглашения при transition Stage 1&rarr;2. Хард-стоп-факторы (security / anonymous / sanctioned / no whitepaper) проверяются автоматически.</p>
+</div>
+
+<div class="roadmap-item priority-2">
+  <div class="rm-week">Неделя 3</div>
+  <div class="rm-title">Compliance через Zoho Forms</div>
+  <p style="margin:0;font-size:13px;">Zoho Forms: форма &laquo;Compliance Listing Review&raquo; с двумя вариантами решения (Approve / Reject+reason). Flow: Form submission &rarr; CRM <code>listing_handle_compliance_decision</code>. Slack-уведомление на Stage 3 entry со ссылкой на форму.</p>
+</div>
+
+<div class="roadmap-item priority-3">
+  <div class="rm-week">Неделя 4</div>
+  <div class="rm-title">Автотарификация + email-оффер</div>
+  <p style="margin:0;font-size:13px;">Layout rules: auto-расчёт <code>Listing_Mode</code>, <code>Listing_Fee_Amount_Usd</code>, <code>Listing_Fee_Structure</code> на базе матрицы. Email template <code>listing_offer</code> с merge-полями Deal. Менеджер только проверяет и отправляет.</p>
+</div>
+
+<div class="roadmap-item priority-3">
+  <div class="rm-week">Неделя 5</div>
+  <div class="rm-title">Zoho Sign + Zoho Invoice integration</div>
+  <p style="margin:0;font-size:13px;">Шаблон Listing Agreement в Zoho Sign (legal поддерживает актуальность). Функции: <code>listing_generate_sign_envelope</code> (envelope только, вызывается при Approved KYB) и расширение <code>listing_handle_sign_webhook</code> (при Completed генерирует listing-инвойс, потом двигает Stage 8). Flow: Zoho Sign webhook (completed / declined / collaboration) &rarr; CRM. Invoice template в Zoho Invoice.</p>
+</div>
+
+<div class="roadmap-item priority-3">
+  <div class="rm-week">Неделя 6</div>
+  <div class="rm-title">Payment &mdash; Receipt-флоу</div>
+  <p style="margin:0;font-size:13px;">Substages на Stage 8 (Invoice Sent / Awaiting Payment / Receipt Uploaded / Closed), обязательное заполнение <code>Listing_Payment_Receipt_Url</code> менеджером. Функция <code>listing_close_payment</code>: закрытие инвойса в Zoho Invoice + transition на Stage 9. Онлайн-сверка платежей с банком автоматизируется на следующей фазе &mdash; сейчас Receipt от Finance идёт по внутреннему каналу.</p>
+</div>
+
+<div class="roadmap-item priority-3">
+  <div class="rm-week">Неделя 7</div>
+  <div class="rm-title">Stage 6 &mdash; KYB воронка (Form #1 / Form #2)</div>
+  <p style="margin:0;font-size:13px;">Полный substage-флоу Stage 6 (6.1&mdash;6.8): <code>listing_generate_kyb_invoice</code> (отдельный инвойс $500 при входе в Stage 6), кнопка &laquo;Запустить KYB&raquo; с <code>listing_trigger_kyb_form_1</code> (после загрузки менеджером Receipt по KYB), Zoho Form #1 (сводка + Sumsub-ссылка) + <code>listing_handle_kyb_form_1_submit</code>, авто-email клиенту со ссылкой Sumsub, Zoho Form #2 (итог KYB) + <code>listing_handle_kyb_form_2_submit</code>, единый <code>listing_handle_kyb_result</code> (transition на Stage 7 при Approved, terminal при Rejected). <strong>Отдельная задача этой недели &mdash; оценить механизм возврата результата из Sumsub в CRM:</strong> доступность webhook applicantReviewed в подписке Sumsub, наличие коннектора в Zoho Flow / Marketplace. Baseline &mdash; ручной ввод через Form #2; webhook подключается, если доступен. Прямых API-вызовов к Sumsub из CRM нет &mdash; создание applicant остаётся зоной compliance. До включения этой недели Stage 6 проходится вручную: менеджер и compliance ведут substage-поля руками.</p>
+</div>
+
+<div class="roadmap-item priority-4">
+  <div class="rm-week">Неделя 8</div>
+  <div class="rm-title">Reminders, edge cases, audit, Zoho Learn документация</div>
+  <p style="margin:0;font-size:13px;">Scheduled reminders (Stage 2, 5, 8), error handling в Deluge, audit logs по переходам, Zoho Learn &mdash; инструкции для менеджеров и compliance по работе с воронкой, playbook обработки стоп-факторов, troubleshooting.</p>
+</div>
+
+<div class="roadmap-item priority-4">
+  <div class="rm-week">Неделя 9+</div>
+  <div class="rm-title">Zoho RPA для распознавания документов (к обсуждению)</div>
+  <p style="margin:0;font-size:13px;">Пилот RPA на распознавание whitepaper / registry extract / legal opinion / bank statement. Если даёт измеримое сокращение ручной работы compliance &mdash; раскатываем на все новые Deal.</p>
+</div>
+
+<div class="roadmap-item priority-4">
+  <div class="rm-week">Неделя 10+</div>
+  <div class="rm-title">Delivery-handoff (обсуждается)</div>
+  <p style="margin:0;font-size:13px;">Механика передачи Closed Won в Delivery-команду. Форма, канал, набор артефактов &mdash; согласуется отдельно. В CRM на этом этапе только закрываем цикл и фиксируем факт передачи.</p>
+</div>
+
+</div>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      darkMode: true,
+      background: '#161b22',
+      primaryColor: '#1c2128',
+      primaryTextColor: '#e6edf3',
+      primaryBorderColor: '#30363d',
+      lineColor: '#58a6ff',
+      fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif'
+    }
+  });
+</script>
+</body>
+</html>
