@@ -56,81 +56,25 @@ body{
   animation:goldShimmer 6s ease-in-out infinite;
 }
 
-/* shifting gold ring around hero — much more visible */
+/* slow shifting gold ring around hero — gentle motion */
 @keyframes ringRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .hero-ring{
   position:absolute;left:50%;top:50%;
-  width:1200px;height:1200px;margin-left:-600px;margin-top:-600px;
+  width:1100px;height:1100px;margin-left:-550px;margin-top:-550px;
   background:conic-gradient(from 0deg,
     transparent 0deg,
-    rgba(245,201,95,.55) 20deg,
-    rgba(255,231,168,.42) 40deg,
-    transparent 100deg,
-    rgba(212,168,67,.30) 170deg,
-    rgba(245,201,95,.45) 200deg,
-    transparent 250deg,
-    rgba(255,231,168,.55) 300deg,
-    rgba(212,168,67,.35) 330deg,
+    rgba(212,168,67,.30) 30deg,
+    transparent 90deg,
+    rgba(212,168,67,.20) 180deg,
+    transparent 240deg,
+    rgba(212,168,67,.32) 300deg,
     transparent 360deg);
   border-radius:50%;
-  animation:ringRotate 14s linear infinite;
-  opacity:1;
-  filter:blur(28px) saturate(1.2);
-  pointer-events:none;
-  z-index:0;
-}
-/* counter-rotating inner ring for depth */
-.hero-ring-inner{
-  position:absolute;left:50%;top:50%;
-  width:760px;height:760px;margin-left:-380px;margin-top:-380px;
-  background:conic-gradient(from 90deg,
-    transparent 0deg,
-    rgba(255,231,168,.35) 60deg,
-    transparent 130deg,
-    rgba(212,168,67,.30) 220deg,
-    transparent 290deg,
-    rgba(245,201,95,.40) 350deg,
-    transparent 360deg);
-  border-radius:50%;
-  animation:ringRotate 9s linear infinite reverse;
+  animation:ringRotate 24s linear infinite;
   opacity:.85;
-  filter:blur(22px);
+  filter:blur(16px);
   pointer-events:none;
   z-index:0;
-}
-
-/* breathing glow under hero text */
-@keyframes goldGlow{
-  0%,100%{opacity:.45;transform:scale(1)}
-  50%    {opacity:.85;transform:scale(1.08)}
-}
-.hero-glow-pulse{
-  position:absolute;left:50%;top:48%;
-  width:720px;height:280px;margin-left:-360px;margin-top:-140px;
-  background:radial-gradient(ellipse 50% 50% at center,rgba(245,201,95,.35),transparent 65%);
-  animation:goldGlow 4.2s ease-in-out infinite;
-  pointer-events:none;
-  z-index:0;
-}
-
-/* light sweep across hero */
-@keyframes lightSweep{
-  0%   {transform:translateX(-120%) skewX(-18deg);opacity:0}
-  10%  {opacity:.55}
-  60%  {opacity:.55}
-  100% {transform:translateX(120%) skewX(-18deg);opacity:0}
-}
-.hero-sweep{
-  position:absolute;left:0;top:0;width:120%;height:100%;
-  background:linear-gradient(90deg,
-    transparent 0%,
-    rgba(255,231,168,.0) 35%,
-    rgba(255,231,168,.18) 50%,
-    rgba(255,231,168,.0) 65%,
-    transparent 100%);
-  animation:lightSweep 7s ease-in-out infinite;
-  pointer-events:none;
-  z-index:1;
 }
 
 /* pulsing accept button */
@@ -541,9 +485,6 @@ input[type="range"]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;b
   <!-- HEADER -->
   <header class="hdr">
     <div class="hero-ring"></div>
-    <div class="hero-ring-inner"></div>
-    <div class="hero-glow-pulse"></div>
-    <div class="hero-sweep"></div>
 
     <div class="hdr-logo">
       <svg viewBox="0 0 444 103" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:36px;width:auto">
