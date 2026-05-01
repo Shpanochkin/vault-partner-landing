@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault × Cheelee — Partnership Offer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#0a0804;color:#fff;-webkit-font-smoothing:antialiased;min-height:100vh;
+}
+
+/* ── tokens ── */
+:root{
+  --gold:#D4A843;
+  --gold-bright:#F5C95F;
+  --gold-dim:rgba(212,168,67,.6);
+  --gold-pale:rgba(212,168,67,.08);
+  --gold-border:rgba(212,168,67,.2);
+  --sheet:#141008;
+  --sheet-deep:#0f0c04;
+  --sheet-line:rgba(212,168,67,.12);
+  --white:#fff;
+  --dim:rgba(255,255,255,.45);
+  --dimmer:rgba(255,255,255,.22);
+  --green:#34D399;
+  --red:#EF4444;
+}
+
+/* ── animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes revealUp{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}
+
+/* moving gold gradient on hero — slow shimmer */
+@keyframes goldShimmer{
+  0%   {background-position:0% 50%}
+  50%  {background-position:100% 50%}
+  100% {background-position:0% 50%}
+}
+.gold-flow{
+  background:linear-gradient(90deg,
+    var(--gold) 0%,
+    var(--gold-bright) 25%,
+    #FFE7A8 50%,
+    var(--gold-bright) 75%,
+    var(--gold) 100%);
+  background-size:300% 300%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:goldShimmer 6s ease-in-out infinite;
+}
+
+/* shifting gold ring around hero */
+@keyframes ringRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.hero-ring{
+  position:absolute;left:50%;top:50%;
+  width:1100px;height:1100px;margin-left:-550px;margin-top:-550px;
+  background:conic-gradient(from 0deg,
+    transparent 0deg,
+    rgba(212,168,67,.18) 30deg,
+    transparent 80deg,
+    rgba(212,168,67,.10) 180deg,
+    transparent 240deg,
+    rgba(212,168,67,.20) 300deg,
+    transparent 360deg);
+  border-radius:50%;
+  animation:ringRotate 28s linear infinite;
+  opacity:.6;
+  filter:blur(12px);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* pulsing accept button */
+@keyframes goldPulse{
+  0%,100%{box-shadow:0 10px 30px rgba(212,168,67,.30),0 0 0 0 rgba(212,168,67,.5)}
+  50%    {box-shadow:0 14px 40px rgba(212,168,67,.45),0 0 0 18px rgba(212,168,67,0)}
+}
+
+/* ── NDA MODAL ── */
+#nda-overlay{
+  position:fixed;inset:0;
+  background:rgba(5,4,2,.95);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;
+}
+#nda-overlay.hidden{display:none}
+.nda-card{
+  background:var(--sheet-deep);
+  border:1px solid rgba(212,168,67,.2);
+  border-radius:20px;padding:48px;max-width:480px;width:100%;
+  animation:revealUp .5s cubic-bezier(.16,1,.3,1) both;
+}
+.nda-logo{text-align:center;margin-bottom:32px}
+.nda-heading{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:22px;font-weight:400;color:var(--gold);
+  text-align:center;margin-bottom:16px;line-height:1.25;
+}
+.nda-text{
+  font-size:14px;color:rgba(255,255,255,.6);
+  line-height:1.7;text-align:center;margin-bottom:28px;
+}
+.nda-check-row{
+  display:flex;align-items:flex-start;gap:12px;
+  background:rgba(212,168,67,.06);
+  border:1px solid rgba(212,168,67,.15);
+  border-radius:10px;padding:16px;margin-bottom:24px;cursor:pointer;
+}
+.nda-check-row input[type="checkbox"]{
+  width:18px;height:18px;flex-shrink:0;margin-top:1px;
+  accent-color:var(--gold);cursor:pointer;
+}
+.nda-check-label{
+  font-size:13px;color:rgba(255,255,255,.7);line-height:1.55;
+  cursor:pointer;user-select:none;
+}
+#nda-btn{
+  width:100%;padding:14px 24px;
+  background:var(--gold);color:#0a0804;
+  font-size:15px;font-weight:700;
+  border:none;border-radius:10px;cursor:pointer;
+  transition:background .2s, opacity .2s, transform .1s;letter-spacing:.02em;
+}
+#nda-btn:disabled{
+  background:rgba(212,168,67,.25);
+  color:rgba(255,255,255,.3);cursor:not-allowed;
+}
+#nda-btn:not(:disabled):hover{background:#e8be5a;transform:translateY(-1px)}
+#nda-btn:not(:disabled):active{transform:translateY(0)}
+
+/* ── PAGE ── */
+.page{
+  background:linear-gradient(170deg,#080600 0%,#120d04 40%,#1c1506 70%,#0f0a02 100%);
+  min-height:100vh;padding:72px 24px 80px;
+  position:relative;overflow:hidden;
+}
+.page::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(212,168,67,.09),transparent 65%);
+  pointer-events:none;
+}
+
+/* ── HEADER ── */
+.hdr{
+  text-align:center;position:relative;z-index:2;
+  margin-bottom:80px;padding-top:40px;
+}
+.hdr-logo{
+  margin-bottom:32px;
+  animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .05s both;
+  position:relative;z-index:3;
+}
+.hdr-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);
+  color:rgba(212,168,67,.9);
+  font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  padding:5px 16px;border-radius:100px;margin-bottom:28px;
+  animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .18s both;
+  position:relative;z-index:3;
+}
+.hdr h1{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:clamp(40px,5.5vw,64px);font-weight:400;letter-spacing:-.01em;
+  color:#fff;line-height:1.05;margin-bottom:18px;
+  animation:fadeUp .85s cubic-bezier(.16,1,.3,1) .3s both;
+  position:relative;z-index:3;
+}
+.hdr h1 .accent{
+  font-style:italic;
+  display:inline-block;
+  background:linear-gradient(90deg,var(--gold) 0%,var(--gold-bright) 50%,var(--gold) 100%);
+  background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:goldShimmer 5s ease-in-out infinite;
+}
+.hdr-sub{
+  font-size:17px;color:var(--dim);line-height:1.7;
+  max-width:600px;margin:0 auto 0;font-weight:400;
+  animation:fadeUp .85s cubic-bezier(.16,1,.3,1) .42s both;
+  position:relative;z-index:3;
+}
+.client-mark{
+  margin-top:32px;
+  animation:fadeUp .85s cubic-bezier(.16,1,.3,1) .55s both;
+  position:relative;z-index:3;
+}
+.client-mark img{height:42px;width:auto;display:block;margin:0 auto;opacity:.95}
+.hdr-meta{
+  font-size:11px;color:var(--dimmer);letter-spacing:.05em;margin-top:32px;
+  animation:fadeIn .8s ease .68s both;position:relative;z-index:3;
+}
+
+/* ── SECTIONS ── */
+.section{max-width:920px;margin:0 auto;position:relative;z-index:2;margin-bottom:80px}
+.s-heading{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.s-title{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:clamp(26px,3.5vw,38px);font-weight:400;
+  color:#fff;line-height:1.15;margin-bottom:28px;
+}
+.s-sub{
+  font-size:14.5px;color:var(--dim);line-height:1.7;
+  margin-bottom:24px;max-width:660px;margin-left:auto;margin-right:auto;text-align:center;
+}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-d1{transition-delay:.08s}.reveal-d2{transition-delay:.16s}.reveal-d3{transition-delay:.24s}
+
+/* ── pillars ── */
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.pillar{
+  background:var(--sheet);border:1px solid var(--gold-border);
+  border-left:3px solid var(--gold);border-radius:14px;padding:26px 26px 26px 22px;
+  transition:background .2s, transform .2s;
+}
+.pillar:hover{background:rgba(30,22,6,.9);transform:translateY(-2px)}
+.pillar-icon{
+  width:38px;height:38px;background:rgba(212,168,67,.1);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+}
+.pillar-title{font-size:15.5px;font-weight:700;color:#fff;margin-bottom:10px}
+.pillar-body{font-size:13.5px;color:rgba(255,255,255,.55);line-height:1.65}
+
+/* ── tariff dual table ── */
+.tariff-card{
+  max-width:920px;margin:0 auto;
+  background:var(--sheet);border:1px solid var(--gold-border);
+  border-radius:18px;overflow:hidden;
+  box-shadow:0 30px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(212,168,67,.1);
+}
+.tariff-hdr{
+  display:grid;grid-template-columns:1.6fr 1.4fr 1.4fr 1.0fr;
+  background:rgba(212,168,67,.06);
+  border-bottom:1px solid rgba(212,168,67,.18);
+}
+.tariff-hdr .th{
+  padding:16px 22px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+}
+.tariff-hdr .th + .th{border-left:1px solid rgba(212,168,67,.08)}
+.tariff-row{
+  display:grid;grid-template-columns:1.6fr 1.4fr 1.4fr 1.0fr;
+  border-bottom:1px solid rgba(212,168,67,.07);
+}
+.tariff-row:last-child{border-bottom:none}
+.tariff-row > div{padding:14px 22px;font-size:14px}
+.tariff-row > div + div{border-left:1px solid rgba(212,168,67,.05)}
+.t-name{color:rgba(255,255,255,.8);font-weight:500}
+.t-name small{display:block;margin-top:3px;font-size:11px;color:var(--dimmer);font-weight:400}
+.t-vault{color:rgba(255,255,255,.55);font-variant-numeric:tabular-nums}
+.t-cheelee{color:#fff;font-weight:700;font-variant-numeric:tabular-nums}
+.t-margin{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums;font-size:13.5px}
+.t-margin.absorb{color:rgba(255,255,255,.4);font-weight:500}
+.t-margin.passth{color:rgba(255,255,255,.35);font-weight:500;font-style:italic;font-size:12.5px}
+.tariff-group-row{
+  display:grid;grid-template-columns:1fr;
+  background:rgba(212,168,67,.04);
+  border-bottom:1px solid rgba(212,168,67,.12);
+  border-top:1px solid rgba(212,168,67,.12);
+}
+.tariff-group-row .gh{
+  padding:10px 22px;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(212,168,67,.7);
+}
+
+/* ── commercials grid ── */
+.com-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px;
+}
+@media(max-width:640px){.com-grid{grid-template-columns:1fr}}
+.com-item{
+  background:var(--sheet);border:1px solid var(--gold-border);
+  border-radius:14px;padding:24px 26px;
+}
+.com-item-label{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(212,168,67,.6);margin-bottom:8px}
+.com-item-val{
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:32px;color:var(--gold);line-height:1.05;margin-bottom:8px;
+}
+.com-item-val small{font-size:14px;color:rgba(255,255,255,.5);font-family:Inter,sans-serif;font-weight:500;margin-left:6px}
+.com-item-body{font-size:13.5px;color:rgba(255,255,255,.55);line-height:1.6}
+
+/* timeline visual */
+.timeline-card{
+  background:var(--sheet);border:1px solid var(--gold-border);
+  border-radius:14px;padding:28px 30px;margin-top:18px;
+}
+.timeline-card h4{
+  font-size:13px;font-weight:700;letter-spacing:.06em;
+  color:#fff;margin-bottom:16px;
+}
+.tl-row{display:grid;grid-template-columns:64px 1fr 90px;gap:14px;align-items:center;padding:10px 0;font-size:13.5px;border-bottom:1px solid rgba(212,168,67,.06)}
+.tl-row:last-child{border-bottom:none}
+.tl-month{font-family:'DM Serif Display',Georgia,serif;font-size:18px;color:var(--gold);text-align:left}
+.tl-desc{color:rgba(255,255,255,.65);line-height:1.55}
+.tl-desc strong{color:#fff}
+.tl-amount{text-align:right;font-variant-numeric:tabular-nums;color:#fff;font-weight:700}
+.tl-amount.zero{color:var(--green)}
+.tl-amount.draw{color:var(--gold)}
+.tl-amount.full{color:rgba(255,255,255,.85)}
+
+/* ── calculator ── */
+.calc-card{
+  background:var(--sheet);border:1px solid var(--gold-border);border-radius:20px;
+  overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.4),inset 0 1px 0 rgba(212,168,67,.1);
+}
+.calc-body{padding:34px 36px}
+.calc-mode-row{
+  display:flex;gap:8px;margin-bottom:24px;justify-content:center;flex-wrap:wrap;
+}
+.calc-mode{
+  background:rgba(212,168,67,.04);border:1px solid rgba(212,168,67,.18);
+  color:rgba(255,255,255,.65);
+  padding:8px 18px;border-radius:100px;
+  font-size:12px;font-weight:600;letter-spacing:.05em;
+  cursor:pointer;transition:background .15s,color .15s,border-color .15s;
+}
+.calc-mode.active{background:var(--gold);border-color:var(--gold);color:#0a0804}
+.calc-mode:not(.active):hover{background:rgba(212,168,67,.1);color:#fff}
+.calc-inputs{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:30px}
+@media(max-width:600px){.calc-inputs{grid-template-columns:1fr}}
+.slider-group label{
+  display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);margin-bottom:10px;
+}
+.slider-val{font-size:22px;font-weight:700;color:#fff;margin-bottom:14px;font-variant-numeric:tabular-nums}
+.slider-val small{font-size:12px;color:var(--dimmer);font-weight:500;margin-left:6px}
+input[type="range"]{
+  width:100%;-webkit-appearance:none;appearance:none;
+  height:4px;background:rgba(212,168,67,.2);border-radius:2px;outline:none;cursor:pointer;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--gold);border:3px solid #0f0c04;
+  box-shadow:0 0 0 2px rgba(212,168,67,.3);
+  cursor:pointer;transition:box-shadow .15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover{box-shadow:0 0 0 4px rgba(212,168,67,.25)}
+input[type="range"]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold);border:3px solid #0f0c04;cursor:pointer}
+.calc-divider{border:none;border-top:1px solid rgba(212,168,67,.1);margin:0 0 26px}
+
+.calc-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;
+}
+@media(max-width:600px){.calc-grid{grid-template-columns:1fr 1fr}}
+.calc-cell{
+  background:rgba(0,0,0,.25);border:1px solid rgba(212,168,67,.1);
+  border-radius:12px;padding:16px 18px;text-align:center;
+}
+.calc-cell-label{font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px}
+.calc-cell-val{font-size:18px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;line-height:1.1}
+.calc-cell-val.dim{color:rgba(255,255,255,.5)}
+.calc-cell-sub{font-size:11px;color:var(--dimmer);margin-top:4px}
+
+.calc-result{
+  background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.25);
+  border-radius:14px;padding:24px 28px;
+  display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;
+}
+@media(max-width:600px){.calc-result{grid-template-columns:1fr;text-align:center}}
+.cr-net-block{padding-right:24px;border-right:1px solid rgba(212,168,67,.18)}
+@media(max-width:600px){.cr-net-block{border-right:none;padding-right:0;padding-bottom:18px;border-bottom:1px solid rgba(212,168,67,.18)}}
+.cr-net-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px}
+.cr-net-val{font-family:'DM Serif Display',Georgia,serif;font-size:34px;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+.cr-net-val.loss{color:var(--red)}
+.cr-net-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:6px}
+.cr-margin-block{display:flex;flex-direction:column;gap:10px}
+.cr-margin-row{display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.65)}
+.cr-margin-row b{color:#fff;font-weight:700;font-variant-numeric:tabular-nums}
+
+.calc-note{
+  font-size:12px;color:rgba(255,255,255,.35);line-height:1.6;
+  background:rgba(212,168,67,.04);border-top:1px solid rgba(212,168,67,.1);
+  padding:14px 36px 18px;
+}
+
+/* ── stages timeline (sign → go-live) ── */
+.stages{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:6px;
+  background:var(--sheet);border:1px solid var(--gold-border);
+  border-radius:14px;padding:24px;
+}
+@media(max-width:780px){.stages{grid-template-columns:repeat(4,1fr);gap:8px}}
+@media(max-width:520px){.stages{grid-template-columns:repeat(2,1fr);gap:10px}}
+.stage{position:relative;text-align:center;padding:14px 6px}
+.stage:not(:last-child)::after{
+  content:'→';position:absolute;right:-9px;top:50%;
+  transform:translateY(-50%);
+  color:var(--gold-dim);font-size:14px;font-weight:700;
+  z-index:2;
+}
+@media(max-width:780px){.stage:not(:last-child)::after{display:none}}
+.stage-num{
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(212,168,67,.1);border:1px solid var(--gold-border);
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--gold);font-size:12px;font-weight:700;
+  margin-bottom:8px;
+}
+.stage-name{font-size:11.5px;font-weight:600;color:#fff;line-height:1.3}
+.stage-sub{font-size:10px;color:var(--dimmer);margin-top:3px}
+
+/* ── FOOTER ── */
+.page-footer{text-align:center;padding-top:64px;position:relative;z-index:2}
+.page-footer-meta{font-size:11px;color:var(--dimmer);letter-spacing:.04em;margin-top:10px}
+
+/* ── accept ── */
+.accept-wrap{text-align:center;max-width:600px;margin:0 auto}
+#accept-offer-btn{
+  display:inline-block;padding:18px 48px;border-radius:14px;
+  background:linear-gradient(135deg,var(--gold) 0%, var(--gold-bright) 100%);
+  color:#1a1530;font-size:16px;font-weight:800;letter-spacing:-.01em;
+  text-decoration:none;cursor:pointer;
+  animation:goldPulse 2.6s ease-in-out infinite;
+  transition:transform .2s;
+}
+#accept-offer-btn:hover{transform:translateY(-2px)}
+#accept-offer-btn:active{transform:translateY(0)}
+
+/* ── responsive ── */
+@media(max-width:720px){
+  .page{padding:56px 16px 64px}
+  .hdr h1{font-size:34px}
+  .nda-card{padding:32px 24px}
+  .calc-body{padding:24px}
+  .tariff-hdr,.tariff-row{grid-template-columns:1.6fr 1.2fr 1.2fr;}
+  .tariff-hdr .th:nth-child(4),.tariff-row > div:nth-child(4){display:none}
+}
+</style>
+</head>
+<body>
+<script>
+(function(){
+  var expires = new Date('2026-05-15T23:59:59Z');
+  if (new Date() > expires) {
+    document.documentElement.innerHTML =
+      '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">' +
+      '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">' +
+      '<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;' +
+      'background:#f8f9fa;font-family:Inter,sans-serif;color:#1E2028;text-align:center;padding:24px}' +
+      '.box{max-width:420px}.icon{font-size:48px;margin-bottom:16px}h1{font-size:24px;font-weight:800;' +
+      'letter-spacing:-.02em;margin-bottom:12px}p{font-size:15px;color:#6A6C72;line-height:1.7}' +
+      'a{color:#0F766E;font-weight:600}</style></head>' +
+      '<body><div class="box"><div class="icon">&#128274;</div>' +
+      '<h1>This offer has expired</h1>' +
+      '<p>The partnership proposal is no longer available. If you\'d like to discuss a new offer, ' +
+      'please reach out to <a href="mailto:partnerships@vault.ist">partnerships@vault.ist</a></p></div></body>';
+  }
+})();
+</script>
+
+<!-- ─── NDA MODAL ─── -->
+<div id="nda-overlay">
+  <div class="nda-card">
+    <div class="nda-logo">
+      <svg viewBox="0 0 160 103" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:160px;height:38px">
+        <path d="M22.1745 10.5767L5.39993 27.2814C-1.78091 34.4323 -1.80271 46.0196 5.35119 53.1972L35.7548 83.7019C60.1559 108.184 99.8897 108.258 124.383 83.8672L153.864 54.5088C161.064 47.3389 161.064 35.7142 153.864 28.5443L135.299 10.0568C127.842 2.63081 115.752 2.63081 108.295 10.0568L78.0101 40.2152L48.2477 10.5767C41.0478 3.40678 29.3744 3.40678 22.1745 10.5767Z" fill="white"/>
+        <path d="M152.936 50.6226C120.354 67.6283 89.8647 51.4442 78.011 40.2157L109.371 8.753C116.378 1.72346 127.813 1.78541 134.742 8.89045L155.122 29.7873C161.289 36.1101 160.775 46.5309 152.936 50.6226Z" fill="rgba(255,255,255,.4)"/>
+      </svg>
+    </div>
+    <div class="nda-heading">Confidential — Prepared for Cheelee</div>
+    <p class="nda-text">This document contains commercial terms prepared specifically for Cheelee. By continuing, you confirm you are an authorized representative and agree to maintain confidentiality.</p>
+    <label class="nda-check-row">
+      <input type="checkbox" id="nda-check">
+      <span class="nda-check-label">I am an authorized representative of Cheelee and will maintain strict confidentiality.</span>
+    </label>
+    <button id="nda-btn" disabled>Access Document</button>
+  </div>
+</div>
+
+<!-- ─── PAGE ─── -->
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="hdr">
+    <div class="hero-ring"></div>
+
+    <div class="hdr-logo">
+      <svg viewBox="0 0 444 103" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:36px;width:auto">
+        <path d="M22.1745 10.5767L5.39993 27.2814C-1.78091 34.4323 -1.80271 46.0196 5.35119 53.1972L35.7548 83.7019C60.1559 108.184 99.8897 108.258 124.383 83.8672L153.864 54.5088C161.064 47.3389 161.064 35.7142 153.864 28.5443L135.299 10.0568C127.842 2.63081 115.752 2.63081 108.295 10.0568L78.0101 40.2152L48.2477 10.5767C41.0478 3.40678 29.3744 3.40678 22.1745 10.5767Z" fill="white"/>
+        <path d="M152.936 50.6226C120.354 67.6283 89.8647 51.4442 78.011 40.2157L109.371 8.753C116.378 1.72346 127.813 1.78541 134.742 8.89045L155.122 29.7873C161.289 36.1101 160.775 46.5309 152.936 50.6226Z" fill="rgba(255,255,255,.4)"/>
+        <path d="M236.028 82.3555C235.51 83.725 234.199 84.631 232.734 84.631H219.745C218.314 84.631 217.026 83.7653 216.485 82.4407L195.642 31.3868C194.697 29.0707 196.401 26.5349 198.902 26.5349H210.394C211.867 26.5349 213.184 27.452 213.696 28.8337L224.496 58.012C225.071 59.5656 227.279 59.5373 227.814 57.9693L237.725 28.919C238.212 27.4932 239.551 26.5349 241.058 26.5349H252.044C254.507 26.5349 256.209 28.9982 255.338 31.3016L236.028 82.3555Z" fill="white"/>
+        <path d="M256.476 68.6166C256.476 66.0449 256.942 63.707 257.755 61.7198C258.685 59.7326 259.964 57.9792 261.476 56.5765C262.987 55.0569 264.847 53.888 266.824 53.0697C268.917 52.1346 271.126 51.4332 273.567 51.0825L287.17 48.9784C288.681 48.7446 289.844 48.2771 290.425 47.5757C291.006 46.8743 291.355 46.0561 291.355 45.004C291.355 43.2506 290.658 41.8479 289.146 40.5621C287.751 39.2763 285.658 38.6918 282.868 38.6918C279.729 38.6918 277.404 39.5101 275.66 41.2635C275.05 41.92 274.539 42.6093 274.131 43.3314C273.071 45.2079 271.085 46.8341 268.974 46.4L260.613 44.6805C258.904 44.3291 257.687 42.7637 258.152 41.0822C258.476 39.9078 258.938 38.7153 259.499 37.5229C260.546 35.3019 262.173 33.1978 264.15 31.3275C266.243 29.4572 268.8 27.9376 271.939 26.6517C275.078 25.3659 278.683 24.7814 282.984 24.7814C287.635 24.7814 291.588 25.3659 294.843 26.5349C298.098 27.8207 300.772 29.4572 302.749 31.4444C304.842 33.5485 306.353 36.0032 307.167 38.6918C308.097 41.3803 308.562 44.3027 308.562 47.225V75.6302C308.562 77.8512 308.678 79.8383 308.794 81.5918C308.994 83.0932 307.698 84.631 306.183 84.631H295.354C294.115 84.631 293.119 83.8754 292.983 82.6438C292.867 81.5918 292.75 80.0721 292.75 78.085C291.239 80.5397 289.03 82.5269 286.356 84.0465C283.682 85.5661 280.31 86.2675 276.474 86.2675C273.334 86.2675 270.428 85.7999 267.986 84.8648C265.545 83.8127 263.452 82.5269 261.708 80.8904C259.964 79.2539 258.685 77.3836 257.872 75.2795C256.942 73.1754 256.476 70.9544 256.476 68.6166ZM280.775 73.4092C282.054 73.4092 283.333 73.2923 284.612 72.9416C285.891 72.591 287.053 71.8896 287.984 71.0713C289.03 70.1362 289.844 68.9672 290.425 67.4476C291.006 65.928 291.355 64.0577 291.355 61.8367V59.2651L280.426 61.0185C278.566 61.3692 277.055 61.9536 275.776 63.0057C274.497 63.9408 273.916 65.4604 273.916 67.4476C273.916 68.9672 274.381 70.37 275.427 71.5389C276.474 72.8247 278.334 73.4092 280.775 73.4092Z" fill="white"/>
+        <path d="M358.185 84.631C356.541 84.631 355.156 83.4629 355.008 81.8255C354.892 80.5397 354.892 79.6046 354.892 78.7863C353.381 81.2411 351.172 83.1114 348.265 84.1634C345.359 85.3324 342.336 85.9168 339.429 85.9168C335.941 85.9168 332.802 85.3323 330.128 84.0465C327.338 82.8776 325.013 81.2411 323.153 79.137C321.292 77.1498 319.897 74.695 318.967 72.0065C317.921 69.3179 317.456 66.3956 317.456 63.2395V30.056C317.456 28.1113 319.032 26.5349 320.977 26.5349H331.606C333.551 26.5349 335.128 28.1113 335.128 30.056V59.4989C335.128 62.3043 335.941 64.6422 337.453 66.6294C338.964 68.6166 341.289 69.5517 344.429 69.5517C347.335 69.5517 349.777 68.6166 351.521 66.7463C353.264 64.9929 354.078 62.5381 354.078 59.6158V30.056C354.078 28.1113 355.655 26.5349 357.599 26.5349H368.229C370.174 26.5349 371.75 28.1113 371.75 30.056V74.2275C371.75 76.916 371.866 79.137 371.983 81.0073C372.091 82.8557 370.54 84.631 368.688 84.631H358.185Z" fill="white"/>
+        <path d="M385.316 84.631C383.371 84.631 381.795 83.0545 381.795 81.1099V3.52112C381.795 1.57646 383.371 0 385.316 0H395.945C397.89 0 399.467 1.57646 399.467 3.52112V81.1099C399.467 83.0545 397.89 84.631 395.945 84.631H385.316Z" fill="white"/>
+        <path d="M432.002 26.5349H439.759C441.703 26.5349 443.28 28.1113 443.28 30.056V38.5606C443.28 40.5052 441.703 42.0817 439.759 42.0817H432.002V63.8239C432.002 66.2787 432.584 67.7983 433.746 68.6166C434.909 69.4348 436.42 69.9024 438.397 69.9024C439.327 69.9024 440.257 69.786 441.071 69.6686C442.099 69.521 443.047 70.2873 443.047 71.3256V81.513C443.047 83.0265 442.091 84.4023 440.648 84.8593C440.522 84.8991 440.392 84.9399 440.257 84.9817C438.746 85.4492 436.653 85.683 433.863 85.683C427.817 85.683 423.05 84.0465 419.679 80.6566C416.307 77.3836 414.563 72.8252 414.563 66.98V42.0817H407.853C405.909 42.0817 404.332 40.5052 404.332 38.5606V29.4414C404.332 27.8362 405.633 26.5349 407.239 26.5349C410.261 26.5349 412.47 25.5997 413.982 23.8463C415.493 22.0929 416.191 19.755 416.191 17.0665V13.1064C416.191 11.1617 417.767 9.58528 419.712 9.58528H428.481C430.426 9.58528 432.002 11.1617 432.002 13.1064V26.5349Z" fill="white"/>
+      </svg>
+    </div>
+
+    <div class="hdr-badge">Partnership Offer · Prepared for Cheelee</div>
+
+    <h1>Cheelee × Vault.<br><span class="accent">Earn on every transaction.</span></h1>
+
+    <p class="hdr-sub">A turnkey BaaS partnership: Cheelee sets the end-user pricing, Vault handles cards, FX, banking and crypto rails. Cheelee keeps the spread on every line.</p>
+
+    <div class="client-mark">
+      <img src="data:image/png;base64,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" alt="Cheelee">
+    </div>
+
+    <div class="hdr-meta">May 2026 · Confidential · Valid 30 days</div>
+  </header>
+
+  <!-- ─── SECTION: Why Vault for Cheelee ─── -->
+  <section class="section">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="s-heading reveal">Why Vault</div>
+      <div class="s-title reveal">Built for an audience like yours</div>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal reveal-d1">
+        <div class="pillar-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4A843" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/>
+            <path d="M7 14l4-4 4 4 5-5"/>
+          </svg>
+        </div>
+        <div class="pillar-title">Built for scale</div>
+        <div class="pillar-body">Sized for your trajectory: 200K MAU today → 500K MAU at M36, with end-user volume modelled monthly. Infrastructure, banking partners and supplier rates already at the right tier.</div>
+      </div>
+      <div class="pillar reveal reveal-d2">
+        <div class="pillar-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4A843" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12h4l3-9 4 18 3-9h4"/>
+          </svg>
+        </div>
+        <div class="pillar-title">Crypto-to-card, native</div>
+        <div class="pillar-body">Cheelee in-app earnings flow into a single Vault account: convert crypto, hold fiat, top-up a Visa card, spend anywhere. No separate gateways, no wallet hand-offs, one ledger.</div>
+      </div>
+      <div class="pillar reveal reveal-d3">
+        <div class="pillar-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4A843" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="pillar-title">EU-licensed BaaS</div>
+        <div class="pillar-body">EMI/PI rails, Visa BIN sponsor, custodial wallet provider, KYC/IDV — all under one Vault contract. Cheelee onboards once, ships in any geography Vault supports.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SECTION: Tariff (dual-column) ─── -->
+  <section class="section">
+    <div style="text-align:center;margin-bottom:24px">
+      <div class="s-heading reveal">Pricing</div>
+      <div class="s-title reveal">Vault charges Cheelee · Cheelee charges users</div>
+      <p class="s-sub reveal">Cheelee sets the customer-facing price on every line. Vault charges Cheelee at the rate below. The difference is yours.</p>
+    </div>
+
+    <div class="tariff-card reveal">
+      <div class="tariff-hdr">
+        <div class="th">Line</div>
+        <div class="th">Vault → Cheelee</div>
+        <div class="th">Vault recommendation<br><span style="font-weight:500;letter-spacing:0;text-transform:none;color:rgba(255,255,255,.45)">end-user pricing</span></div>
+        <div class="th">Cheelee margin</div>
+      </div>
+
+      <div class="tariff-group-row"><div class="gh">Transactional spreads</div></div>
+      <div class="tariff-row">
+        <div class="t-name">Crypto Exchange<small>crypto ↔ fiat conversion</small></div>
+        <div class="t-vault">1.6%</div>
+        <div class="t-cheelee">3.0%<small style="display:block;font-weight:400;color:var(--dimmer);margin-top:3px">4.0% above $1K/mo</small></div>
+        <div class="t-margin">+1.4%</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">Card FX<small>cross-border card spend</small></div>
+        <div class="t-vault">1.6%</div>
+        <div class="t-cheelee">2.0%<small style="display:block;font-weight:400;color:var(--dimmer);margin-top:3px">3.0% above $500/mo</small></div>
+        <div class="t-margin">+0.4%</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">Card Top-up<small>load card from app balance</small></div>
+        <div class="t-vault">1.0%</div>
+        <div class="t-cheelee">2.0%<small style="display:block;font-weight:400;color:var(--dimmer);margin-top:3px">3.0% above $2K/mo</small></div>
+        <div class="t-margin">+1.0%</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">ATM<small>cash withdrawal fee</small></div>
+        <div class="t-vault">2.2%</div>
+        <div class="t-cheelee">3.5%<small style="display:block;font-weight:400;color:var(--dimmer);margin-top:3px">5.5% above $200/mo</small></div>
+        <div class="t-margin">+1.3%</div>
+      </div>
+
+      <div class="tariff-group-row"><div class="gh">Monthly subscriptions (per user)</div></div>
+      <div class="tariff-row">
+        <div class="t-name">Monthly Card Fee<small>per active cardholder / month</small></div>
+        <div class="t-vault">$0.20</div>
+        <div class="t-cheelee">$5.00</div>
+        <div class="t-margin">+$4.80</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">Monthly Crypto Fee<small>per crypto-active user / month</small></div>
+        <div class="t-vault">$1.00</div>
+        <div class="t-cheelee">$0<small style="display:block;font-weight:400;color:var(--dimmer);margin-top:3px">absorbed by card-fee margin</small></div>
+        <div class="t-margin passth">−$1.00 absorbed</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">Monthly Banking Fee<small>per banking-active user / month</small></div>
+        <div class="t-vault">$1.50</div>
+        <div class="t-cheelee">$0<small style="display:block;font-weight:400;color:var(--dimmer);margin-top:3px">absorbed by card-fee margin</small></div>
+        <div class="t-margin passth">−$1.50 absorbed</div>
+      </div>
+
+      <div class="tariff-group-row"><div class="gh">Card issuance (one-time)</div></div>
+      <div class="tariff-row">
+        <div class="t-name">Virtual card<small>per card issued</small></div>
+        <div class="t-vault">$1.50</div>
+        <div class="t-cheelee">$0.50<small style="display:block;font-weight:400;color:var(--dimmer);margin-top:3px">free first 5/account, then $0.50 each</small></div>
+        <div class="t-margin passth">−$1.00 (1st card free)</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">Physical Visa<small>per card issued</small></div>
+        <div class="t-vault">$15</div>
+        <div class="t-cheelee">$10<small style="display:block;font-weight:400;color:var(--dimmer);margin-top:3px">1 per account</small></div>
+        <div class="t-margin passth">−$5 (Cheelee subsidy)</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">Metal card<small>premium card</small></div>
+        <div class="t-vault">$100</div>
+        <div class="t-cheelee">$300<small style="display:block;font-weight:400;color:var(--dimmer);margin-top:3px">premium offering</small></div>
+        <div class="t-margin">+$200</div>
+      </div>
+
+      <div class="tariff-group-row"><div class="gh">Per-user one-time</div></div>
+      <div class="tariff-row">
+        <div class="t-name">Account Opening<small>per new account</small></div>
+        <div class="t-vault">$5</div>
+        <div class="t-cheelee">$0</div>
+        <div class="t-margin absorb">Cheelee absorbs</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">KYC / IDV<small>per verification</small></div>
+        <div class="t-vault">$5</div>
+        <div class="t-cheelee">$0</div>
+        <div class="t-margin absorb">Cheelee absorbs</div>
+      </div>
+
+      <div class="tariff-group-row"><div class="gh">Banking (per tx)</div></div>
+      <div class="tariff-row">
+        <div class="t-name">SEPA In<small>per transaction</small></div>
+        <div class="t-vault">$1.00</div>
+        <div class="t-cheelee">$1.00</div>
+        <div class="t-margin passth">Pass-through</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">SEPA Out<small>per transaction</small></div>
+        <div class="t-vault">$1.00</div>
+        <div class="t-cheelee">$2.00</div>
+        <div class="t-margin">+$1.00</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">SWIFT international<small>flat + %</small></div>
+        <div class="t-vault">$40 + 0.2%</div>
+        <div class="t-cheelee">$40 + 0.2%</div>
+        <div class="t-margin passth">Pass-through</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">3D Secure<small>per auth</small></div>
+        <div class="t-vault">$0.03</div>
+        <div class="t-cheelee">$0.03</div>
+        <div class="t-margin passth">Pass-through</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">Apple / Google Pay<small>auth fee</small></div>
+        <div class="t-vault">0.2%</div>
+        <div class="t-cheelee">0.2%</div>
+        <div class="t-margin passth">Pass-through</div>
+      </div>
+      <div class="tariff-row">
+        <div class="t-name">Chargeback / Dispute<small>per case</small></div>
+        <div class="t-vault">$35</div>
+        <div class="t-cheelee">$35</div>
+        <div class="t-margin passth">Pass-through</div>
+      </div>
+
+      <div class="tariff-group-row"><div class="gh">Card interchange — Vault rebate split</div></div>
+      <div class="tariff-row">
+        <div class="t-name">Visa / MC interchange rebate<small>~1.2% of card TPV</small></div>
+        <div class="t-vault" style="color:rgba(255,255,255,.85)">Vault retains <strong style="color:#fff">40%</strong></div>
+        <div class="t-cheelee">Cheelee receives <strong>60%</strong></div>
+        <div class="t-margin">Net positive</div>
+      </div>
+    </div>
+    <p class="s-sub reveal" style="margin-top:18px;font-size:12.5px">"Vault → Cheelee" — wholesale BaaS pricing pulled directly from Cheelee's tariff scenario. "Vault recommendation" — what we suggest Cheelee charges its end-users (sourced from Vault's market-benchmark rate card). Cheelee sets its own pricing — the spread is Cheelee revenue.</p>
+  </section>
+
+  <!-- ─── SECTION: Commercial setup ─── -->
+  <section class="section">
+    <div style="text-align:center;margin-bottom:24px">
+      <div class="s-heading reveal">Commercial setup</div>
+      <div class="s-title reveal">Tailored to Cheelee's ramp</div>
+      <p class="s-sub reveal">Custom partnership terms designed around Cheelee's ramp: a refundable security deposit, plus an activation milestone at M3 that determines deposit fate and the billing path going forward.</p>
+    </div>
+
+    <div class="com-grid">
+      <div class="com-item reveal reveal-d1">
+        <div class="com-item-label">KYB fee</div>
+        <div class="com-item-val">$500<small>on acceptance</small></div>
+        <div class="com-item-body">Paid on offer acceptance to start the verification process. Non-refundable — if KYB returns negative, the fee is not returned.</div>
+      </div>
+      <div class="com-item reveal reveal-d2">
+        <div class="com-item-label">Setup fee</div>
+        <div class="com-item-val">$15,000<small>after KYB + SLA</small></div>
+        <div class="com-item-body">Paid after KYB approval and SLA signing. Covers contract execution, technical onboarding (sandbox + production keys), and supplier provisioning across the Vault stack.</div>
+      </div>
+      <div class="com-item reveal reveal-d1">
+        <div class="com-item-label">Security deposit</div>
+        <div class="com-item-val">$10,000<small>refundable on hit</small></div>
+        <div class="com-item-body">Paid alongside the setup fee, after KYB approval and SLA signing. Held against platform-fee billing. <strong>If Cheelee delivers ≥ 1,000 monthly-active users by M3</strong>, the deposit is drawn down to cover M3–M6 platform fees. <strong>If Cheelee misses, the $10,000 is forfeited</strong> and Cheelee pays the full ladder from M3.</div>
+      </div>
+      <div class="com-item reveal reveal-d2">
+        <div class="com-item-label">Platform fee ladder</div>
+        <div class="com-item-val">$3K → $8K<small>m1–m13+</small></div>
+        <div class="com-item-body">$3K (M1–M3) → $5K (M4–M6) → $7K (M7–M12) → $8K (M13+). Auto-waived once Vault transactional revenue from Cheelee exceeds $16K/mo (then a 0.2% × TPV floor applies).</div>
+      </div>
+      <div class="com-item reveal reveal-d1" style="grid-column:1 / -1">
+        <div class="com-item-label">M3 activation milestone</div>
+        <div class="com-item-val">1,000<small>monthly active</small></div>
+        <div class="com-item-body">"Monthly active" = end-user with ≥ 1 transactional operation in the calendar month. M1–M2 are unconditional grace months. M3 is the first evaluation point — the outcome determines the entire Y1 economics.</div>
+      </div>
+    </div>
+
+    <div class="timeline-card reveal">
+      <h4>Platform-fee billing schedule — two paths from M3</h4>
+      <div class="tl-row"><div class="tl-month">M1</div><div class="tl-desc"><strong>Grace.</strong> No platform fee. Cheelee runs sandbox + first production cohort. Deposit held intact.</div><div class="tl-amount zero">$0</div></div>
+      <div class="tl-row"><div class="tl-month">M2</div><div class="tl-desc"><strong>Grace.</strong> Cheelee monitors activation curve. Deposit held intact.</div><div class="tl-amount zero">$0</div></div>
+      <div class="tl-row" style="margin-top:14px;padding:18px 20px;background:rgba(212,168,67,.07);border:1px solid var(--gold-border);border-radius:12px;grid-template-columns:64px 1fr 100px"><div class="tl-month" style="color:var(--gold-bright)">M3</div><div class="tl-desc"><strong style="color:var(--gold-bright);display:block;margin-bottom:6px">Milestone evaluation</strong>Count monthly-active users from M3 calendar month.<br><span style="color:var(--green)">▸ HIT (≥ 1,000 active):</span> deposit drawdown begins (path A below).<br><span style="color:var(--red)">▸ MISS (&lt; 1,000 active):</span> deposit forfeit + full ladder bill from M3 onward (path B).</div><div class="tl-amount" style="color:var(--gold-bright);font-weight:800">Decision</div></div>
+    </div>
+
+    <!-- Path A: HIT -->
+    <div class="timeline-card reveal" style="margin-top:18px;border-color:rgba(52,211,153,.25);background:linear-gradient(180deg,rgba(52,211,153,.05),var(--sheet))">
+      <h4 style="color:var(--green)">Path A · HIT — deposit drawdown</h4>
+      <div class="tl-row"><div class="tl-month" style="color:var(--green)">M3</div><div class="tl-desc">Platform fee $3K covered by deposit. Cheelee pays $0 cash. <strong>Deposit balance: $7K.</strong></div><div class="tl-amount draw">−$3K dep.</div></div>
+      <div class="tl-row"><div class="tl-month" style="color:var(--green)">M4</div><div class="tl-desc">Platform fee $5K — $3K from deposit + $2K billed. <strong>Deposit balance: $4K.</strong></div><div class="tl-amount draw">−$3K dep. + $2K</div></div>
+      <div class="tl-row"><div class="tl-month" style="color:var(--green)">M5</div><div class="tl-desc">Platform fee $5K — $3K from deposit + $2K billed. <strong>Deposit balance: $1K.</strong></div><div class="tl-amount draw">−$3K dep. + $2K</div></div>
+      <div class="tl-row"><div class="tl-month" style="color:var(--green)">M6</div><div class="tl-desc">Platform fee $5K — $1K final from deposit + $4K billed. Deposit exhausted, refunded balance from contract end.</div><div class="tl-amount draw">−$1K dep. + $4K</div></div>
+      <div class="tl-row"><div class="tl-month" style="color:var(--green)">M7+</div><div class="tl-desc">Normal ladder billing ($7K M7–12, $8K M13+). Auto-waived if Vault tx-rev ≥ $16K/mo.</div><div class="tl-amount full">Per ladder</div></div>
+    </div>
+
+    <!-- Path B: MISS -->
+    <div class="timeline-card reveal" style="margin-top:14px;border-color:rgba(239,68,68,.22);background:linear-gradient(180deg,rgba(239,68,68,.04),var(--sheet))">
+      <h4 style="color:var(--red)">Path B · MISS — deposit forfeit + full ladder</h4>
+      <div class="tl-row"><div class="tl-month" style="color:var(--red)">M3</div><div class="tl-desc"><strong>Security deposit $10,000 forfeited to Vault.</strong> Cheelee billed full M1–M3 platform fee.</div><div class="tl-amount full">$3K + $10K dep. lost</div></div>
+      <div class="tl-row"><div class="tl-month" style="color:var(--red)">M4–M6</div><div class="tl-desc">Full ladder billing — $5K/mo each.</div><div class="tl-amount full">$5K / mo</div></div>
+      <div class="tl-row"><div class="tl-month" style="color:var(--red)">M7–M12</div><div class="tl-desc">Full ladder billing — $7K/mo each.</div><div class="tl-amount full">$7K / mo</div></div>
+      <div class="tl-row"><div class="tl-month" style="color:var(--red)">M13+</div><div class="tl-desc">Full ladder billing — $8K/mo. Same waiver rule applies if Vault tx-rev ≥ $16K/mo.</div><div class="tl-amount full">$8K / mo</div></div>
+    </div>
+  </section>
+
+  <!-- ─── SECTION: Calculator ─── -->
+  <section class="section">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="s-heading reveal">Cheelee P&amp;L calculator</div>
+      <div class="s-title reveal">See how the unit economics work</div>
+      <p class="s-sub reveal">Estimate Cheelee's monthly margin under the recommended end-user rate card. Same math the Vault model uses internally.</p>
+    </div>
+
+    <div class="calc-card reveal">
+      <div class="calc-body">
+        <div class="calc-mode-row" id="calc-mode-row">
+          <button class="calc-mode" data-period="grace">M1–M2 · Grace</button>
+          <button class="calc-mode active" data-period="drawdown">M3 · HIT — covered by deposit</button>
+          <button class="calc-mode" data-period="drawdown45">M4–M5 · HIT — partial deposit</button>
+          <button class="calc-mode" data-period="steady">M13+ · Steady</button>
+        </div>
+
+        <div class="calc-inputs">
+          <div class="slider-group">
+            <label>Monthly active end-users</label>
+            <div class="slider-val" id="users-display">3,000</div>
+            <input type="range" id="users-slider" min="500" max="25000" step="500" value="3000">
+          </div>
+          <div class="slider-group">
+            <label>Avg monthly TPV per user (USD)</label>
+            <div class="slider-val" id="vol-display">$5</div>
+            <input type="range" id="vol-slider" min="2" max="30" step="1" value="5">
+          </div>
+        </div>
+
+        <hr class="calc-divider">
+
+        <div class="calc-grid">
+          <div class="calc-cell">
+            <div class="calc-cell-label">Cheelee revenue</div>
+            <div class="calc-cell-val" id="out-cheelee-rev">—</div>
+            <div class="calc-cell-sub">end-user fees / mo</div>
+          </div>
+          <div class="calc-cell">
+            <div class="calc-cell-label">Vault charges</div>
+            <div class="calc-cell-val dim" id="out-vault-charges">—</div>
+            <div class="calc-cell-sub" id="out-charges-sub">at-cost + markup</div>
+          </div>
+          <div class="calc-cell">
+            <div class="calc-cell-label">Total TPV</div>
+            <div class="calc-cell-val dim" id="out-tpv">—</div>
+            <div class="calc-cell-sub">monthly volume</div>
+          </div>
+        </div>
+
+        <div class="calc-result">
+          <div class="cr-net-block">
+            <div class="cr-net-label">Cheelee monthly net</div>
+            <div class="cr-net-val" id="out-net">—</div>
+            <div class="cr-net-sub" id="out-net-sub">—</div>
+          </div>
+          <div class="cr-margin-block">
+            <div class="cr-margin-row"><span>Margin</span> <b id="out-margin">—</b></div>
+            <div class="cr-margin-row"><span>Revenue per active user</span> <b id="out-arpu">—</b></div>
+            <div class="cr-margin-row"><span>Vault charge per user</span> <b id="out-vault-pu">—</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-note">
+        <strong style="color:rgba(212,168,67,.7)">Method:</strong> Cheelee revenue = recommended end-user transactional fees (Crypto 3% × cryptoTPV × 50% exchange-share, Card FX 2% × cardTPV × 65%, Card Top-up 2% × cardTPV, ATM 3.5% × atmTPV) + $5 / user monthly card fee + Cheelee's 60% share of Visa/MC interchange rebate (~1.2% × cardTPV). Vault charges = the same transactional lines at wholesale rate + per-user subscriptions ($0.20 / cardholder, $1.00 / crypto user, $1.50 / banking user) + new-KYC ($10 × ~19.5%/mo replacement of churn) + setup amortized over 12 months + platform fee for the selected period (waived once Vault tx-rev ≥ $16K/mo, then 0.2% × TPV floor). Numbers reflect a single-client model.
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SECTION: Stages timeline ─── -->
+  <section class="section">
+    <div style="text-align:center;margin-bottom:8px">
+      <div class="s-heading reveal">Onboarding</div>
+      <div class="s-title reveal">From signature to go-live</div>
+      <p class="s-sub reveal">Vault delivery plan based on Cheelee's profile. Each stage has clear deliverables and timeline.</p>
+    </div>
+
+    <div class="stages reveal">
+      <div class="stage"><div class="stage-num">1</div><div class="stage-name">Sign offer</div><div class="stage-sub">Today</div></div>
+      <div class="stage"><div class="stage-num">2</div><div class="stage-name">KYB</div><div class="stage-sub">2–3 weeks</div></div>
+      <div class="stage"><div class="stage-num">3</div><div class="stage-name">SLA &amp; SOW</div><div class="stage-sub">1 week</div></div>
+      <div class="stage"><div class="stage-num">4</div><div class="stage-name">Setup payment</div><div class="stage-sub">$15K + $10K</div></div>
+      <div class="stage"><div class="stage-num">5</div><div class="stage-name">Tech delivery</div><div class="stage-sub">3–4 weeks</div></div>
+      <div class="stage"><div class="stage-num">6</div><div class="stage-name">Go-live</div><div class="stage-sub">M1 grace start</div></div>
+      <div class="stage"><div class="stage-num">7</div><div class="stage-name">Trigger M3+</div><div class="stage-sub">≥1K MAU</div></div>
+    </div>
+  </section>
+
+  <!-- ─── ACCEPT OFFER ─── -->
+  <section class="section" style="padding-top:28px;padding-bottom:40px">
+    <div class="accept-wrap">
+      <div class="s-heading reveal">Accept this offer</div>
+      <div class="s-title reveal" style="margin-bottom:14px">Ready to launch?</div>
+      <p class="s-sub reveal" style="margin-bottom:32px">Clicking below records Cheelee's acceptance of these commercial terms. The next step is the KYB fee payment and verification — your account manager will guide you through it.</p>
+      <a id="accept-offer-btn" data-deal-id="7197458000006207199" href="#" onclick="return confirmAcceptOffer()">Accept Offer →</a>
+      <div id="accept-result" style="display:none;margin-top:24px"></div>
+      <p id="accept-hint" style="font-size:12px;color:rgba(255,255,255,.4);margin-top:16px">Click to record acceptance</p>
+    </div>
+  </section>
+
+  <!-- PAGE FOOTER -->
+  <footer class="page-footer">
+    <svg viewBox="0 0 444 103" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:28px;width:auto;opacity:.55;display:block;margin:0 auto">
+      <path d="M22.1745 10.5767L5.39993 27.2814C-1.78091 34.4323 -1.80271 46.0196 5.35119 53.1972L35.7548 83.7019C60.1559 108.184 99.8897 108.258 124.383 83.8672L153.864 54.5088C161.064 47.3389 161.064 35.7142 153.864 28.5443L135.299 10.0568C127.842 2.63081 115.752 2.63081 108.295 10.0568L78.0101 40.2152L48.2477 10.5767C41.0478 3.40678 29.3744 3.40678 22.1745 10.5767Z" fill="white"/>
+      <path d="M152.936 50.6226C120.354 67.6283 89.8647 51.4442 78.011 40.2157L109.371 8.753C116.378 1.72346 127.813 1.78541 134.742 8.89045L155.122 29.7873C161.289 36.1101 160.775 46.5309 152.936 50.6226Z" fill="rgba(255,255,255,.4)"/>
+      <path d="M236.028 82.3555C235.51 83.725 234.199 84.631 232.734 84.631H219.745C218.314 84.631 217.026 83.7653 216.485 82.4407L195.642 31.3868C194.697 29.0707 196.401 26.5349 198.902 26.5349H210.394C211.867 26.5349 213.184 27.452 213.696 28.8337L224.496 58.012C225.071 59.5656 227.279 59.5373 227.814 57.9693L237.725 28.919C238.212 27.4932 239.551 26.5349 241.058 26.5349H252.044C254.507 26.5349 256.209 28.9982 255.338 31.3016L236.028 82.3555Z" fill="white"/>
+      <path d="M256.476 68.6166C256.476 66.0449 256.942 63.707 257.755 61.7198C258.685 59.7326 259.964 57.9792 261.476 56.5765C262.987 55.0569 264.847 53.888 266.824 53.0697C268.917 52.1346 271.126 51.4332 273.567 51.0825L287.17 48.9784C288.681 48.7446 289.844 48.2771 290.425 47.5757C291.006 46.8743 291.355 46.0561 291.355 45.004C291.355 43.2506 290.658 41.8479 289.146 40.5621C287.751 39.2763 285.658 38.6918 282.868 38.6918C279.729 38.6918 277.404 39.5101 275.66 41.2635C275.05 41.92 274.539 42.6093 274.131 43.3314C273.071 45.2079 271.085 46.8341 268.974 46.4L260.613 44.6805C258.904 44.3291 257.687 42.7637 258.152 41.0822C258.476 39.9078 258.938 38.7153 259.499 37.5229C260.546 35.3019 262.173 33.1978 264.15 31.3275C266.243 29.4572 268.8 27.9376 271.939 26.6517C275.078 25.3659 278.683 24.7814 282.984 24.7814C287.635 24.7814 291.588 25.3659 294.843 26.5349C298.098 27.8207 300.772 29.4572 302.749 31.4444C304.842 33.5485 306.353 36.0032 307.167 38.6918C308.097 41.3803 308.562 44.3027 308.562 47.225V75.6302C308.562 77.8512 308.678 79.8383 308.794 81.5918C308.994 83.0932 307.698 84.631 306.183 84.631H295.354C294.115 84.631 293.119 83.8754 292.983 82.6438C292.867 81.5918 292.75 80.0721 292.75 78.085C291.239 80.5397 289.03 82.5269 286.356 84.0465C283.682 85.5661 280.31 86.2675 276.474 86.2675C273.334 86.2675 270.428 85.7999 267.986 84.8648C265.545 83.8127 263.452 82.5269 261.708 80.8904C259.964 79.2539 258.685 77.3836 257.872 75.2795C256.942 73.1754 256.476 70.9544 256.476 68.6166ZM280.775 73.4092C282.054 73.4092 283.333 73.2923 284.612 72.9416C285.891 72.591 287.053 71.8896 287.984 71.0713C289.03 70.1362 289.844 68.9672 290.425 67.4476C291.006 65.928 291.355 64.0577 291.355 61.8367V59.2651L280.426 61.0185C278.566 61.3692 277.055 61.9536 275.776 63.0057C274.497 63.9408 273.916 65.4604 273.916 67.4476C273.916 68.9672 274.381 70.37 275.427 71.5389C276.474 72.8247 278.334 73.4092 280.775 73.4092Z" fill="white"/>
+      <path d="M358.185 84.631C356.541 84.631 355.156 83.4629 355.008 81.8255C354.892 80.5397 354.892 79.6046 354.892 78.7863C353.381 81.2411 351.172 83.1114 348.265 84.1634C345.359 85.3324 342.336 85.9168 339.429 85.9168C335.941 85.9168 332.802 85.3323 330.128 84.0465C327.338 82.8776 325.013 81.2411 323.153 79.137C321.292 77.1498 319.897 74.695 318.967 72.0065C317.921 69.3179 317.456 66.3956 317.456 63.2395V30.056C317.456 28.1113 319.032 26.5349 320.977 26.5349H331.606C333.551 26.5349 335.128 28.1113 335.128 30.056V59.4989C335.128 62.3043 335.941 64.6422 337.453 66.6294C338.964 68.6166 341.289 69.5517 344.429 69.5517C347.335 69.5517 349.777 68.6166 351.521 66.7463C353.264 64.9929 354.078 62.5381 354.078 59.6158V30.056C354.078 28.1113 355.655 26.5349 357.599 26.5349H368.229C370.174 26.5349 371.75 28.1113 371.75 30.056V74.2275C371.75 76.916 371.866 79.137 371.983 81.0073C372.091 82.8557 370.54 84.631 368.688 84.631H358.185Z" fill="white"/>
+      <path d="M385.316 84.631C383.371 84.631 381.795 83.0545 381.795 81.1099V3.52112C381.795 1.57646 383.371 0 385.316 0H395.945C397.89 0 399.467 1.57646 399.467 3.52112V81.1099C399.467 83.0545 397.89 84.631 395.945 84.631H385.316Z" fill="white"/>
+      <path d="M432.002 26.5349H439.759C441.703 26.5349 443.28 28.1113 443.28 30.056V38.5606C443.28 40.5052 441.703 42.0817 439.759 42.0817H432.002V63.8239C432.002 66.2787 432.584 67.7983 433.746 68.6166C434.909 69.4348 436.42 69.9024 438.397 69.9024C439.327 69.9024 440.257 69.786 441.071 69.6686C442.099 69.521 443.047 70.2873 443.047 71.3256V81.513C443.047 83.0265 442.091 84.4023 440.648 84.8593C440.522 84.8991 440.392 84.9399 440.257 84.9817C438.746 85.4492 436.653 85.683 433.863 85.683C427.817 85.683 423.05 84.0465 419.679 80.6566C416.307 77.3836 414.563 72.8252 414.563 66.98V42.0817H407.853C405.909 42.0817 404.332 40.5052 404.332 38.5606V29.4414C404.332 27.8362 405.633 26.5349 407.239 26.5349C410.261 26.5349 412.47 25.5997 413.982 23.8463C415.493 22.0929 416.191 19.755 416.191 17.0665V13.1064C416.191 11.1617 417.767 9.58528 419.712 9.58528H428.481C430.426 9.58528 432.002 11.1617 432.002 13.1064V26.5349Z" fill="white"/>
+    </svg>
+    <div class="page-footer-meta" style="margin-top:14px">Vault Group · Prepared for Cheelee · May 2026 · Confidential</div>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+(function(){
+  // ─── NDA MODAL ───
+  var STORAGE_KEY = 'vault_nda_cheelee_gold';
+  var overlay = document.getElementById('nda-overlay');
+  var checkbox = document.getElementById('nda-check');
+  var btn = document.getElementById('nda-btn');
+
+  if(sessionStorage.getItem(STORAGE_KEY) === '1'){
+    overlay.classList.add('hidden');
+  }
+  checkbox.addEventListener('change', function(){ btn.disabled = !this.checked; });
+  btn.addEventListener('click', function(){
+    if(checkbox.checked){
+      sessionStorage.setItem(STORAGE_KEY, '1');
+      overlay.style.transition = 'opacity .35s ease';
+      overlay.style.opacity = '0';
+      setTimeout(function(){ overlay.classList.add('hidden'); }, 350);
+    }
+  });
+
+  // ─── SCROLL REVEAL ───
+  var revealEls = document.querySelectorAll('.reveal');
+  function checkReveal(){
+    var winH = window.innerHeight;
+    revealEls.forEach(function(el){
+      var rect = el.getBoundingClientRect();
+      if(rect.top < winH * 0.92){ el.classList.add('visible'); }
+    });
+  }
+  window.addEventListener('scroll', checkReveal, {passive:true});
+  window.addEventListener('resize', checkReveal, {passive:true});
+  setTimeout(checkReveal, 100);
+
+  // ─── CALCULATOR ───
+  // All wholesale rates pulled directly from Cheelee's saved Supabase tariff scenario.
+  // Math mirrors the live Vault model at model.vault.ist/cheelee-pnl.
+  var TARIFF = {
+    // Vault charges Cheelee — saved Cheelee scenario
+    vault_exchange_loading: 0.016,   // 1.6%
+    vault_card_fx:          0.016,   // 1.6%
+    vault_card_topup:       0.010,   // 1.0%
+    vault_atm:              0.022,   // 2.2%
+    vault_monthly_card:     0.20,    // $0.20 / active card
+    vault_monthly_crypto:   1.00,    // $1.00 / crypto-only user
+    vault_monthly_banking:  1.50,    // $1.50 / banking user
+    vault_account_opening:  5.00,    // $5 / new KYC
+    vault_kyc:              5.00,    // $5 / new KYC
+    vault_setup_total:      15000,   // amortized /12 in Y1
+    interchange_rebate:     0.012,   // 1.2% of card TPV — Visa/MC rebate
+    interchange_vault_pct:  0.40,    // Vault retains 40%, Cheelee gets 60%
+    // Cheelee charges end-users (recommended rate card)
+    cheelee_exchange:    0.030,   // 3.0%
+    cheelee_card_fx:     0.020,   // 2.0%
+    cheelee_card_topup:  0.020,   // 2.0%
+    cheelee_atm:         0.035,   // 3.5%
+    cheelee_monthly_card: 5.00,   // $5/user
+    cheelee_account_opening: 0,   // Cheelee absorbs
+    cheelee_kyc:             0,   // Cheelee absorbs
+  };
+  // Volume mix (matches Cheelee model at M36)
+  var MIX = {
+    crypto_share:          0.50,
+    card_share:            0.50,
+    crypto_exchange_share: 0.50,
+    card_fx_share:         0.65,
+    crypto_only_user_rate: 0.20, // 20% of active = crypto-only
+    banking_user_rate:     0.30, // 30% of active = use banking lines
+    atm_per_user_per_mo:   200 * 0.05, // 5% of users withdraw $200/mo
+    new_kyc_replacement_rate: 0.195,   // ≈ 19.5% of active = 50% annual churn × KYC rate
+  };
+  // Platform-fee periods + expected-user preset for each period (reflects growth).
+  // Each `users` value reflects the realistic active-user count at that month.
+  var PERIOD = {
+    grace:      { fee: 0,    users: 1500,  label: 'M1–M2 grace — no platform fee' },
+    drawdown:   { fee: 3000, users: 2500,  label: 'M3 — HIT path: $3K covered by deposit ($0 cash)' },
+    drawdown45: { fee: 5000, users: 3500,  label: 'M4–M5 — HIT path: $3K from deposit + $2K billed' },
+    steady:     { fee: 8000, users: 12000, label: 'M13+ — full $8K platform fee billed' },
+  };
+
+  var usersSlider  = document.getElementById('users-slider');
+  var volSlider    = document.getElementById('vol-slider');
+  var usersDisplay = document.getElementById('users-display');
+  var volDisplay   = document.getElementById('vol-display');
+  var modeButtons  = document.querySelectorAll('.calc-mode');
+  var period = document.querySelector('.calc-mode.active').dataset.period;
+
+  // Sync slider with the period preset (reflects user growth at that month)
+  function applyPeriodPreset(p){
+    var preset = PERIOD[p];
+    if(preset && preset.users != null){
+      usersSlider.value = preset.users;
+    }
+  }
+
+  modeButtons.forEach(function(b){
+    b.addEventListener('click', function(){
+      modeButtons.forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      period = b.dataset.period;
+      applyPeriodPreset(period);
+      calc();
+    });
+  });
+
+  // Initial preset from the active button
+  applyPeriodPreset(period);
+
+  function fmt(n){
+    var sign = n < 0 ? '-' : '';
+    var a = Math.abs(n);
+    if(a >= 1000000) return sign + '$' + (a/1000000).toFixed(2) + 'M';
+    if(a >= 10000) return sign + '$' + (a/1000).toFixed(0) + 'K';
+    if(a >= 1000) return sign + '$' + (a/1000).toFixed(1) + 'K';
+    return sign + '$' + Math.round(a).toLocaleString();
+  }
+  function fmtFull(n){
+    var sign = n < 0 ? '-' : '';
+    return sign + '$' + Math.round(Math.abs(n)).toLocaleString();
+  }
+
+  function calc(){
+    var users = parseInt(usersSlider.value, 10);
+    var vol   = parseInt(volSlider.value, 10);
+    usersDisplay.textContent = users.toLocaleString();
+    volDisplay.innerHTML = '$' + vol.toLocaleString() + ' <small>per user</small>';
+
+    var totalTPV    = users * vol;
+    var cryptoTPV   = totalTPV * MIX.crypto_share;
+    var cardTPV     = totalTPV * MIX.card_share;
+    var atmTPV      = users * MIX.atm_per_user_per_mo;
+    var cryptoOnlyU = users * MIX.crypto_only_user_rate;
+    var bankingU    = users * MIX.banking_user_rate;
+    var newKyc      = users * MIX.new_kyc_replacement_rate;
+
+    // ── Cheelee revenue ──
+    var ch_tx =
+      cryptoTPV * MIX.crypto_exchange_share * TARIFF.cheelee_exchange +
+      cardTPV   * MIX.card_fx_share         * TARIFF.cheelee_card_fx +
+      cardTPV                               * TARIFF.cheelee_card_topup +
+      atmTPV                                * TARIFF.cheelee_atm;
+    var ch_subs = users * TARIFF.cheelee_monthly_card;
+    // Cheelee 60% of Visa/MC interchange rebate (~1.2% of card TPV)
+    var ch_interchange = cardTPV * TARIFF.interchange_rebate * (1 - TARIFF.interchange_vault_pct);
+    var ch_rev = ch_tx + ch_subs + ch_interchange;
+
+    // ── Vault charges to Cheelee ──
+    var v_tx =
+      cryptoTPV * MIX.crypto_exchange_share * TARIFF.vault_exchange_loading +
+      cardTPV   * MIX.card_fx_share         * TARIFF.vault_card_fx +
+      cardTPV                               * TARIFF.vault_card_topup +
+      atmTPV                                * TARIFF.vault_atm;
+    var v_subs =
+      users       * TARIFF.vault_monthly_card +    // $0.20 × all active cardholders
+      cryptoOnlyU * TARIFF.vault_monthly_crypto +  // $1.00 × crypto-only segment
+      bankingU    * TARIFF.vault_monthly_banking;  // $1.50 × banking segment
+    var v_per_new =
+      newKyc * TARIFF.vault_account_opening +
+      newKyc * TARIFF.vault_kyc;
+    var v_setup_amortized = TARIFF.vault_setup_total / 12;
+
+    // Platform fee — saved scenario uses Fixed Share 100% (full ladder always billed).
+    // Waiver: full waiver when v_tx ≥ $16K/mo, then 0.2% × TPV floor applies.
+    var p = PERIOD[period];
+    var v_platform;
+    var note;
+    if(v_tx >= 16000){
+      v_platform = totalTPV * 0.002;
+      note = 'platform-fee waiver active — 0.2% × TPV floor';
+    } else {
+      v_platform = p.fee;  // Fixed Share 100% — no fixedPart/topUp split
+      note = p.label;
+    }
+
+    var v_charges = v_tx + v_subs + v_per_new + v_platform + v_setup_amortized;
+    var net = ch_rev - v_charges;
+    var margin = ch_rev > 0 ? net / ch_rev : 0;
+    var arpu = users > 0 ? ch_rev / users : 0;
+    var v_pu = users > 0 ? v_charges / users : 0;
+
+    // Render
+    document.getElementById('out-cheelee-rev').textContent = fmt(ch_rev);
+    document.getElementById('out-vault-charges').textContent = fmt(v_charges);
+    document.getElementById('out-charges-sub').textContent = note;
+    document.getElementById('out-tpv').textContent = fmt(totalTPV);
+
+    var netEl = document.getElementById('out-net');
+    netEl.textContent = (net >= 0 ? '+' : '') + fmt(net) + '/mo';
+    netEl.classList.toggle('loss', net < 0);
+    // Snapshot context: what period and user count this row represents.
+    var periodTitle = (
+      period === 'grace'      ? 'snapshot at M1–M2'  :
+      period === 'drawdown'   ? 'snapshot at M3'     :
+      period === 'drawdown45' ? 'snapshot at M4–M5'  :
+      period === 'steady'     ? 'snapshot at M13+'   : '');
+    document.getElementById('out-net-sub').textContent =
+      periodTitle + ' · ' + users.toLocaleString() + ' active users';
+
+    document.getElementById('out-margin').textContent =
+      (margin*100).toFixed(1) + '%';
+    document.getElementById('out-arpu').textContent =
+      '$' + arpu.toFixed(2);
+    document.getElementById('out-vault-pu').textContent =
+      '$' + v_pu.toFixed(2);
+  }
+
+  usersSlider.addEventListener('input', calc);
+  volSlider.addEventListener('input', calc);
+  calc();
+
+  // ─── ACCEPT OFFER ───
+  window.confirmAcceptOffer = function(){
+    var accepted = confirm(
+      "Are you sure you want to accept this partnership offer?\n\n" +
+      "This will record your acceptance and today’s date in Vault's system."
+    );
+    if(!accepted) return false;
+
+    var btn = document.getElementById('accept-offer-btn');
+    var hint = document.getElementById('accept-hint');
+    var urlDealId = new URLSearchParams(window.location.search).get('deal_id');
+    var dealId = urlDealId || btn.getAttribute('data-deal-id');
+
+    var webhookUrl =
+      'https://flow.zoho.com/912813070/flow/webhook/incoming' +
+      '?zapikey=1001.4fddaaf8e661a0dbfe54fd263b5687d5.499b8aed0a21e71d222b54e7c5cb8f5a' +
+      '&isdebug=false';
+
+    if(!dealId){
+      showAcceptResult(false, 'Missing deal ID. Please contact your Vault account manager.');
+      return false;
+    }
+
+    fetch(webhookUrl, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:'deal_id=' + encodeURIComponent(dealId)
+    }).then(function(){
+      showAcceptResult(true, 'Your acceptance has been recorded. Thank you!');
+    }).catch(function(err){
+      showAcceptResult(false, 'Unable to record acceptance. Please email juliana.gubacheva@vault.ist');
+      console.error(err);
+    });
+
+    btn.style.opacity = '0.5';
+    btn.style.pointerEvents = 'none';
+    hint.textContent = 'Processing...';
+    return false;
+  };
+
+  window.showAcceptResult = function(ok, message){
+    var btn = document.getElementById('accept-offer-btn');
+    var resultBox = document.getElementById('accept-result');
+    var hint = document.getElementById('accept-hint');
+    resultBox.style.display = 'block';
+    resultBox.innerHTML = (ok
+      ? '<div style="padding:16px 20px;background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.3);border-radius:12px;color:#D4A843;font-weight:600;font-size:14px">✓ ' + message + '</div>'
+      : '<div style="padding:16px 20px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;color:#ef4444;font-weight:600;font-size:14px">✗ ' + message + '</div>');
+    if(ok){ btn.style.display = 'none'; hint.style.display = 'none'; }
+  };
+
+})();
+</script>
+</body>
+</html>
