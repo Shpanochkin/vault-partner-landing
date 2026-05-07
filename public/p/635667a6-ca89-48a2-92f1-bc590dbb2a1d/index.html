@@ -146,21 +146,19 @@ body{
 .page-footer-brand{font-family:'DM Serif Display',serif;font-size:20px;color:rgba(255,255,255,.55);letter-spacing:.02em;margin-bottom:10px}
 .page-footer-meta{font-size:11px;color:var(--dimmer);letter-spacing:.06em;line-height:1.7}
 
-.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:18px}
-.table-scroll::-webkit-scrollbar{height:6px}
-.table-scroll::-webkit-scrollbar-track{background:transparent}
-.table-scroll::-webkit-scrollbar-thumb{background:var(--gold-border);border-radius:3px}
-.save{min-width:560px}
-.ref{min-width:480px}
 @media (max-width:640px){
-  .save td,.ref td{padding:10px 12px;font-size:12.5px}
-  .save thead th,.ref thead th{padding:10px 12px 8px;font-size:10px;letter-spacing:.08em}
-  .save td.line small{font-size:10px}
+  .save td,.ref td{padding:11px 10px;font-size:12.5px}
+  .save thead th,.ref thead th{padding:11px 10px 8px;font-size:10px;letter-spacing:.06em}
+  .save td.line small{font-size:10px;display:block}
   .save td.now{font-size:14px}
+  /* Hide STANDARD RATE column on mobile — user sees Line / May offer / Saved (3 cols fit) */
+  .save thead th:nth-child(2),
+  .save tbody td:nth-child(2){display:none}
   .setup-grid{grid-template-columns:1fr}
   .countdown-num{font-size:28px}
-  .countdown-unit{min-width:44px}
+  .countdown-unit{min-width:42px}
   .countdown{padding:14px 16px;gap:8px}
+  .countdown-sep{font-size:26px}
 }
 </style>
 </head>
@@ -211,7 +209,7 @@ body{
     <h2 class="s-title">$15,000 off the standard rate</h2>
     <p class="s-sub">Vault's standard Turnkey setup is $40,000. The May offer drops it to $25,000, locked at acceptance.</p>
 
-    <div class="card table-scroll" style="padding:0">
+    <div class="card" style="padding:0;overflow:hidden">
       <table class="save">
         <thead>
           <tr>
@@ -260,7 +258,7 @@ body{
     <h2 class="s-title">The full Vault Turnkey solution</h2>
     <p class="s-sub">Custom branded virtual cards, end-user KYC, FX, card top-up, ATM, 3D-Secure authentication. SEPA and SWIFT for fiat off-ramp. Apple Pay and Google Pay tokenisation. Everything Vault offers, on one agreement.</p>
 
-    <div class="card table-scroll" style="padding:0">
+    <div class="card" style="padding:0;overflow:hidden">
       <table class="ref">
         <thead><tr><th>Line</th><th class="num">Vault charges Mundpay</th></tr></thead>
         <tbody>
