@@ -162,8 +162,34 @@ body{
 .page-footer-meta{font-size:11px;color:var(--dimmer);letter-spacing:.06em;line-height:1.7}
 
 @media (max-width:640px){
-  .diff td,.ref td{padding:12px 10px;font-size:13px}
-  .setup-grid{grid-template-columns:1fr}
+  body{font-size:14px}
+  .page{padding:32px 14px 56px}
+  .hdr{padding:32px 0 48px}
+  .hdr-logos{gap:14px;margin-bottom:32px}
+  .hdr-logos svg{height:24px}
+  .hdr-logos span[style*="font-size:30px"]{font-size:24px !important}
+  .hdr h1{font-size:32px}
+  .hdr-sub{font-size:14px}
+  .hdr-meta{font-size:10px;padding:6px 12px}
+  .section{margin-bottom:40px}
+  .s-title{font-size:22px}
+  .s-sub{font-size:13px}
+  .card{padding:0}
+  .diff td,.ref td,.save td{padding:10px 8px;font-size:12px}
+  .diff thead th,.ref thead th,.save thead th{padding:10px 8px 6px;font-size:9px}
+  .diff td.line small{display:none}
+  .diff td.was{font-size:11px}
+  .diff td.now{font-size:13px}
+  .diff td.delta,.save td.delta{font-size:11px}
+  .ref td{font-size:12px}
+  .setup-grid{grid-template-columns:1fr;gap:10px}
+  .setup-item{padding:16px 18px}
+  .setup-item-val{font-size:20px}
+  .accept-wrap{margin:48px auto 0}
+  .accept-title{font-size:22px}
+  #accept-offer-btn{padding:16px 32px;font-size:14px}
+  .page-footer{padding:32px 8px 0;margin-top:40px}
+  .page-footer-meta{font-size:10px}
 }
 </style>
 </head>
@@ -189,14 +215,14 @@ body{
     </div>
 
     <h1>Updated Partnership <span class="accent gold-flow">Terms</span></h1>
-    <p class="hdr-sub">After your card-economics review, two pricing lines change. The rest of the May 1 offer stays as is.</p>
+    <p class="hdr-sub">Three Vault price cuts following your card-economics review. All other May 1 terms remain unchanged.</p>
     <div class="hdr-meta">Prepared for Cheelee &nbsp;·&nbsp; 7 May 2026 &nbsp;·&nbsp; Valid until 31 May 2026</div>
   </header>
 
   <!-- ── WHAT CHANGED ── -->
   <section class="section">
     <div class="s-label">Section 1. What changed</div>
-    <h2 class="s-title">Two pricing adjustments</h2>
+    <h2 class="s-title">Three pricing adjustments</h2>
     <p class="s-sub">These are the only commercial moves vs the May 1 offer. Everything else carries forward unchanged.</p>
 
     <div class="card" style="padding:0;overflow:hidden">
@@ -222,6 +248,12 @@ body{
             <td class="now">$2.50</td>
             <td class="delta">−50%</td>
           </tr>
+          <tr>
+            <td class="line">Virtual Card Issuance<small>one-time, per virtual card emitted</small></td>
+            <td class="was">$1.50</td>
+            <td class="now">$1.20</td>
+            <td class="delta">−20%</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -246,27 +278,27 @@ body{
         <tbody>
           <tr>
             <td>Year 1</td>
-            <td class="num">$201,985</td>
-            <td class="num">$145,210</td>
-            <td class="num delta">−$56,775</td>
+            <td class="num">$218,353</td>
+            <td class="num">$154,804</td>
+            <td class="num delta">−$63,549</td>
           </tr>
           <tr>
             <td>Year 2</td>
-            <td class="num">$588,217</td>
-            <td class="num">$325,254</td>
-            <td class="num delta">−$262,963</td>
+            <td class="num">$628,417</td>
+            <td class="num">$357,414</td>
+            <td class="num delta">−$271,003</td>
           </tr>
           <tr>
             <td>Year 3</td>
-            <td class="num">$1,058,686</td>
-            <td class="num">$557,530</td>
-            <td class="num delta">−$501,156</td>
+            <td class="num">$1,122,671</td>
+            <td class="num">$608,718</td>
+            <td class="num delta">−$513,953</td>
           </tr>
           <tr>
             <td>3-year total</td>
-            <td class="num">$1,848,888</td>
-            <td class="num">$1,027,994</td>
-            <td class="num delta">−$820,894</td>
+            <td class="num">$1,969,441</td>
+            <td class="num">$1,120,936</td>
+            <td class="num delta">−$848,505</td>
           </tr>
         </tbody>
       </table>
@@ -280,7 +312,7 @@ body{
   <section class="section">
     <div class="s-label">Section 3. Full updated terms</div>
     <h2 class="s-title">Reference: complete tariff</h2>
-    <p class="s-sub">For your records. <strong style="color:var(--gold-bright)">Highlighted lines</strong> are the two updates from Section 1; everything else carries forward from the May 1 offer.</p>
+    <p class="s-sub">For your records. <strong style="color:var(--gold-bright)">Highlighted lines</strong> are the three updates from Section 1; everything else carries forward from the May 1 offer.</p>
 
     <div class="card" style="padding:0;overflow:hidden">
       <table class="ref">
@@ -318,7 +350,7 @@ body{
           <tr><td class="line">Chargeback / Dispute</td><td class="val">$35</td></tr>
 
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">Card emission (one-time per card)</td></tr>
-          <tr><td class="line">Virtual Card</td><td class="val">$1.20</td></tr>
+          <tr><td class="line"><strong style="color:var(--gold-bright)">Virtual Card</strong></td><td class="val changed">$1.20</td></tr>
           <tr><td class="line">Physical Card</td><td class="val">$15</td></tr>
           <tr><td class="line">Metal Card</td><td class="val">$100</td></tr>
         </tbody>
