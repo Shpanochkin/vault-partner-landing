@@ -139,6 +139,18 @@ body{
 .page-footer-brand{font-family:'DM Serif Display',serif;font-size:20px;color:rgba(255,255,255,.55);letter-spacing:.02em;margin-bottom:10px}
 .page-footer-meta{font-size:11px;color:var(--dimmer);letter-spacing:.06em;line-height:1.7}
 
+.paid-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  margin-left:8px;padding:3px 9px;
+  background:rgba(52,211,153,.12);
+  color:var(--green);
+  border:1px solid rgba(52,211,153,.32);
+  border-radius:100px;
+  font-size:10px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  vertical-align:middle;
+  white-space:nowrap;
+}
 @media (max-width:640px){
   .save td,.ref td{padding:11px 10px;font-size:12.5px}
   .save thead th,.ref thead th{padding:11px 10px 8px;font-size:10px;letter-spacing:.06em}
@@ -261,7 +273,7 @@ body{
         <tbody>
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">Setup &amp; one-time</td></tr>
           <tr><td class="line">Setup Fee (May offer, covers both products)</td><td class="val promo">$25,000</td></tr>
-          <tr><td class="line">KYB Fee (one-time)</td><td class="val">$500</td></tr>
+          <tr><td class="line">KYB Fee (one-time) <span class="paid-badge">✓ Paid &amp; cleared</span></td><td class="val">$500</td></tr>
           <tr><td class="line">Security Deposit</td><td class="val">$0</td></tr>
 
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">Monthly platform fee</td></tr>
@@ -314,9 +326,9 @@ body{
         <div class="setup-item-body">Locked at acceptance. Covers integration for both GUAP Network and Kowrii under one agreement. Paid alongside KYB. Non-refundable.</div>
       </div>
       <div class="setup-item">
-        <div class="setup-item-label">KYB fee</div>
-        <div class="setup-item-val">$500<small>One-time, on acceptance</small></div>
-        <div class="setup-item-body">Compliance verification on Kowrii LLC (parent legal entity). Non-refundable if KYB returns negative.</div>
+        <div class="setup-item-label">KYB fee <span class="paid-badge">✓ Paid</span></div>
+        <div class="setup-item-val">$500<small style="color:var(--green)">Already paid and cleared</small></div>
+        <div class="setup-item-body">Compliance verification on Kowrii LLC (parent legal entity). Done. No further action needed on this line.</div>
       </div>
       <div class="setup-item">
         <div class="setup-item-label">Grace period</div>
