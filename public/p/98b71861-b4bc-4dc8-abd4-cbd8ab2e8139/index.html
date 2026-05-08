@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
-<title>Vault × InFlux Technologies — Limited May Offer</title>
+<title>Vault × InFlux Technologies — Partnership Terms</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -28,7 +28,6 @@ body{
   0%,100%{box-shadow:0 0 0 0 rgba(212,168,67,.6),0 0 30px rgba(212,168,67,.35)}
   50%{box-shadow:0 0 0 14px rgba(212,168,67,0),0 0 30px rgba(212,168,67,.5)}
 }
-@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
 .gold-flow{
   background:linear-gradient(90deg,var(--gold) 0%,var(--gold-bright) 25%,#FFE7A8 50%,var(--gold-bright) 75%,var(--gold) 100%);
   background-size:300% 300%;
@@ -44,19 +43,11 @@ body{
   opacity:.55;filter:blur(20px);pointer-events:none;z-index:0;
 }
 .page{max-width:1100px;margin:0 auto;padding:48px 24px 96px;position:relative}
-.hdr{position:relative;text-align:center;padding:48px 0 120px}
+.hdr{position:relative;text-align:center;padding:60px 0 80px}
 .section:first-of-type{margin-top:24px}
-.hdr-logos{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:32px;position:relative;z-index:2;flex-wrap:wrap}
+.hdr-logos{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:40px;position:relative;z-index:2;flex-wrap:wrap}
 .hdr-logos svg{height:32px;width:auto;opacity:.85}
 .hdr-x{font-size:18px;color:var(--gold);font-weight:300}
-.hdr-promo-badge{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:11px;color:var(--gold-bright);letter-spacing:.18em;text-transform:uppercase;
-  padding:8px 16px;border-radius:100px;
-  background:rgba(212,168,67,.12);border:1px solid var(--gold-border);
-  margin-bottom:24px;position:relative;z-index:2;font-weight:600;
-}
-.hdr-promo-dot{width:8px;height:8px;border-radius:50%;background:var(--gold-bright);animation:pulseDot 1.6s ease-in-out infinite}
 .hdr h1{
   font-family:'DM Serif Display',serif;
   font-size:clamp(36px,5.5vw,64px);font-weight:400;line-height:1.1;letter-spacing:-.02em;
@@ -64,24 +55,11 @@ body{
 }
 .hdr .accent{color:var(--gold-bright);font-style:italic}
 .hdr-sub{font-size:16px;color:var(--dim);max-width:620px;margin:0 auto;line-height:1.55;position:relative;z-index:2}
-
-.countdown{
-  display:inline-flex;align-items:flex-start;gap:14px;
-  margin-top:32px;padding:20px 28px;
-  background:rgba(212,168,67,.06);
-  border:1px solid var(--gold-border);
-  border-radius:18px;position:relative;z-index:2;
-}
-.countdown-label-top{font-size:10px;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;display:block;margin-bottom:8px;font-weight:600}
-.countdown-row{display:flex;align-items:flex-start;gap:14px}
-.countdown-unit{display:flex;flex-direction:column;align-items:center;min-width:54px}
-.countdown-num{font-family:'DM Serif Display',serif;font-size:34px;color:var(--gold-bright);line-height:1;font-variant-numeric:tabular-nums}
-.countdown-label{font-size:10px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
-.countdown-sep{font-size:32px;color:rgba(212,168,67,.25);align-self:flex-start;margin-top:-2px;line-height:1}
-@media (max-width:520px){
-  .countdown{padding:14px 18px}
-  .countdown-num{font-size:26px}
-  .countdown-unit{min-width:42px}
+.hdr-meta{
+  margin-top:28px;display:inline-flex;align-items:center;gap:14px;
+  font-size:12px;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--gold-border);padding:8px 16px;border-radius:100px;
+  background:var(--gold-pale);position:relative;z-index:2;
 }
 
 .section{max-width:880px;margin:0 auto 64px;position:relative;z-index:2}
@@ -89,19 +67,6 @@ body{
 .s-title{font-family:'DM Serif Display',serif;font-size:clamp(26px,3.4vw,36px);font-weight:400;letter-spacing:-.015em;margin-bottom:14px;line-height:1.2}
 .s-sub{font-size:15px;color:var(--dim);line-height:1.6;margin-bottom:32px;max-width:680px}
 .card{background:var(--sheet);border:1px solid var(--sheet-line);border-radius:18px;padding:28px 32px;margin-bottom:18px}
-
-.save{width:100%;border-collapse:collapse;font-size:14px}
-.save thead th{padding:14px 18px 10px;font-size:11px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--sheet-line);text-align:left}
-.save thead th.num{text-align:right}
-.save tbody tr{border-bottom:1px solid var(--sheet-line)}
-.save tbody tr:last-child{border-bottom:none;background:rgba(212,168,67,.06)}
-.save tbody tr:last-child td{font-weight:700;color:var(--gold-bright)}
-.save td{padding:18px;vertical-align:middle}
-.save td.line{font-weight:500;color:#fff}
-.save td.line small{display:block;font-size:11px;color:var(--dimmer);font-weight:400;margin-top:4px}
-.save td.was{text-align:right;color:var(--dimmer);font-variant-numeric:tabular-nums;text-decoration:line-through;font-size:13px}
-.save td.now{text-align:right;color:var(--gold-bright);font-weight:700;font-variant-numeric:tabular-nums;font-size:16px}
-.save td.delta{text-align:right;color:var(--green);font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.02em}
 
 .ref{width:100%;border-collapse:collapse;font-size:13px}
 .ref thead th{padding:12px 16px 8px;font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--sheet-line);text-align:left}
@@ -111,7 +76,6 @@ body{
 .ref td{padding:11px 16px;vertical-align:middle}
 .ref td.line{color:#fff}
 .ref td.val{text-align:right;font-variant-numeric:tabular-nums;color:#fff;font-weight:500}
-.ref td.val.promo{color:var(--gold-bright);font-weight:700}
 
 .setup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:8px}
 .setup-item{background:var(--sheet);border:1px solid var(--sheet-line);border-radius:14px;padding:20px 22px}
@@ -133,36 +97,27 @@ body{
 #accept-offer-btn:hover{transform:translateY(-2px)}
 #accept-offer-btn:active{transform:translateY(0)}
 #accept-hint{font-size:12px;color:var(--dimmer);margin-top:18px}
-#accept-expired{display:none;padding:18px 32px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;color:#ef4444;font-weight:600;font-size:14px}
 
 .page-footer{text-align:center;padding:48px 16px 0;border-top:1px solid var(--sheet-line);margin-top:64px}
 .page-footer-brand{font-family:'DM Serif Display',serif;font-size:20px;color:rgba(255,255,255,.55);letter-spacing:.02em;margin-bottom:10px}
 .page-footer-meta{font-size:11px;color:var(--dimmer);letter-spacing:.06em;line-height:1.7}
 
 .product-pair{
-  display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0 18px;
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0 22px;
 }
 .product-pair > div{
   background:var(--sheet);border:1px solid var(--sheet-line);border-radius:14px;
-  padding:18px 20px;
+  padding:20px 22px;
 }
-.product-pair-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold-bright);margin-bottom:6px;letter-spacing:-.01em}
-.product-pair-sub{font-size:12px;color:var(--dim);line-height:1.55}
+.product-pair-name{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold-bright);margin-bottom:8px;letter-spacing:-.01em}
+.product-pair-sub{font-size:13px;color:var(--dim);line-height:1.55}
+.product-pair-meta{font-size:11px;color:var(--dimmer);margin-top:10px;letter-spacing:.04em;text-transform:uppercase}
 @media (max-width:640px){.product-pair{grid-template-columns:1fr}}
 
 @media (max-width:640px){
-  .save td,.ref td{padding:11px 10px;font-size:12.5px}
-  .save thead th,.ref thead th{padding:11px 10px 8px;font-size:10px;letter-spacing:.06em}
-  .save td.line small{font-size:10px;display:block}
-  .save td.now{font-size:14px}
-  /* Hide STANDARD RATE column on mobile */
-  .save thead th:nth-child(2),
-  .save tbody td:nth-child(2){display:none}
+  .ref td{padding:11px 10px;font-size:12.5px}
+  .ref thead th{padding:11px 10px 8px;font-size:10px;letter-spacing:.06em}
   .setup-grid{grid-template-columns:1fr}
-  .countdown-num{font-size:28px}
-  .countdown-unit{min-width:42px}
-  .countdown{padding:14px 16px;gap:8px}
-  .countdown-sep{font-size:26px}
   .hdr-logos{gap:14px}
   .hdr-logos svg{height:26px}
 }
@@ -188,109 +143,51 @@ body{
       <span style="font-family:'DM Serif Display',serif;font-size:26px;color:#fff;letter-spacing:-.01em;line-height:1.1">Zelcore<span style="color:var(--gold-bright);font-style:italic">&nbsp;+&nbsp;</span>SSP&nbsp;Wallet</span>
     </div>
 
-    <div class="hdr-promo-badge"><span class="hdr-promo-dot"></span>Limited May Offer</div>
+    <h1>Cards for InFlux Technologies,<br><span class="accent gold-flow">across both products.</span></h1>
+    <p class="hdr-sub">A single Vault agreement covering Zelcore (consumer wallet, 200K+ users) and SSP Wallet (enterprise multisig). Custom branded cards, end-user KYC, FX, ATM, banking. Same setup, same platform fee, deployed on both products under InFlux Technologies LLC.</p>
 
-    <h1>Cards for InFlux Technologies,<br><span class="accent gold-flow">at a discount.</span></h1>
-    <p class="hdr-sub">$15,000 off Vault's standard setup, plus two months grace and no minimum commitment. One agreement covers both Zelcore (200K+ users) and SSP Wallet under InFlux Technologies LLC. Available through 31 May 2026 only.</p>
-
-    <div class="countdown" id="countdown">
-      <div>
-        <div class="countdown-label-top">Offer expires in</div>
-        <div class="countdown-row">
-          <div class="countdown-unit"><div class="countdown-num" id="cd-d">--</div><div class="countdown-label">days</div></div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit"><div class="countdown-num" id="cd-h">--</div><div class="countdown-label">hours</div></div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit"><div class="countdown-num" id="cd-m">--</div><div class="countdown-label">min</div></div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit"><div class="countdown-num" id="cd-s">--</div><div class="countdown-label">sec</div></div>
-        </div>
-      </div>
+    <div class="hdr-meta">
+      <span>Issued 8 May 2026</span>
+      <span style="opacity:.4">·</span>
+      <span>Valid 30 days</span>
     </div>
   </header>
 
   <section class="section">
-    <div class="s-label">Section 1. The discount</div>
-    <h2 class="s-title">$15,000 off the standard rate</h2>
-    <p class="s-sub">Vault's standard Turnkey setup is $40,000 per product. The May offer drops it to $25,000, locked at acceptance, and one setup covers both Zelcore and SSP Wallet. No second setup for the second product.</p>
-
-    <div class="card" style="padding:0;overflow:hidden">
-      <table class="save">
-        <thead>
-          <tr>
-            <th>Line</th>
-            <th class="num">Standard rate</th>
-            <th class="num">May offer</th>
-            <th class="num">Saved</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="line">Setup fee<small>One-time, paid alongside KYB</small></td>
-            <td class="was">$40,000</td>
-            <td class="now">$25,000</td>
-            <td class="delta">−$15,000</td>
-          </tr>
-          <tr>
-            <td class="line">Two-product coverage<small>Cards in both Zelcore and SSP Wallet</small></td>
-            <td class="was">2× setup</td>
-            <td class="now">1× setup</td>
-            <td class="delta">Single agreement</td>
-          </tr>
-          <tr>
-            <td class="line">Grace period<small>Months without platform fee</small></td>
-            <td class="was">0 mo</td>
-            <td class="now">2 mo</td>
-            <td class="delta">M1, M2 free</td>
-          </tr>
-          <tr>
-            <td class="line">Minimum commitment<small>Volume guarantees, KPI floors</small></td>
-            <td class="was">Required</td>
-            <td class="now">None</td>
-            <td class="delta">No KPI lock</td>
-          </tr>
-          <tr>
-            <td>Total upfront cash advantage</td>
-            <td class="num"></td>
-            <td class="num"></td>
-            <td class="num delta">−$15,000 + 2 mo grace</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="font-size:12px;color:var(--dimmer);margin-top:14px;line-height:1.6">
-      Offer is valid only if accepted by 31 May 2026 23:59 UTC. After expiry the standard $40,000 setup applies and coverage for the second product requires a separate agreement.
-    </p>
-  </section>
-
-  <section class="section">
-    <div class="s-label">Section 2. What's included</div>
-    <h2 class="s-title">The full Vault Turnkey solution, across both products</h2>
-    <p class="s-sub">Custom branded virtual and physical cards, end-user KYC, FX, card top-up, ATM, 3D-Secure authentication. SEPA and SWIFT for fiat off-ramp. Apple Pay and Google Pay tokenisation. Everything Vault offers, on one agreement, deployed across Zelcore and SSP Wallet.</p>
+    <div class="s-label">Section 1. Scope</div>
+    <h2 class="s-title">Two products, one agreement</h2>
+    <p class="s-sub">InFlux Technologies LLC (Delaware) is the contracting entity. The terms below cover both Zelcore and SSP Wallet under a single setup, single platform fee, and a single KYB on the parent. No separate agreement when the second product launches.</p>
 
     <div class="product-pair">
       <div>
         <div class="product-pair-name">Zelcore</div>
-        <div class="product-pair-sub">Consumer multi-asset wallet. 200K+ existing users, organic, NA/EU dominant. Custom branded cards via API + Dashboard.</div>
+        <div class="product-pair-sub">Consumer multi-asset wallet. 200K+ existing users, organic, NA/EU dominant. Launched as API + Dashboard with custom branded virtual and physical cards.</div>
+        <div class="product-pair-meta">Custom branded · API + Dashboard</div>
       </div>
       <div>
         <div class="product-pair-name">SSP Wallet</div>
-        <div class="product-pair-sub">Enterprise multisig wallet, ~$3M AUM. Standard cards via API integration only. Same agreement, no extra setup.</div>
+        <div class="product-pair-sub">Enterprise multisig wallet, ~$3M AUM. Launched as API integration only with standard cards. Same agreement, no extra setup.</div>
+        <div class="product-pair-meta">Standard · API only</div>
       </div>
     </div>
+  </section>
+
+  <section class="section">
+    <div class="s-label">Section 2. Tariff</div>
+    <h2 class="s-title">Vault charges InFlux Technologies LLC</h2>
+    <p class="s-sub">Standard SMB tariff. One platform fee on the combined volume across both products, with the waiver kicking in once combined transactional revenue covers Vault's run cost.</p>
 
     <div class="card" style="padding:0;overflow:hidden">
       <table class="ref">
-        <thead><tr><th>Line</th><th class="num">Vault charges InFlux Technologies LLC</th></tr></thead>
+        <thead><tr><th>Line</th><th class="num">Rate</th></tr></thead>
         <tbody>
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">Setup &amp; one-time</td></tr>
-          <tr><td class="line">Setup Fee (May offer, covers both products)</td><td class="val promo">$25,000</td></tr>
+          <tr><td class="line">Setup Fee (covers both products)</td><td class="val">$40,000</td></tr>
           <tr><td class="line">KYB Fee (one-time, on InFlux Technologies LLC)</td><td class="val">$500</td></tr>
           <tr><td class="line">Security Deposit</td><td class="val">$0</td></tr>
 
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">Monthly platform fee</td></tr>
-          <tr><td class="line">Grace period (M1, M2)</td><td class="val promo">$0</td></tr>
-          <tr><td class="line">M3</td><td class="val">$3,000</td></tr>
+          <tr><td class="line">M1 to M3</td><td class="val">$3,000</td></tr>
           <tr><td class="line">M4 to M6</td><td class="val">$5,000</td></tr>
           <tr><td class="line">M7 to M12</td><td class="val">$7,000</td></tr>
           <tr><td class="line">M13 onwards</td><td class="val">$8,000</td></tr>
@@ -330,13 +227,13 @@ body{
   <section class="section">
     <div class="s-label">Section 3. Onboarding</div>
     <h2 class="s-title">From acceptance to go-live</h2>
-    <p class="s-sub">Setup fee and KYB are paid on offer acceptance. KYB clears in days. Integration runs in parallel for both products. Grace covers the first two months after launch.</p>
+    <p class="s-sub">Setup fee and KYB are paid on offer acceptance. KYB clears in days. Integration runs in parallel for both products through the same Vault interface.</p>
 
     <div class="setup-grid">
       <div class="setup-item">
         <div class="setup-item-label">Setup fee</div>
-        <div class="setup-item-val">$25,000<small>One-time, May offer rate</small></div>
-        <div class="setup-item-body">Locked at acceptance. Covers integration for both Zelcore and SSP Wallet under one agreement. Paid alongside KYB. Non-refundable.</div>
+        <div class="setup-item-val">$40,000<small>One-time</small></div>
+        <div class="setup-item-body">Covers integration for both Zelcore and SSP Wallet under one agreement. Paid alongside KYB. Non-refundable.</div>
       </div>
       <div class="setup-item">
         <div class="setup-item-label">KYB fee</div>
@@ -344,35 +241,34 @@ body{
         <div class="setup-item-body">Compliance verification on the parent legal entity. Covers both products in scope. Pass-through to SumSub.</div>
       </div>
       <div class="setup-item">
-        <div class="setup-item-label">Grace period</div>
-        <div class="setup-item-val">M1, M2<small>Post go-live, no platform fee</small></div>
-        <div class="setup-item-body">No platform fee for the first two months after launch. Ladder kicks in from M3.</div>
+        <div class="setup-item-label">Platform fee</div>
+        <div class="setup-item-val">$3K → $8K<small>Y1 average ~$5,500/mo</small></div>
+        <div class="setup-item-body">Ladder: $3K M1-3, $5K M4-6, $7K M7-12, $8K from M13. Waived in any month where combined tx-revenue across both products exceeds $16,000.</div>
       </div>
       <div class="setup-item">
-        <div class="setup-item-label">No commitment</div>
-        <div class="setup-item-val">No KPI<small>Volume guarantees waived</small></div>
-        <div class="setup-item-body">No minimum user count or transaction commitment. Pay-as-you-grow across both products.</div>
+        <div class="setup-item-label">Commitment</div>
+        <div class="setup-item-val">No KPI lock<small>Pay-as-you-grow</small></div>
+        <div class="setup-item-body">No minimum user count or transaction commitment. Volume guarantees waived.</div>
       </div>
       <div class="setup-item">
-        <div class="setup-item-label">Combined waiver trigger</div>
-        <div class="setup-item-val">$16K / month<small>Combined tx-revenue across products</small></div>
+        <div class="setup-item-label">Combined waiver</div>
+        <div class="setup-item-val">$16K / month<small>Combined tx-revenue, both products</small></div>
         <div class="setup-item-body">Once combined monthly transactional revenue from Zelcore and SSP Wallet crosses $16,000, the platform fee for that month is fully waived.</div>
       </div>
       <div class="setup-item">
         <div class="setup-item-label">Delivery</div>
         <div class="setup-item-val">~1 month<small>Integration to go-live</small></div>
-        <div class="setup-item-body">~1 month from setup-fee payment (paid after SLA signing) to first end-user on platform. Both products can integrate in parallel through the same Vault interface.</div>
+        <div class="setup-item-body">~1 month from setup-fee payment (paid after SLA signing) to first end-user on platform. Both products integrate in parallel through the same Vault interface.</div>
       </div>
     </div>
   </section>
 
   <section class="section" style="margin-bottom:0">
     <div class="accept-wrap">
-      <h2 class="accept-title gold-flow">Lock in the May rate</h2>
-      <p class="accept-sub">Click to record acceptance. Setup and KYB invoicing follows immediately. The $25,000 rate locks in only if you accept before the timer above hits zero.</p>
-      <a id="accept-offer-btn" data-deal-id="7197458000007427149" href="#" onclick="return confirmAcceptOffer()">Accept May Offer →</a>
+      <h2 class="accept-title gold-flow">Accept terms</h2>
+      <p class="accept-sub">Click to record acceptance. Setup and KYB invoicing follows immediately. The agreement covers both Zelcore and SSP Wallet under InFlux Technologies LLC.</p>
+      <a id="accept-offer-btn" data-deal-id="7197458000007427149" href="#" onclick="return confirmAcceptOffer()">Accept Terms →</a>
       <div id="accept-result" style="display:none;margin-top:24px"></div>
-      <div id="accept-expired">⏱ This offer expired on 31 May 2026. Please contact your Vault account manager for current rates.</div>
       <p id="accept-hint">Click to record acceptance</p>
     </div>
   </section>
@@ -380,7 +276,7 @@ body{
   <footer class="page-footer">
     <div class="page-footer-brand">vault</div>
     <div class="page-footer-meta">
-      Vault Group &nbsp;·&nbsp; Prepared for InFlux Technologies LLC (covers Zelcore + SSP Wallet) &nbsp;·&nbsp; Issued 8 May 2026 &nbsp;·&nbsp; Valid until 31 May 2026 &nbsp;·&nbsp; Confidential<br>
+      Vault Group &nbsp;·&nbsp; Prepared for InFlux Technologies LLC (covers Zelcore + SSP Wallet) &nbsp;·&nbsp; Issued 8 May 2026 &nbsp;·&nbsp; Valid 30 days &nbsp;·&nbsp; Confidential<br>
       Questions: <a href="mailto:juliana.gubacheva@vault.ist" style="color:var(--gold);text-decoration:none">juliana.gubacheva@vault.ist</a>
     </div>
   </footer>
@@ -388,53 +284,10 @@ body{
 </div>
 
 <script>
-(function(){
-  var DEADLINE = Date.UTC(2026, 4, 31, 23, 59, 59);
-  var dEl = document.getElementById('cd-d');
-  var hEl = document.getElementById('cd-h');
-  var mEl = document.getElementById('cd-m');
-  var sEl = document.getElementById('cd-s');
-  var btn = document.getElementById('accept-offer-btn');
-  var hint = document.getElementById('accept-hint');
-  var expired = document.getElementById('accept-expired');
-
-  function pad(n) { return n < 10 ? '0' + n : '' + n; }
-
-  function tick(){
-    var now = Date.now();
-    var diff = DEADLINE - now;
-    if (diff <= 0){
-      dEl.textContent = '00';
-      hEl.textContent = '00';
-      mEl.textContent = '00';
-      sEl.textContent = '00';
-      if (btn) {
-        btn.style.opacity = '0.4';
-        btn.style.pointerEvents = 'none';
-        btn.style.animation = 'none';
-      }
-      if (hint) hint.style.display = 'none';
-      if (expired) expired.style.display = 'inline-block';
-      clearInterval(timer);
-      return;
-    }
-    var days = Math.floor(diff / (1000*60*60*24));
-    var hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-    var minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
-    var seconds = Math.floor((diff % (1000*60)) / 1000);
-    dEl.textContent = pad(days);
-    hEl.textContent = pad(hours);
-    mEl.textContent = pad(minutes);
-    sEl.textContent = pad(seconds);
-  }
-  tick();
-  var timer = setInterval(tick, 1000);
-})();
-
 window.confirmAcceptOffer = function(){
   var accepted = confirm(
-    "Accept the May offer for InFlux Technologies?\n\n" +
-    "This locks the $25,000 setup rate at today's date and triggers KYB invoicing in Vault's system. The agreement covers both Zelcore and SSP Wallet under InFlux Technologies LLC."
+    "Accept partnership terms for InFlux Technologies?\n\n" +
+    "This locks the agreement at today's date and triggers KYB invoicing in Vault's system. The agreement covers both Zelcore and SSP Wallet under InFlux Technologies LLC."
   );
   if(!accepted) return false;
 
@@ -458,7 +311,7 @@ window.confirmAcceptOffer = function(){
     headers:{'Content-Type':'application/x-www-form-urlencoded'},
     body:'deal_id=' + encodeURIComponent(dealId)
   }).then(function(){
-    showAcceptResult(true, 'Acceptance recorded. The May rate is now locked. Thank you!');
+    showAcceptResult(true, 'Acceptance recorded. Thank you!');
   }).catch(function(err){
     showAcceptResult(false, 'Unable to record acceptance. Please email juliana.gubacheva@vault.ist');
     console.error(err);
