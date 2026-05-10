@@ -22,6 +22,55 @@ body{
   --dim:rgba(255,255,255,.55);--dimmer:rgba(255,255,255,.32);
   --green:#34D399;--red:#EF4444;
 }
+
+/* ── NDA MODAL ────────────────────────────────────────────────── */
+#nda-overlay{
+  position:fixed;inset:0;background:rgba(9,7,3,.94);
+  backdrop-filter:blur(12px);z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+}
+#nda-overlay.hidden{display:none}
+#nda-card{
+  background:#0d0a04;border:1px solid var(--gold-border);
+  border-radius:20px;padding:48px;max-width:480px;width:100%;
+  text-align:center;
+}
+#nda-card .nda-logo{margin-bottom:28px}
+#nda-card h2{
+  font-family:'DM Serif Display',serif;
+  font-size:24px;font-weight:400;letter-spacing:-.02em;
+  color:var(--gold-bright);margin-bottom:14px;
+}
+#nda-card p{
+  font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.7;
+  margin-bottom:28px;
+}
+.nda-check-row{
+  display:flex;align-items:flex-start;gap:12px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:16px;margin-bottom:24px;text-align:left;
+  cursor:pointer;
+}
+.nda-check-row input[type="checkbox"]{
+  width:18px;height:18px;flex-shrink:0;margin-top:1px;
+  accent-color:var(--gold);cursor:pointer;
+}
+.nda-check-row span{
+  font-size:13px;color:rgba(255,255,255,.75);line-height:1.55;cursor:pointer;
+}
+#nda-btn{
+  width:100%;padding:14px 24px;border-radius:12px;border:none;
+  font-size:15px;font-weight:700;cursor:pointer;
+  background:rgba(212,168,67,.22);color:rgba(255,255,255,.4);
+  transition:background .2s,color .2s;
+}
+#nda-btn.enabled{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-bright) 100%);
+  color:#1a0e02;
+}
+#nda-btn.enabled:hover{filter:brightness(1.05)}
+
 @keyframes ringRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes goldShimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes pulseBtn{
@@ -78,6 +127,7 @@ body{
 .ref td.val{text-align:right;font-variant-numeric:tabular-nums;color:#fff;font-weight:500}
 
 .setup-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:8px}
+.setup-grid.two-by-two{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
 .setup-item{background:var(--sheet);border:1px solid var(--sheet-line);border-radius:14px;padding:20px 22px}
 .setup-item-label{font-size:11px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:8px}
 .setup-item-val{font-size:24px;font-weight:700;font-family:'DM Serif Display',serif;color:#fff;margin-bottom:6px;letter-spacing:-.01em}
@@ -127,13 +177,38 @@ body{
 @media (max-width:640px){
   .ref td{padding:11px 10px;font-size:12.5px}
   .ref thead th{padding:11px 10px 8px;font-size:10px;letter-spacing:.06em}
-  .setup-grid{grid-template-columns:1fr}
+  .setup-grid,.setup-grid.two-by-two{grid-template-columns:1fr}
   .hdr-logos{gap:14px}
   .hdr-logos svg{height:26px}
 }
 </style>
 </head>
 <body>
+
+<!-- ── NDA MODAL ──────────────────────────────────────────────── -->
+<div id="nda-overlay">
+  <div id="nda-card">
+    <div class="nda-logo">
+      <svg width="444" height="103" viewBox="0 0 444 103" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:36px;width:auto;display:block;margin:0 auto">
+        <path d="M22.1745 10.5772L5.39993 27.2819C-1.78091 34.4328-1.80271 46.0201 5.35119 53.1977L35.7548 83.7024C60.1559 108.184 99.8897 108.259 124.383 83.8676L153.864 54.5093C161.064 47.3394 161.064 35.7147 153.864 28.5448L135.299 10.0573C127.842 2.6313 115.752 2.6313 108.295 10.0573L78.0101 40.2156L48.2477 10.5772C41.0478 3.40727 29.3744 3.40727 22.1745 10.5772Z" fill="#fff"/>
+        <path d="M152.936 50.6231C120.354 67.6287 89.8647 51.4447 78.011 40.2162L109.371 8.75349C116.378 1.72395 127.813 1.7859 134.742 8.89094L155.122 29.7878C161.289 36.1106 160.775 46.5314 152.936 50.6231Z" fill="rgba(255,255,255,.4)"/>
+        <path d="M236.028 82.356C235.51 83.7255 234.199 84.6315 232.734 84.6315H219.745C218.314 84.6315 217.026 83.7658 216.485 82.4412L195.642 31.3873C194.697 29.0712 196.401 26.5353 198.902 26.5353H210.394C211.867 26.5353 213.184 27.4525 213.696 28.8341L224.496 58.0125C225.071 59.5661 227.279 59.5377 227.814 57.9698L237.725 28.9195C238.212 27.4937 239.551 26.5353 241.058 26.5353H252.044C254.507 26.5353 256.209 28.9987 255.338 31.3021L236.028 82.356Z" fill="#fff"/>
+        <path d="M256.476 68.6171C256.476 66.0454 256.942 63.7075 257.755 61.7203C258.685 59.7331 259.964 57.9797 261.476 56.577C262.987 55.0574 264.847 53.8885 266.824 53.0702C268.917 52.135 271.126 51.4337 273.567 51.083L287.17 48.9789C288.681 48.7451 289.844 48.2776 290.425 47.5762C291.006 46.8748 291.355 46.0566 291.355 45.0045C291.355 43.2511 290.658 41.8484 289.146 40.5626C287.751 39.2767 285.658 38.6923 282.868 38.6923C279.729 38.6923 277.404 39.5105 275.66 41.2639C275.05 41.9205 274.539 42.6098 274.131 43.3319C273.071 45.2084 271.085 46.8346 268.974 46.4005L260.613 44.681C258.904 44.3296 257.687 42.7642 258.152 41.0827C258.476 39.9083 258.938 38.7158 259.499 37.5233C260.546 35.3024 262.173 33.1983 264.15 31.328C266.243 29.4577 268.8 27.9381 271.939 26.6522C275.078 25.3664 278.683 24.7819 282.984 24.7819C287.635 24.7819 291.588 25.3664 294.843 26.5353C298.098 27.8212 300.772 29.4577 302.749 31.4449C304.842 33.549 306.353 36.0037 307.167 38.6923C308.097 41.3808 308.562 44.3032 308.562 47.2255V75.6307C308.562 77.8517 308.678 79.8388 308.794 81.5922C308.994 83.0937 307.698 84.6315 306.183 84.6315H295.354C294.115 84.6315 293.119 83.8759 292.983 82.6443C292.867 81.5922 292.75 80.0726 292.75 78.0854C291.239 80.5402 289.03 82.5274 286.356 84.047C283.682 85.5666 280.31 86.268 276.474 86.268C273.334 86.268 270.428 85.8004 267.986 84.8653C265.545 83.8132 263.452 82.5274 261.708 80.8909C259.964 79.2544 258.685 77.3841 257.872 75.28C256.942 73.1759 256.476 70.9549 256.476 68.6171ZM280.775 73.4097C282.054 73.4097 283.333 73.2928 284.612 72.9421C285.891 72.5914 287.053 71.8901 287.984 71.0718C289.03 70.1367 289.844 68.9677 290.425 67.4481C291.006 65.9285 291.355 64.0582 291.355 61.8372V59.2656L280.426 61.019C278.566 61.3696 277.055 61.9541 275.776 63.0062C274.497 63.9413 273.916 65.4609 273.916 67.4481C273.916 68.9677 274.381 70.3704 275.427 71.5394C276.474 72.8252 278.334 73.4097 280.775 73.4097Z" fill="#fff"/>
+        <path d="M358.185 84.6315C356.541 84.6315 355.156 83.4634 355.008 81.826C354.892 80.5402 354.892 79.605 354.892 78.7868C353.381 81.2416 351.172 83.1119 348.265 84.1639C345.359 85.3328 342.336 85.9173 339.429 85.9173C335.941 85.9173 332.802 85.3328 330.128 84.047C327.338 82.8781 325.013 81.2416 323.153 79.1375C321.292 77.1503 319.897 74.6955 318.967 72.007C317.921 69.3184 317.456 66.3961 317.456 63.2399V30.0565C317.456 28.1118 319.032 26.5353 320.977 26.5353H331.606C333.551 26.5353 335.128 28.1118 335.128 30.0565V59.4993C335.128 62.3048 335.941 64.6427 337.453 66.6299C338.964 68.6171 341.289 69.5522 344.429 69.5522C347.335 69.5522 349.777 68.6171 351.521 66.7468C353.264 64.9934 354.078 62.5386 354.078 59.6162V30.0565C354.078 28.1118 355.655 26.5353 357.599 26.5353H368.229C370.174 26.5353 371.75 28.1118 371.75 30.0565V74.2279C371.75 76.9165 371.866 79.1375 371.983 81.0078C372.091 82.8561 370.54 84.6315 368.688 84.6315H358.185Z" fill="#fff"/>
+        <path d="M385.316 84.6315C383.371 84.6315 381.795 83.055 381.795 81.1104V3.52161C381.795 1.57695 383.371 0.000488281 385.316 0.000488281H395.945C397.89 0.000488281 399.467 1.57695 399.467 3.52161V81.1104C399.467 83.055 397.89 84.6315 395.945 84.6315H385.316Z" fill="#fff"/>
+        <path d="M432.002 26.5353H439.759C441.703 26.5353 443.28 28.1118 443.28 30.0565V38.5611C443.28 40.5057 441.703 42.0822 439.759 42.0822H432.002V63.8244C432.002 66.2792 432.584 67.7988 433.746 68.6171C434.909 69.4353 436.42 69.9029 438.397 69.9029C439.327 69.9029 440.257 69.786 441.071 69.6691C442.099 69.5215 443.047 70.2878 443.047 71.3261V81.5135C443.047 83.027 442.091 84.4028 440.648 84.8598C440.522 84.8996 440.392 84.9404 440.257 84.9822C438.746 85.4497 436.653 85.6835 433.863 85.6835C427.817 85.6835 423.05 84.047 419.679 80.6571C416.307 77.3841 414.563 72.8252 414.563 66.9805V42.0822H407.853C405.909 42.0822 404.332 40.5057 404.332 38.5611V29.4419C404.332 27.8367 405.633 26.5353 407.239 26.5353C410.261 26.5353 412.47 25.6002 413.982 23.8468C415.493 22.0934 416.191 19.7555 416.191 17.067V13.1069C416.191 11.1622 417.767 9.58577 419.712 9.58577H428.481C430.426 9.58577 432.002 11.1622 432.002 13.1069V26.5353Z" fill="#fff"/>
+      </svg>
+    </div>
+    <h2>Confidential — Prepared for Payaq</h2>
+    <p>This document contains a commercial partnership offer prepared exclusively for PAYAQ PAYMENT SYSTEM LTD. By continuing, you confirm you are an authorized representative and agree not to disclose these terms to third parties.</p>
+    <label class="nda-check-row">
+      <input type="checkbox" id="nda-agree">
+      <span>I am an authorized representative of Payaq and agree to maintain confidentiality</span>
+    </label>
+    <button id="nda-btn" disabled>View Offer</button>
+  </div>
+</div>
+
 <div class="page">
 
   <header class="hdr">
@@ -154,7 +229,7 @@ body{
     </div>
 
     <h1>Banking infrastructure for<br><span class="accent gold-flow">Payaq's retail flow.</span></h1>
-    <p class="hdr-sub">Single agreement covering KYC, dedicated IBANs, USDT-to-EUR conversion, and SEPA/SWIFT payouts. Built for Payaq's retail customers funding EU property purchases through crypto.</p>
+    <p class="hdr-sub">Single agreement covering KYC, dedicated IBANs, USDT-to-EUR conversion, and SEPA / SWIFT payouts. Built for Payaq's retail customers funding EU property purchases through crypto.</p>
 
     <div class="hdr-meta">
       <span>Issued 8 May 2026</span>
@@ -166,33 +241,33 @@ body{
   <section class="section">
     <div class="s-label">Section 1. Flow</div>
     <h2 class="s-title">How a single retail transaction runs</h2>
-    <p class="s-sub">Each retail customer of Payaq comes through a dedicated cycle. Vault provides the rails on every step. Volume and per-event pricing in Section 2 maps to this flow.</p>
+    <p class="s-sub">Each retail customer of Payaq runs through a dedicated cycle. Volume and per-event pricing in Section 2 maps to the steps below.</p>
 
     <div class="flow-grid">
       <div class="flow-step">
         <div class="flow-step-num">01</div>
         <div class="flow-step-name">KYC + AML</div>
-        <div class="flow-step-detail">SumSub enhanced verification, POF/SOF review</div>
+        <div class="flow-step-detail">Verification, POF / SOF, sanctions and PEP screening on the retail customer</div>
       </div>
       <div class="flow-step">
         <div class="flow-step-num">02</div>
         <div class="flow-step-name">IBAN issued</div>
-        <div class="flow-step-detail">Dedicated named IBAN provisioned via NOAH</div>
+        <div class="flow-step-detail">Dedicated named IBAN provisioned for the customer</div>
       </div>
       <div class="flow-step">
         <div class="flow-step-num">03</div>
         <div class="flow-step-name">USDT in</div>
-        <div class="flow-step-detail">Customer transfers stablecoin, Vault custody via Fireblocks</div>
+        <div class="flow-step-detail">Customer transfers stablecoin into Vault custody</div>
       </div>
       <div class="flow-step">
         <div class="flow-step-num">04</div>
         <div class="flow-step-name">FX to EUR</div>
-        <div class="flow-step-detail">USDT to EUR conversion routed through Interlace</div>
+        <div class="flow-step-detail">Stablecoin converted, EUR credited to the named IBAN</div>
       </div>
       <div class="flow-step">
         <div class="flow-step-num">05</div>
         <div class="flow-step-name">SEPA / SWIFT</div>
-        <div class="flow-step-detail">Payout to property seller from named account</div>
+        <div class="flow-step-detail">Payout to property seller from the named account</div>
       </div>
     </div>
   </section>
@@ -200,7 +275,7 @@ body{
   <section class="section">
     <div class="s-label">Section 2. Rate schedule</div>
     <h2 class="s-title">Vault charges Payaq</h2>
-    <p class="s-sub">Pricing splits across four buckets: one-time onboarding, monthly platform, per-customer, and transactional. The volume commitment and waiver mechanics are detailed in Section 3.</p>
+    <p class="s-sub">Pricing splits across four buckets: one-time onboarding, monthly platform, per-customer, and transactional. Volume commitment and waiver mechanics are detailed in Section 3.</p>
 
     <div class="card" style="padding:0;overflow:hidden">
       <table class="ref">
@@ -216,7 +291,6 @@ body{
           <tr><td class="line">Months 4-6 (Growth)</td><td class="val">$5,000 / mo</td></tr>
           <tr><td class="line">Months 7-12 (Scaling)</td><td class="val">$6,000 / mo</td></tr>
           <tr><td class="line">Month 13+ (Mature)</td><td class="val">$7,000 / mo</td></tr>
-          <tr><td class="line">Waiver: in any month with combined volume over €1,000,000, platform fee is fully waived</td><td class="val">€1,000,000</td></tr>
 
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">Per new retail customer (one-time)</td></tr>
           <tr><td class="line">Enhanced KYC</td><td class="val">$15 / user</td></tr>
@@ -230,7 +304,6 @@ body{
 
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">Per transfer (fixed + variable)</td></tr>
           <tr><td class="line">SEPA Out</td><td class="val">€5 + 0.5%</td></tr>
-          <tr><td class="line">SWIFT In</td><td class="val">$50 + 0.5%</td></tr>
           <tr><td class="line">SWIFT Out</td><td class="val">$50 + 0.5%</td></tr>
         </tbody>
       </table>
@@ -242,7 +315,7 @@ body{
     <h2 class="s-title">Commitment, tolerance, and shortfall</h2>
     <p class="s-sub">Payaq's stated volume commitment defines how the partnership scales. The mechanics below translate the commitment into measurable monthly terms with a tolerance band that accommodates ramp variability.</p>
 
-    <div class="setup-grid">
+    <div class="setup-grid two-by-two">
       <div class="setup-item">
         <div class="setup-item-label">Monthly volume commitment</div>
         <div class="setup-item-val">€500,000<small>Combined pay-in + pay-out, monthly</small></div>
@@ -256,51 +329,36 @@ body{
       <div class="setup-item">
         <div class="setup-item-label">Shortfall fee</div>
         <div class="setup-item-val">2.0% × gap<small>When actual &lt; €350,000</small></div>
-        <div class="setup-item-body">If monthly volume drops below €350,000, shortfall fee equals 2.0% of the gap to that threshold. Invoiced at month-end. Example: actual €200K means shortfall = 2.0% × (€350K - €200K) = €3,000.</div>
+        <div class="setup-item-body">If monthly volume drops below €350,000, shortfall fee equals 2.0% of the gap to that threshold. Invoiced at month-end. Example: actual €200K means shortfall = 2.0% × (€350K − €200K) = €3,000.</div>
       </div>
       <div class="setup-item">
         <div class="setup-item-label">Platform waiver</div>
         <div class="setup-item-val">€1,000,000<small>Monthly volume threshold</small></div>
         <div class="setup-item-body">In any month where combined volume exceeds €1,000,000, the monthly platform fee for that month is fully waived.</div>
       </div>
-      <div class="setup-item">
-        <div class="setup-item-label">No KPI lock</div>
-        <div class="setup-item-val">Flat fees<small>No revenue-share, no minimums beyond commitment</small></div>
-        <div class="setup-item-body">No additional volume guarantees, no transaction floor on top of the commitment, no revenue share. The schedule applies as-is to actual usage.</div>
-      </div>
-      <div class="setup-item">
-        <div class="setup-item-label">Onboarding charges</div>
-        <div class="setup-item-val">Single trigger<small>Setup + KYB on offer acceptance</small></div>
-        <div class="setup-item-body">Setup Fee and KYB Fee are invoiced together on offer acceptance. KYB clears in days. Integration follows immediately.</div>
-      </div>
     </div>
   </section>
 
   <section class="section">
     <div class="s-label">Section 4. Onboarding</div>
-    <h2 class="s-title">From acceptance to first transaction</h2>
-    <p class="s-sub">Setup and KYB invoicing trigger on acceptance. Integration with Vault's API runs in parallel with KYB clearance. First retail customer can be onboarded within ~1 month of setup payment.</p>
+    <h2 class="s-title">Path from acceptance to delivery</h2>
+    <p class="s-sub">Acceptance triggers the KYB process. Once the KYB clears, Vault prepares the SLA. After SLA signing and Setup + KYB payment, integration delivery begins. Timelines depend on how quickly documents and payments move on Payaq's side.</p>
 
     <div class="setup-grid">
       <div class="setup-item">
-        <div class="setup-item-label">Day 0</div>
-        <div class="setup-item-val">Acceptance<small>Setup + KYB invoiced</small></div>
-        <div class="setup-item-body">Click below to lock the rates. Setup ($25,000) and KYB ($500) invoiced same day.</div>
+        <div class="setup-item-label">Step 1. KYB</div>
+        <div class="setup-item-val">Compliance check<small>On PAYAQ PAYMENT SYSTEM LTD.</small></div>
+        <div class="setup-item-body">Vault sends the KYB form on offer acceptance. Payaq submits corporate documents and beneficial owner info. Vault reviews and clears. Speed depends on Payaq's document readiness.</div>
       </div>
       <div class="setup-item">
-        <div class="setup-item-label">Days 1-7</div>
-        <div class="setup-item-val">KYB<small>Compliance verification on Payaq legal entity</small></div>
-        <div class="setup-item-body">SumSub-led KYB on PAYAQ PAYMENT SYSTEM LTD. Cleared within days under MSB / FINTRAC framework.</div>
+        <div class="setup-item-label">Step 2. SLA + payment</div>
+        <div class="setup-item-val">Agreement<small>Signed after KYB clears</small></div>
+        <div class="setup-item-body">Vault prepares the SLA only after KYB is cleared. Once both parties sign, Setup ($25,000) and KYB ($500) are invoiced. Delivery does not begin until payment is received.</div>
       </div>
       <div class="setup-item">
-        <div class="setup-item-label">Weeks 1-4</div>
-        <div class="setup-item-val">Integration<small>API + IBAN provisioning</small></div>
-        <div class="setup-item-body">Vault API endpoints, NOAH IBAN provisioning, Interlace FX routing, Fireblocks custody. SLA signing in parallel.</div>
-      </div>
-      <div class="setup-item">
-        <div class="setup-item-label">Month 1</div>
-        <div class="setup-item-val">Go-live<small>First retail customer onboarded</small></div>
-        <div class="setup-item-body">First retail customer KYC'd, IBAN issued, transaction routed end-to-end. Platform fee tier kicks in from this point.</div>
+        <div class="setup-item-label">Step 3. Integration</div>
+        <div class="setup-item-val">Build &amp; go-live<small>Starts after payment</small></div>
+        <div class="setup-item-body">API endpoints, IBAN provisioning, FX routing and custody set up. First retail customer can be onboarded once integration is verified end-to-end.</div>
       </div>
     </div>
   </section>
@@ -308,7 +366,7 @@ body{
   <section class="section" style="margin-bottom:0">
     <div class="accept-wrap">
       <h2 class="accept-title gold-flow">Accept terms</h2>
-      <p class="accept-sub">Click to record acceptance. Setup and KYB invoicing follows immediately. The agreement covers all flows under PAYAQ PAYMENT SYSTEM LTD.</p>
+      <p class="accept-sub">Click to record acceptance. Vault sends the KYB form on the same day. Setup and KYB invoicing follow after KYB clearance and SLA signing.</p>
       <a id="accept-offer-btn" data-deal-id="7197458000006944071" href="#" onclick="return confirmAcceptOffer()">Accept Terms &rarr;</a>
       <div id="accept-result" style="display:none;margin-top:24px"></div>
       <p id="accept-hint">Click to record acceptance</p>
@@ -326,10 +384,40 @@ body{
 </div>
 
 <script>
+/* NDA gate — show once per session */
+(function(){
+  var overlay = document.getElementById('nda-overlay');
+  var checkbox = document.getElementById('nda-agree');
+  var btn = document.getElementById('nda-btn');
+
+  if(sessionStorage.getItem('vault_nda_payaq') === 'accepted'){
+    overlay.classList.add('hidden');
+    return;
+  }
+
+  overlay.classList.remove('hidden');
+
+  checkbox.addEventListener('change', function(){
+    if(this.checked){
+      btn.classList.add('enabled');
+      btn.disabled = false;
+    } else {
+      btn.classList.remove('enabled');
+      btn.disabled = true;
+    }
+  });
+
+  btn.addEventListener('click', function(){
+    if(!checkbox.checked) return;
+    sessionStorage.setItem('vault_nda_payaq', 'accepted');
+    overlay.classList.add('hidden');
+  });
+})();
+
 window.confirmAcceptOffer = function(){
   var accepted = confirm(
     "Accept partnership terms for Payaq?\n\n" +
-    "This locks the rate schedule at today's date and triggers Setup + KYB invoicing in Vault's system."
+    "This records your acceptance and triggers the KYB form. Setup and KYB invoicing follow after KYB clearance and SLA signing."
   );
   if(!accepted) return false;
 
