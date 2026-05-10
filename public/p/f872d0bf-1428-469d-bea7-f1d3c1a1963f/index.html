@@ -328,8 +328,8 @@ body{
       </div>
       <div class="setup-item">
         <div class="setup-item-label">Shortfall fee</div>
-        <div class="setup-item-val">2.0% × gap<small>When actual &lt; €350,000</small></div>
-        <div class="setup-item-body">If monthly volume drops below €350,000, shortfall fee equals 2.0% of the gap to that threshold. Invoiced at month-end. Example: actual €200K means shortfall = 2.0% × (€350K − €200K) = €3,000.</div>
+        <div class="setup-item-val">2.0% × gap<small>From Month 7 onwards, if actual &lt; €350,000</small></div>
+        <div class="setup-item-body">Months 1-6 are a ramp period with no shortfall fee, regardless of volume. From Month 7 onwards, if monthly volume drops below €350,000, shortfall fee equals 2.0% of the gap to that threshold. Invoiced at month-end. Example: actual €200K means shortfall = 2.0% × (€350K − €200K) = €3,000.</div>
       </div>
       <div class="setup-item">
         <div class="setup-item-label">Platform waiver</div>
@@ -342,22 +342,22 @@ body{
   <section class="section">
     <div class="s-label">Section 4. Onboarding</div>
     <h2 class="s-title">Path from acceptance to delivery</h2>
-    <p class="s-sub">Acceptance triggers the KYB process. Once the KYB clears, Vault prepares the SLA. After SLA signing and Setup + KYB payment, integration delivery begins. Timelines depend on how quickly documents and payments move on Payaq's side.</p>
+    <p class="s-sub">On acceptance, KYB Fee is invoiced and paid first, then Vault runs the compliance check. Once KYB clears, Vault prepares the SLA. After SLA signing, Setup Fee is invoiced and paid, and integration delivery begins. Timelines depend on how quickly documents and payments move on Payaq's side.</p>
 
     <div class="setup-grid">
       <div class="setup-item">
         <div class="setup-item-label">Step 1. KYB</div>
-        <div class="setup-item-val">Compliance check<small>On PAYAQ PAYMENT SYSTEM LTD.</small></div>
-        <div class="setup-item-body">Vault sends the KYB form on offer acceptance. Payaq submits corporate documents and beneficial owner info. Vault reviews and clears. Speed depends on Payaq's document readiness.</div>
+        <div class="setup-item-val">$500 paid first<small>Then compliance check runs</small></div>
+        <div class="setup-item-body">On acceptance, KYB Fee ($500) is invoiced. Once paid, Vault runs the compliance check on PAYAQ PAYMENT SYSTEM LTD. Speed depends on Payaq's document readiness.</div>
       </div>
       <div class="setup-item">
-        <div class="setup-item-label">Step 2. SLA + payment</div>
-        <div class="setup-item-val">Agreement<small>Signed after KYB clears</small></div>
-        <div class="setup-item-body">Vault prepares the SLA only after KYB is cleared. Once both parties sign, Setup ($25,000) and KYB ($500) are invoiced. Delivery does not begin until payment is received.</div>
+        <div class="setup-item-label">Step 2. SLA + Setup</div>
+        <div class="setup-item-val">$25,000 paid<small>After SLA signing</small></div>
+        <div class="setup-item-body">After KYB clears, Vault prepares the SLA. Once both parties sign, Setup Fee ($25,000) is invoiced. Integration delivery does not begin until Setup payment is received.</div>
       </div>
       <div class="setup-item">
         <div class="setup-item-label">Step 3. Integration</div>
-        <div class="setup-item-val">Build &amp; go-live<small>Starts after payment</small></div>
+        <div class="setup-item-val">Build &amp; go-live<small>Starts after Setup paid</small></div>
         <div class="setup-item-body">API endpoints, IBAN provisioning, FX routing and custody set up. First retail customer can be onboarded once integration is verified end-to-end.</div>
       </div>
     </div>
@@ -366,7 +366,7 @@ body{
   <section class="section" style="margin-bottom:0">
     <div class="accept-wrap">
       <h2 class="accept-title gold-flow">Accept terms</h2>
-      <p class="accept-sub">Click to record acceptance. Vault sends the KYB form on the same day. Setup and KYB invoicing follow after KYB clearance and SLA signing.</p>
+      <p class="accept-sub">Click to record acceptance. KYB Fee ($500) is invoiced on the same day. Setup Fee ($25,000) is invoiced after SLA signing.</p>
       <a id="accept-offer-btn" data-deal-id="7197458000006944071" href="#" onclick="return confirmAcceptOffer()">Accept Terms &rarr;</a>
       <div id="accept-result" style="display:none;margin-top:24px"></div>
       <p id="accept-hint">Click to record acceptance</p>
@@ -417,7 +417,7 @@ body{
 window.confirmAcceptOffer = function(){
   var accepted = confirm(
     "Accept partnership terms for Payaq?\n\n" +
-    "This records your acceptance and triggers the KYB form. Setup and KYB invoicing follow after KYB clearance and SLA signing."
+    "This records your acceptance. KYB Fee ($500) is invoiced same day, paid before the compliance check runs. Setup Fee ($25,000) is invoiced after SLA signing."
   );
   if(!accepted) return false;
 
