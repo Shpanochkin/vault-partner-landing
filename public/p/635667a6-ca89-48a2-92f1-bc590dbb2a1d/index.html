@@ -22,6 +22,21 @@ body{
   --dim:rgba(255,255,255,.55);--dimmer:rgba(255,255,255,.32);
   --green:#34D399;--red:#EF4444;
 }
+
+/* ── NDA MODAL ──────────────────────────────────────────────── */
+#nda-overlay{position:fixed;inset:0;background:rgba(9,7,3,.94);backdrop-filter:blur(12px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px}
+#nda-overlay.hidden{display:none}
+#nda-card{background:#0d0a04;border:1px solid var(--gold-border);border-radius:20px;padding:48px;max-width:480px;width:100%;text-align:center}
+#nda-card .nda-logo{margin-bottom:28px}
+#nda-card h2{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;letter-spacing:-.02em;color:var(--gold-bright);margin-bottom:14px}
+#nda-card p{font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:28px}
+.nda-check-row{display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin-bottom:24px;text-align:left;cursor:pointer}
+.nda-check-row input[type="checkbox"]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--gold);cursor:pointer}
+.nda-check-row span{font-size:13px;color:rgba(255,255,255,.75);line-height:1.55;cursor:pointer}
+#nda-btn{width:100%;padding:14px 24px;border-radius:12px;border:none;font-size:15px;font-weight:700;cursor:pointer;background:rgba(212,168,67,.22);color:rgba(255,255,255,.4);transition:background .2s,color .2s}
+#nda-btn.enabled{background:linear-gradient(135deg,var(--gold) 0%,var(--gold-bright) 100%);color:#1a0e02}
+#nda-btn.enabled:hover{filter:brightness(1.05)}
+
 @keyframes ringRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes goldShimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes pulseBtn{
@@ -164,6 +179,23 @@ body{
 </style>
 </head>
 <body>
+
+<!-- ── NDA MODAL ──────────────────────────────────────────────── -->
+<div id="nda-overlay">
+  <div id="nda-card">
+    <div class="nda-logo">
+      <span style="font-family:'DM Serif Display',serif;font-size:36px;color:#fff;letter-spacing:-.01em">vault</span>
+    </div>
+    <h2>Confidential — Prepared for Mundpay</h2>
+    <p>This document contains a commercial partnership offer prepared exclusively for Mundpay. By continuing, you confirm you are an authorized representative and agree not to disclose these terms to third parties.</p>
+    <label class="nda-check-row">
+      <input type="checkbox" id="nda-agree">
+      <span>I am an authorized representative of Mundpay and agree to maintain confidentiality</span>
+    </label>
+    <button id="nda-btn" disabled>View Offer</button>
+  </div>
+</div>
+
 <div class="page">
 
   <header class="hdr">
@@ -369,6 +401,27 @@ body{
 </div>
 
 <script>
+/* NDA gate */
+(function(){
+  var overlay = document.getElementById('nda-overlay');
+  var checkbox = document.getElementById('nda-agree');
+  var btn = document.getElementById('nda-btn');
+  if(sessionStorage.getItem('vault_nda_mundpay') === 'accepted'){
+    overlay.classList.add('hidden');
+    return;
+  }
+  overlay.classList.remove('hidden');
+  checkbox.addEventListener('change', function(){
+    if(this.checked){ btn.classList.add('enabled'); btn.disabled = false; }
+    else { btn.classList.remove('enabled'); btn.disabled = true; }
+  });
+  btn.addEventListener('click', function(){
+    if(!checkbox.checked) return;
+    sessionStorage.setItem('vault_nda_mundpay', 'accepted');
+    overlay.classList.add('hidden');
+  });
+})();
+
 // Countdown to 31 May 2026 23:59:59 UTC
 (function(){
   var DEADLINE = Date.UTC(2026, 4, 31, 23, 59, 59); // Note: month is 0-indexed, 4 = May
