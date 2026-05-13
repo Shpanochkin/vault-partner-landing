@@ -335,8 +335,8 @@ body::after{
         <thead><tr><th>Line</th><th class="num">Rate</th></tr></thead>
         <tbody>
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">Subscription</td></tr>
-          <tr><td class="line">Plus — monthly</td><td class="val">$15.00 / user / mo</td></tr>
-          <tr><td class="line">Plus — annual<small style="display:block;font-size:11px;color:var(--dimmer);font-weight:400;margin-top:2px">2 months free vs monthly</small></td><td class="val">$150 / user / yr</td></tr>
+          <tr><td class="line">Monthly</td><td class="val">$15.00 / user / mo</td></tr>
+          <tr><td class="line">Annual<small style="display:block;font-size:11px;color:var(--dimmer);font-weight:400;margin-top:2px">2 months free vs monthly</small></td><td class="val">$150 / user / yr</td></tr>
 
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">User onboarding (one-time per user)</td></tr>
           <tr><td class="line">Account Opening</td><td class="val">$5.00</td></tr>
@@ -359,7 +359,7 @@ body::after{
           <tr><td class="line">SEPA In</td><td class="val">$1.00 + 0.2% per transfer</td></tr>
           <tr><td class="line">SEPA Out</td><td class="val">$1.00 + 0.2% per transfer</td></tr>
           <tr><td class="line">SWIFT (fixed)</td><td class="val">$40 per transfer</td></tr>
-          <tr><td class="line">SWIFT (variable)</td><td class="val">0.2% of amount</td></tr>
+          <tr><td class="line">SWIFT (variable)</td><td class="val">0.1% of amount</td></tr>
 
           <tr><td colspan="2" style="padding:14px 16px 8px;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.12em;background:var(--gold-pale)">Other</td></tr>
           <tr><td class="line">Chargeback / Dispute</td><td class="val">$35.00</td></tr>
@@ -471,12 +471,12 @@ body::after{
       <div class="mau-def-box">
         <div class="mau-def-title">How MAU is counted</div>
         <div class="mau-def-body">
-          <strong style="color:#fff">MAU (Monthly Active User)</strong> = an end-user with an active, paid-for Plus subscription during the calendar month. A user counts toward MAU if their Plus subscription is in good standing at month-end (payment received, not cancelled, not in arrears). Vault publishes the MAU report on the 5th business day of the following month. M3 = third full calendar month after integration go-live.
+          <strong style="color:#fff">MAU (Monthly Active User)</strong> = an end-user with an active, paid-for subscription during the calendar month. A user counts toward MAU if their subscription is in good standing at month-end (payment received, not cancelled, not in arrears). Vault publishes the MAU report on the 5th business day of the following month. M3 = third full calendar month after integration go-live.
         </div>
       </div>
 
       <p style="font-size:12px;color:var(--dimmer);margin-top:14px;line-height:1.6">
-        Deposit paid at SLA signing alongside KYB. Held by Vault, returned via bank transfer within 14 days of MAU target confirmation.
+        Deposit paid at SLA signing alongside KYB. Held by Vault, returned via the same method it was received within 14 days of MAU target confirmation.
       </p>
     </div>
   </section>
