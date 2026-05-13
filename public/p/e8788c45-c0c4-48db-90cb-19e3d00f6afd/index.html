@@ -6,14 +6,24 @@
 <title>Vault × InFlux Technologies — Enterprise Partnership Terms</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;overflow-x:hidden}
 body{
   font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
   background:#0a0804;color:#fff;-webkit-font-smoothing:antialiased;min-height:100vh;
-  overflow-x:hidden;
+  overflow-x:hidden;position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:linear-gradient(170deg,#080600 0%,#120d04 40%,#1c1506 70%,#0f0a02 100%);
+  z-index:-2;pointer-events:none;
+}
+body::after{
+  content:'';position:fixed;top:0;left:0;right:0;height:60vh;
+  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(212,168,67,.10),transparent 70%);
+  z-index:-1;pointer-events:none;
 }
 :root{
   --gold:#D4A843;--gold-bright:#F5C95F;--gold-dim:rgba(212,168,67,.6);
@@ -57,19 +67,20 @@ body{
   border-radius:50%;animation:ringRotate 24s linear infinite;
   opacity:.55;filter:blur(20px);pointer-events:none;z-index:0;
 }
-.page{max-width:1100px;margin:0 auto;padding:48px 24px 96px;position:relative}
-.hdr{position:relative;text-align:center;padding:60px 0 80px}
+.page{margin:0 auto;padding:72px 24px 96px;position:relative}
+.hdr{position:relative;text-align:center;padding:60px 0 100px;max-width:880px;margin:0 auto}
 .section:first-of-type{margin-top:24px}
-.hdr-logos{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:40px;position:relative;z-index:2;flex-wrap:wrap}
-.hdr-logos svg{height:32px;width:auto;opacity:.85}
+.hdr-logos{display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:48px;position:relative;z-index:2;flex-wrap:wrap}
+.hdr-logos svg{height:36px;width:auto;opacity:.85}
 .hdr-x{font-size:18px;color:var(--gold);font-weight:300}
 .hdr h1{
-  font-family:'DM Serif Display',serif;
-  font-size:clamp(36px,5.5vw,64px);font-weight:400;line-height:1.1;letter-spacing:-.02em;
-  margin-bottom:18px;position:relative;z-index:2;
+  font-family:'DM Serif Display',Georgia,serif;
+  font-size:clamp(40px,6vw,72px);font-weight:400;line-height:1.05;letter-spacing:-.01em;
+  margin-bottom:22px;position:relative;z-index:2;
 }
+.hdr h1 em{font-style:italic;color:rgba(212,168,67,.9);font-weight:400}
 .hdr .accent{color:var(--gold-bright);font-style:italic}
-.hdr-sub{font-size:16px;color:var(--dim);max-width:680px;margin:0 auto;line-height:1.55;position:relative;z-index:2}
+.hdr-sub{font-size:17px;color:var(--dim);max-width:580px;margin:0 auto;line-height:1.7;position:relative;z-index:2;font-weight:400}
 .hdr-meta{
   margin-top:28px;display:inline-flex;align-items:center;gap:14px;
   font-size:12px;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;
@@ -77,10 +88,11 @@ body{
   background:var(--gold-pale);position:relative;z-index:2;
 }
 
-.section{max-width:880px;margin:0 auto 64px;position:relative;z-index:2}
-.s-label{font-size:11px;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px;font-weight:600}
-.s-title{font-family:'DM Serif Display',serif;font-size:clamp(26px,3.4vw,36px);font-weight:400;letter-spacing:-.015em;margin-bottom:14px;line-height:1.2}
-.s-sub{font-size:15px;color:var(--dim);line-height:1.6;margin-bottom:32px;max-width:680px}
+.section{max-width:880px;margin:0 auto 80px;position:relative;z-index:2}
+.s-label{font-size:11px;color:var(--gold);letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;font-weight:700}
+.s-title{font-family:'DM Serif Display',Georgia,serif;font-size:clamp(28px,4vw,42px);font-weight:400;letter-spacing:-.01em;margin-bottom:18px;line-height:1.15}
+.s-title em{font-style:italic;color:rgba(212,168,67,.9)}
+.s-sub{font-size:15.5px;color:var(--dim);line-height:1.75;margin-bottom:36px;max-width:680px}
 .card{background:var(--sheet);border:1px solid var(--sheet-line);border-radius:18px;padding:28px 32px;margin-bottom:18px}
 
 .ref{width:100%;border-collapse:collapse;font-size:13px}
