@@ -132,7 +132,44 @@ body{
 .deposit-path.success .deposit-path-title{color:var(--green)}
 .deposit-path.failure .deposit-path-title{color:var(--red)}
 .deposit-path-body{font-size:13px;color:var(--dim);line-height:1.6}
+.mau-def-box{background:rgba(212,168,67,.05);border:1px solid var(--gold-border);border-radius:12px;padding:16px 20px;margin-top:18px}
+.mau-def-title{font-size:11px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:6px}
+.mau-def-body{font-size:13px;color:var(--dim);line-height:1.65}
 @media (max-width:640px){.deposit-paths{grid-template-columns:1fr}}
+
+/* ── Calculator ────────────────────────────────────────────── */
+.calc-card{background:var(--sheet);border:1px solid var(--gold-border);border-radius:20px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.4),inset 0 1px 0 rgba(212,168,67,.1)}
+.calc-body{padding:36px}
+.calc-inputs{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:36px}
+@media(max-width:600px){.calc-inputs{grid-template-columns:1fr}.calc-body{padding:24px}}
+.slider-group label{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
+.slider-val{font-size:22px;font-weight:700;color:#fff;margin-bottom:14px;font-variant-numeric:tabular-nums}
+.calc-card input[type="range"]{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:rgba(212,168,67,.2);border-radius:2px;outline:none;cursor:pointer}
+.calc-card input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold);border:3px solid #0f0c04;box-shadow:0 0 0 2px rgba(212,168,67,.3);cursor:pointer;transition:box-shadow .15s}
+.calc-card input[type="range"]::-webkit-slider-thumb:hover{box-shadow:0 0 0 4px rgba(212,168,67,.25)}
+.calc-card input[type="range"]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold);border:3px solid #0f0c04;cursor:pointer}
+.calc-divider{border:none;border-top:1px solid rgba(212,168,67,.1);margin:0 0 32px}
+.calc-outputs{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.calc-out{background:rgba(0,0,0,.25);border:1px solid rgba(212,168,67,.1);border-radius:12px;padding:20px;text-align:center}
+.calc-out-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px}
+.calc-out-val{font-size:22px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;line-height:1.1}
+.calc-out-val.secondary{color:rgba(255,255,255,.6);font-size:20px}
+.calc-out-val.highlight{font-size:30px;color:var(--gold)}
+.calc-out-sub{font-size:12px;color:var(--dimmer);margin-top:4px}
+.calc-result{grid-column:1/-1;background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.2);border-radius:12px;padding:24px 28px;display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:0 32px}
+@media(max-width:640px){.calc-result{grid-template-columns:1fr;gap:16px;padding:20px}.calc-result-tier{padding-right:0!important;border-right:none!important;border-bottom:1px solid rgba(212,168,67,.15);padding-bottom:14px}}
+.calc-result-tier{text-align:center;padding-right:28px;border-right:1px solid rgba(212,168,67,.15)}
+.calc-result-tier .tier-name{font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold);line-height:1.2}
+.calc-result-tier .tier-pct{font-size:28px;font-weight:800;color:#fff;margin-top:2px}
+.calc-result-amount{text-align:left}
+.calc-split-labels,.calc-split-pcts{display:flex;justify-content:space-between;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.calc-split-labels{color:rgba(255,255,255,.4);margin-bottom:8px}
+.calc-split-pcts{margin-top:6px;font-size:15px;font-weight:700}
+.calc-split-pcts .cs-client{color:var(--gold)}
+.calc-split-pcts .cs-vault{color:rgba(255,255,255,.45)}
+.calc-split-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:rgba(255,255,255,.06)}
+.cs-bar-client{background:var(--gold);height:100%;transition:width .4s ease;border-radius:7px 0 0 7px}
+.cs-bar-vault{background:rgba(255,255,255,.18);height:100%;transition:width .4s ease;border-radius:0 7px 7px 0}
 
 .accept-wrap{text-align:center;max-width:560px;margin:80px auto 0}
 .accept-title{font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:14px}
@@ -202,7 +239,7 @@ body{
     </div>
 
     <h1>You grow.<br><span class="accent gold-flow">We grow.</span></h1>
-    <p class="hdr-sub">Pure revenue-share partnership covering both Zelcore and SSP Wallet under InFlux Technologies LLC. No setup fee, no monthly platform fee. Vault earns only when you earn.</p>
+    <p class="hdr-sub">Revenue-share partnership for Zelcore and SSP Wallet under InFlux Technologies LLC. No setup, no monthly platform fee. Vault earns when you earn.</p>
 
     <div class="hdr-meta">
       <span>Issued 13 May 2026</span>
@@ -214,20 +251,20 @@ body{
   <section class="section">
     <div class="s-label">Section 1. How the partnership works</div>
     <h2 class="s-title">Revenue share, not fees</h2>
-    <p class="s-sub">Vault provides the full stack — cards, KYC, custody, banking — and earns a share of net income generated from end-users. No setup, no platform fee, no markups on supplier costs. End-users pay standard rates; that revenue flows into a shared pool, supplier costs are deducted, and the remaining net income splits according to the tiers in Section 2.</p>
+    <p class="s-sub">Vault delivers the full stack: cards, KYC, custody, banking. End-users pay standard rates. That revenue flows into a shared pool, supplier costs come off the top, and what's left splits between Vault and InFlux per the MAU tiers in Section 2.</p>
 
     <div class="pillar-grid">
       <div class="pillar-item">
         <div class="pillar-item-name">No fixed costs</div>
-        <div class="pillar-item-body">No setup fee. No monthly platform fee. No management fee. Vault's only income is its share of net revenue after your portion.</div>
+        <div class="pillar-item-body">No setup fee. No monthly platform fee. Vault's income comes only from its share of net revenue.</div>
       </div>
       <div class="pillar-item">
         <div class="pillar-item-name">Net income, shared</div>
-        <div class="pillar-item-body">Net income = end-user fee revenue + interchange income − supplier costs. That net income splits between Vault and InFlux per the MAU tier table.</div>
+        <div class="pillar-item-body">Net income = end-user fee revenue + interchange income − supplier costs. The split between Vault and InFlux follows the MAU tier table below.</div>
       </div>
       <div class="pillar-item">
         <div class="pillar-item-name">Fully aligned</div>
-        <div class="pillar-item-body">Vault wins when InFlux wins. Active users, transaction volume, and card adoption all grow the shared pool. Same incentives across both products.</div>
+        <div class="pillar-item-body">Vault wins when InFlux wins. Active users and transaction volume grow the shared pool. Same incentives for both products.</div>
       </div>
     </div>
   </section>
@@ -235,7 +272,7 @@ body{
   <section class="section">
     <div class="s-label">Section 2. Net income share</div>
     <h2 class="s-title">Your share scales with active users</h2>
-    <p class="s-sub">Net income share is evaluated monthly on combined Monthly Active Users across Zelcore and SSP Wallet. As your active user base grows, your share of net income increases.</p>
+    <p class="s-sub">Evaluated monthly on combined Monthly Active Users across Zelcore and SSP Wallet. The table below shows how the split moves with usage.</p>
 
     <div class="card" style="padding:0;overflow:hidden">
       <table class="tier-table">
@@ -272,14 +309,14 @@ body{
     </div>
 
     <p style="font-size:13px;color:var(--dim);margin-top:14px;line-height:1.6">
-      <strong style="color:#fff">Interchange income</strong> — Vault receives a contractual rebate of 1.00-1.50% of card volume from the BIN sponsor. This income flows into the shared pool and splits by the same tiers. One pool, one split.
+      <strong style="color:#fff">Interchange income.</strong> Vault receives a contractual rebate of 1.00-1.50% of card volume from the BIN sponsor. It flows into the same shared pool and splits by the same tiers.
     </p>
   </section>
 
   <section class="section">
     <div class="s-label">Section 3. End-user rate card</div>
     <h2 class="s-title">What end-users pay</h2>
-    <p class="s-sub">These are the rates your end-users pay. All revenue from these rates flows into the shared pool. Zero markup on any line item — supplier costs are passed at cost and deducted before the split.</p>
+    <p class="s-sub">These are the rates your end-users pay. All revenue from these rates flows into the shared pool. Zero markup on any line item: supplier costs are passed at cost and deducted before the split.</p>
 
     <div class="card" style="padding:0;overflow:hidden">
       <table class="ref">
@@ -320,7 +357,78 @@ body{
   </section>
 
   <section class="section">
-    <div class="s-label">Section 4. Performance deposit</div>
+    <div class="s-label">Section 4. Calculator</div>
+    <h2 class="s-title">Estimate your monthly share</h2>
+    <p class="s-sub">Adjust monthly active users and average volume per user to see how the partnership economics scale. Default values reflect the deposit-target baseline (2,000 MAU × $100/user activity).</p>
+
+    <div class="calc-card">
+      <div class="calc-body">
+        <div class="calc-inputs">
+          <div class="slider-group">
+            <label>Monthly active end-users</label>
+            <div class="slider-val" id="users-display">2,000</div>
+            <input type="range" id="users-slider" min="500" max="60000" step="500" value="2000">
+          </div>
+          <div class="slider-group">
+            <label>Avg monthly volume per user (USD)</label>
+            <div class="slider-val" id="vol-display">$100</div>
+            <input type="range" id="vol-slider" min="50" max="3000" step="50" value="100">
+          </div>
+        </div>
+
+        <hr class="calc-divider">
+
+        <div class="calc-outputs">
+          <div class="calc-out">
+            <div class="calc-out-label">Gross fee revenue</div>
+            <div class="calc-out-val" id="out-gross">—</div>
+            <div class="calc-out-sub">Tx fees + subscriptions</div>
+          </div>
+          <div class="calc-out">
+            <div class="calc-out-label">Interchange income</div>
+            <div class="calc-out-val secondary" id="out-interchange">—</div>
+            <div class="calc-out-sub">Rebate: <span id="out-ic-pct">—</span></div>
+          </div>
+          <div class="calc-out">
+            <div class="calc-out-label">Supplier costs</div>
+            <div class="calc-out-val secondary" id="out-costs">—</div>
+            <div class="calc-out-sub">Pass-through at cost</div>
+          </div>
+          <div class="calc-out">
+            <div class="calc-out-label">Net income</div>
+            <div class="calc-out-val secondary" id="out-net">—</div>
+            <div class="calc-out-sub">Revenue pool</div>
+          </div>
+
+          <div class="calc-result">
+            <div class="calc-result-tier">
+              <div class="tier-name" id="out-tier-name">—</div>
+              <div class="tier-pct" id="out-tier-pct">—</div>
+            </div>
+            <div class="calc-result-amount">
+              <div class="calc-out-label">Your monthly share</div>
+              <div class="calc-out-val highlight" id="out-share">—</div>
+              <div class="calc-out-sub">Vault retains: <span id="out-vault">—</span></div>
+            </div>
+            <div class="calc-result-bar">
+              <div class="calc-split-labels"><span>You</span><span>Vault</span></div>
+              <div class="calc-split-bar">
+                <div class="cs-bar-client" id="split-bar-client" style="width:60%"></div>
+                <div class="cs-bar-vault"  id="split-bar-vault"  style="width:40%"></div>
+              </div>
+              <div class="calc-split-pcts">
+                <span class="cs-client" id="split-pct-client">—</span>
+                <span class="cs-vault"  id="split-pct-vault">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="s-label">Section 5. Performance deposit</div>
     <h2 class="s-title">Mutual commitment on launch</h2>
     <p class="s-sub">A pure revenue-share model works when both sides commit to ramping the user base. The performance deposit aligns that commitment: refundable on hitting the M3 target, otherwise retained as cost recovery for Vault's setup investment.</p>
 
@@ -346,14 +454,21 @@ body{
         </div>
       </div>
 
-      <p style="font-size:12px;color:var(--dimmer);margin-top:18px;line-height:1.6">
+      <div class="mau-def-box">
+        <div class="mau-def-title">How MAU is counted</div>
+        <div class="mau-def-body">
+          <strong style="color:#fff">MAU (Monthly Active User)</strong> = an end-user with an active, paid-for Plus subscription during the calendar month. A user counts toward MAU if their Plus subscription is in good standing at month-end (payment received, not cancelled, not in arrears). Vault publishes the MAU report on the 5th business day of the following month. M3 = third full calendar month after integration go-live.
+        </div>
+      </div>
+
+      <p style="font-size:12px;color:var(--dimmer);margin-top:14px;line-height:1.6">
         Deposit paid at SLA signing alongside KYB. Held by Vault, returned via bank transfer within 14 days of MAU target confirmation.
       </p>
     </div>
   </section>
 
   <section class="section">
-    <div class="s-label">Section 5. Onboarding</div>
+    <div class="s-label">Section 6. Onboarding</div>
     <h2 class="s-title">Path from acceptance to launch</h2>
     <p class="s-sub">On acceptance, KYB Fee is invoiced and paid first, then Vault runs the compliance check on InFlux Technologies LLC. Once KYB clears, Vault prepares the SLA. Performance deposit is paid alongside SLA signing, after which integration delivery begins.</p>
 
@@ -416,6 +531,86 @@ body{
     sessionStorage.setItem('vault_nda_influx', 'accepted');
     overlay.classList.add('hidden');
   });
+})();
+
+/* Revenue share calculator */
+(function(){
+  var usersSlider = document.getElementById('users-slider');
+  var volSlider   = document.getElementById('vol-slider');
+  if(!usersSlider) return;
+  var usersDisplay = document.getElementById('users-display');
+  var volDisplay   = document.getElementById('vol-display');
+  var outGross  = document.getElementById('out-gross');
+  var outInterchange = document.getElementById('out-interchange');
+  var outIcPct = document.getElementById('out-ic-pct');
+  var outCosts  = document.getElementById('out-costs');
+  var outNet    = document.getElementById('out-net');
+  var outTierPct  = document.getElementById('out-tier-pct');
+  var outTierName = document.getElementById('out-tier-name');
+  var outShare  = document.getElementById('out-share');
+  var outVault  = document.getElementById('out-vault');
+  var splitBarClient  = document.getElementById('split-bar-client');
+  var splitBarVault   = document.getElementById('split-bar-vault');
+  var splitPctClient  = document.getElementById('split-pct-client');
+  var splitPctVault   = document.getElementById('split-pct-vault');
+
+  function fmt(n){
+    if(n >= 1000000) return '$' + (n/1000000).toFixed(2) + 'M';
+    if(n >= 1000) return '$' + (n/1000).toFixed(1) + 'K';
+    return '$' + Math.round(n).toLocaleString();
+  }
+
+  function getTier(users){
+    if(users >= 50000) return {pct:0.75, name:'Mature'};
+    if(users >= 10000) return {pct:0.70, name:'Scale'};
+    if(users >= 2000)  return {pct:0.60, name:'Growth'};
+    return {pct:0.50, name:'Starter'};
+  }
+
+  var INTERCHANGE_REBATE_RATE = 0.012;
+
+  function calc(){
+    var users = parseInt(usersSlider.value, 10);
+    var vol   = parseInt(volSlider.value, 10);
+
+    usersDisplay.textContent = users.toLocaleString();
+    volDisplay.textContent   = '$' + vol.toLocaleString();
+
+    var cardTPV = users * vol * 0.60;
+    var interchangeVault = cardTPV * INTERCHANGE_REBATE_RATE;
+
+    var txFees = users * vol * 0.018;
+    var subRevenue = users * 15.00;
+    var gross = txFees + subRevenue + interchangeVault;
+
+    var costs = users * 6.50;
+    var net = Math.max(gross - costs, 0) * 1.12;
+
+    var tier = getTier(users);
+    var yourShare = net * tier.pct;
+    var vaultKeeps = net * (1 - tier.pct);
+
+    outGross.textContent   = fmt(txFees + subRevenue);
+    outInterchange.textContent = fmt(interchangeVault);
+    outIcPct.textContent   = (INTERCHANGE_REBATE_RATE * 100).toFixed(2) + '% of card TPV';
+    outCosts.textContent   = fmt(costs);
+    outNet.textContent     = fmt(net);
+    outTierName.textContent = tier.name;
+    outTierPct.textContent = Math.round(tier.pct * 100) + '%';
+    outShare.textContent   = fmt(yourShare);
+    outVault.textContent   = fmt(vaultKeeps);
+
+    var clientPct = Math.round(tier.pct * 100);
+    var vaultPct  = 100 - clientPct;
+    splitBarClient.style.width = clientPct + '%';
+    splitBarVault.style.width  = vaultPct  + '%';
+    splitPctClient.textContent = clientPct + '%';
+    splitPctVault.textContent  = vaultPct  + '%';
+  }
+
+  usersSlider.addEventListener('input', calc);
+  volSlider.addEventListener('input', calc);
+  calc();
 })();
 
 window.confirmAcceptOffer = function(){
